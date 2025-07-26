@@ -54,15 +54,6 @@ Volunteers can:
 - Respond with one click  
 - See a badge when new calls appear  
 
-### 📄 HTML Snippet
-
-```html
-<h2 class="text-2xl font-semibold text-red-600 mb-4 flex items-center">
-  🔗 Open Calls
-  <span id="openCallBadge" class="ml-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
-</h2>
-<div id="openCallList" class="bg-red-50 p-4 rounded shadow-inner space-y-4"></div>
-
 ---
 
 ## 🧠 Data Flow
