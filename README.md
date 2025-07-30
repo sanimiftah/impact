@@ -1,5 +1,11 @@
 # IMPACT – Planting Seeds of Change
 
+> **🚀 [**LAUNCH IMPACT PLATFORM**](https://sanimiftah.github.io/impact/public/) 🚀**
+> 
+> **Experience the full web application at: [sanimiftah.github.io/impact/public](https://sanimiftah.github.io/impact/public/)**
+
+---
+
 **IMPACT** is a comprehensive digital platform designed to unify and amplify social impact efforts across the Asia-Pacific region. Originally developed during **Cognizant Vibe Coding Week**, this platform has evolved into a full-featured social impact coordination system that reflects values of **care**, **innovation**, and **community engagement**.
 
 IMPACT transforms scattered volunteer efforts into a cohesive ecosystem of change by centralizing opportunities, facilitating intelligent skill matching, enabling team collaboration, and providing comprehensive impact tracking and analytics.
@@ -143,9 +149,10 @@ IMPACT is now a **full-stack social impact platform** featuring 6 interconnected
 ## Live Platform & Deployment
 
 ### **Access the Platform**
-- **Main Platform**: [https://sanimiftah.github.io/impact](https://sanimiftah.github.io/impact)
-- **GitHub Repository**: [https://github.com/sanimiftah/impact](https://github.com/sanimiftah/impact)
-- **Local Development**: Open `/public/index.html` in your browser
+- **🚀 Live Web Application**: [https://sanimiftah.github.io/impact/public/](https://sanimiftah.github.io/impact/public/)
+- **📖 Documentation**: [https://sanimiftah.github.io/impact/](https://sanimiftah.github.io/impact/)
+- **💻 GitHub Repository**: [https://github.com/sanimiftah/impact](https://github.com/sanimiftah/impact)
+- **🔧 Local Development**: Open `/public/index.html` in your browser
 
 ### **Installation as PWA**
 1. Visit the platform in Chrome/Edge/Safari
@@ -303,7 +310,7 @@ Volunteers can:
 - **Educational Institutions** – Student engagement platforms
 - **Government Initiatives** – Public sector community programs
 
-**Start your impact journey today at [https://sanimiftah.github.io/impact](https://sanimiftah.github.io/impact)**
+**🌟 Start your impact journey today at [https://sanimiftah.github.io/impact/public/](https://sanimiftah.github.io/impact/public/) 🌟**
 
 ---
 
