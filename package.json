@@ -1,0 +1,32 @@
+{
+  "name": "impact",
+  "version": "1.0.0",
+  "description": "**IMPACT** is a digital platform designed to unify and amplify Cognizant Outreach efforts across the Asia-Pacific region. Developed during Vibe Coding Week, this prototype reflects Cognizant’s commitment to care, innovation, and community engagement.",
+  "main": "index.js",
+  "scripts": {
+  "build": "tailwindcss -i ./src/input.css -o ./public/output.css --watch"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanimiftah/impact.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sanimiftah/impact/issues"
+  },
+  "homepage": "https://github.com/sanimiftah/impact#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
+    "postcss-import": "^15.1.0",
+    "postcss-js": "^4.0.1",
+    "postcss-load-config": "^4.0.2",
+    "postcss-nested": "^6.2.0"
+  }
+}

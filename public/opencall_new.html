@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="output.css" rel="stylesheet">
+  <link href="animations.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenCall – Urgent Community Needs</title>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 leading-relaxed">
+
+  <section class="max-w-6xl mx-auto p-6">
+    <header class="mb-6 text-center">
+      <h2 class="text-2xl font-bold text-red-700">📣 OpenCall – Urgent Community Needs</h2>
+      <p class="text-lg text-gray-700">Respond to calls for volunteers and ideas. Every moment counts.</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="index.html" class="text-blue-500 hover:underline">← Back to Home</a>
+        <a href="dashboard_enhanced.html" class="text-purple-500 hover:underline">📊 Back to Dashboard</a>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left Column: Create Call -->
+      <div class="lg:col-span-1 space-y-6">
+        
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <strong>Success!</strong> Your call has been posted! 🚨 The community will be notified.
+        </div>
+
+        <!-- Call Form -->
+        <form id="callForm" class="bg-red-50 p-6 rounded-lg shadow-md space-y-4">
+          <h3 class="text-xl font-semibold text-red-700 mb-4">🚨 Post Urgent Call</h3>
+          
+          <div>
+            <label for="callTitle" class="block font-medium text-gray-700">Call Title:</label>
+            <input type="text" id="callTitle" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="e.g., Emergency Flood Relief Volunteers Needed" required />
+          </div>
+
+          <div>
+            <label for="urgencyLevel" class="block font-medium text-gray-700">Urgency Level:</label>
+            <select id="urgencyLevel" class="w-full border border-gray-300 rounded p-2" required>
+              <option value="">Select urgency</option>
+              <option value="critical">🔴 Critical (Immediate action required)</option>
+              <option value="high">🟠 High (Within 24 hours)</option>
+              <option value="medium">🟡 Medium (Within 1 week)</option>
+              <option value="low">🟢 Low (Flexible timing)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="callType" class="block font-medium text-gray-700">Call Type:</label>
+            <select id="callType" class="w-full border border-gray-300 rounded p-2" required>
+              <option value="">Select type</option>
+              <option value="volunteers">👥 Need Volunteers</option>
+              <option value="resources">📦 Need Resources/Donations</option>
+              <option value="expertise">🧠 Need Expertise/Skills</option>
+              <option value="coordination">🤝 Need Coordination Help</option>
+              <option value="awareness">📢 Need Awareness/Sharing</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="callDescription" class="block font-medium text-gray-700">Description:</label>
+            <textarea id="callDescription" rows="4" class="w-full border border-gray-300 rounded p-2" 
+                      placeholder="Describe what help is needed, the situation, and any specific requirements..." required></textarea>
+          </div>
+
+          <div>
+            <label for="callLocation" class="block font-medium text-gray-700">Location:</label>
+            <input type="text" id="callLocation" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="e.g., Kuala Lumpur, Remote, Nationwide" required />
+          </div>
+
+          <div>
+            <label for="deadline" class="block font-medium text-gray-700">Response Deadline:</label>
+            <input type="datetime-local" id="deadline" class="w-full border border-gray-300 rounded p-2" required />
+          </div>
+
+          <div>
+            <label for="contactInfo" class="block font-medium text-gray-700">Contact Information:</label>
+            <input type="text" id="contactInfo" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="Email, phone, or other contact method" required />
+          </div>
+
+          <div>
+            <label for="skillsNeeded" class="block font-medium text-gray-700">Skills/Resources Needed (Optional):</label>
+            <input type="text" id="skillsNeeded" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="e.g., Medical training, Transport, Cooking, Social media" />
+          </div>
+
+          <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
+            📣 Post Urgent Call
+          </button>
+        </form>
+
+        <!-- Quick Response Stats -->
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <h3 class="text-lg font-semibold text-red-700 mb-3">📊 Response Stats</h3>
+          <div id="responseStats" class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span>Active Calls:</span>
+              <span id="activeCalls" class="font-semibold">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Total Responses:</span>
+              <span id="totalResponses" class="font-semibold">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Resolved Today:</span>
+              <span id="resolvedToday" class="font-semibold">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Columns: Active Calls -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Filter Bar -->
+        <div class="bg-gray-100 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">🔍 Filter Calls</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <select id="urgencyFilter" class="border border-gray-300 rounded p-2">
+              <option value="">All Urgency Levels</option>
+              <option value="critical">🔴 Critical</option>
+              <option value="high">🟠 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+            <select id="typeFilter" class="border border-gray-300 rounded p-2">
+              <option value="">All Types</option>
+              <option value="volunteers">👥 Volunteers</option>
+              <option value="resources">📦 Resources</option>
+              <option value="expertise">🧠 Expertise</option>
+              <option value="coordination">🤝 Coordination</option>
+              <option value="awareness">📢 Awareness</option>
+            </select>
+            <select id="locationFilter" class="border border-gray-300 rounded p-2">
+              <option value="">All Locations</option>
+              <option value="remote">Remote</option>
+              <option value="kuala lumpur">Kuala Lumpur</option>
+              <option value="selangor">Selangor</option>
+              <option value="nationwide">Nationwide</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Calls List -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-red-700 mb-4">🚨 Active Calls</h3>
+          <div id="callsList" class="space-y-4">
+            <!-- Calls will be displayed here -->
+          </div>
+        </div>
+
+        <!-- My Responses -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">✋ My Responses</h3>
+          <div id="myResponses" class="space-y-3">
+            <!-- User's responses will be displayed here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Initialize DOM elements
+    const callForm = document.getElementById('callForm');
+    const callsList = document.getElementById('callsList');
+    const myResponses = document.getElementById('myResponses');
+    const successMessage = document.getElementById('successMessage');
+    const urgencyFilter = document.getElementById('urgencyFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const locationFilter = document.getElementById('locationFilter');
+
+    // Initialize data arrays
+    let openCalls = JSON.parse(localStorage.getItem('openCalls')) || [];
+    let userResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
+
+    // Urgency level configuration
+    const urgencyConfig = {
+      'critical': { color: 'red', icon: '🔴', priority: 4 },
+      'high': { color: 'orange', icon: '🟠', priority: 3 },
+      'medium': { color: 'yellow', icon: '🟡', priority: 2 },
+      'low': { color: 'green', icon: '🟢', priority: 1 }
+    };
+
+    const typeConfig = {
+      'volunteers': { icon: '👥', color: 'blue' },
+      'resources': { icon: '📦', color: 'purple' },
+      'expertise': { icon: '🧠', color: 'indigo' },
+      'coordination': { icon: '🤝', color: 'pink' },
+      'awareness': { icon: '📢', color: 'cyan' }
+    };
+
+    // Initialize display
+    displayCalls();
+    displayMyResponses();
+    updateStats();
+
+    // Handle call form submission
+    callForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const newCall = {
+        id: Date.now(),
+        title: document.getElementById('callTitle').value,
+        urgency: document.getElementById('urgencyLevel').value,
+        type: document.getElementById('callType').value,
+        description: document.getElementById('callDescription').value,
+        location: document.getElementById('callLocation').value,
+        deadline: document.getElementById('deadline').value,
+        contact: document.getElementById('contactInfo').value,
+        skillsNeeded: document.getElementById('skillsNeeded').value,
+        createdDate: new Date().toISOString(),
+        responses: [],
+        status: 'active'
+      };
+
+      openCalls.push(newCall);
+      localStorage.setItem('openCalls', JSON.stringify(openCalls));
+      
+      // Show success message
+      successMessage.classList.remove('hidden');
+      setTimeout(() => {
+        successMessage.classList.add('hidden');
+      }, 3000);
+      
+      callForm.reset();
+      displayCalls();
+      updateStats();
+    });
+
+    // Handle filter changes
+    [urgencyFilter, typeFilter, locationFilter].forEach(filter => {
+      filter.addEventListener('change', displayCalls);
+    });
+
+    // Display active calls
+    function displayCalls() {
+      callsList.innerHTML = '';
+      
+      if (openCalls.length === 0) {
+        callsList.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-3">📣</div>
+            <p>No active calls at the moment.</p>
+            <p class="text-sm mt-2">When urgent community needs arise, they'll appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Filter calls
+      let filteredCalls = openCalls.filter(call => {
+        const matchesUrgency = !urgencyFilter.value || call.urgency === urgencyFilter.value;
+        const matchesType = !typeFilter.value || call.type === typeFilter.value;
+        const matchesLocation = !locationFilter.value || 
+                               call.location.toLowerCase().includes(locationFilter.value.toLowerCase());
+        return matchesUrgency && matchesType && matchesLocation && call.status === 'active';
+      });
+
+      // Sort by urgency priority (critical first)
+      filteredCalls.sort((a, b) => urgencyConfig[b.urgency].priority - urgencyConfig[a.urgency].priority);
+
+      if (filteredCalls.length === 0) {
+        callsList.innerHTML = '<p class="text-center text-gray-500 py-4">No calls match the selected filters.</p>';
+        return;
+      }
+
+      filteredCalls.forEach(call => {
+        const urgencyInfo = urgencyConfig[call.urgency];
+        const typeInfo = typeConfig[call.type];
+        const timeLeft = getTimeLeft(call.deadline);
+        const hasResponded = userResponses.some(response => response.callId === call.id);
+
+        const callCard = document.createElement('div');
+        callCard.className = `border-l-4 border-${urgencyInfo.color}-400 bg-${urgencyInfo.color}-50 p-4 rounded-lg shadow-sm`;
+        
+        callCard.innerHTML = `
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">${urgencyInfo.icon}</span>
+              <div>
+                <h4 class="font-bold text-gray-800">${call.title}</h4>
+                <div class="flex gap-3 text-sm text-gray-600 mt-1">
+                  <span>${typeInfo.icon} ${call.type}</span>
+                  <span>📍 ${call.location}</span>
+                  <span>⏰ ${timeLeft}</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-semibold text-${urgencyInfo.color}-600">${urgencyInfo.icon} ${call.urgency.toUpperCase()}</div>
+              <div class="text-xs text-gray-500">${call.responses.length} responses</div>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-700 mb-3">${call.description}</p>
+          
+          ${call.skillsNeeded ? `
+            <div class="bg-white p-2 rounded mb-3">
+              <span class="text-xs font-semibold text-gray-600">Skills Needed:</span>
+              <span class="text-xs text-gray-700">${call.skillsNeeded}</span>
+            </div>
+          ` : ''}
+          
+          <div class="flex gap-2 items-center">
+            ${hasResponded ? `
+              <button class="bg-green-600 text-white py-1 px-3 rounded text-sm cursor-not-allowed" disabled>
+                ✅ Already Responded
+              </button>
+            ` : `
+              <button class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm respond-btn" 
+                      data-call-id="${call.id}">
+                🙋‍♀️ I Can Help
+              </button>
+            `}
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded text-sm share-btn"
+                    data-call-id="${call.id}">
+              📤 Share
+            </button>
+            <span class="text-xs text-gray-500 ml-auto">Contact: ${call.contact}</span>
+          </div>
+        `;
+
+        // Add response functionality
+        const respondBtn = callCard.querySelector('.respond-btn');
+        if (respondBtn) {
+          respondBtn.addEventListener('click', () => respondToCall(call.id));
+        }
+
+        // Add share functionality
+        const shareBtn = callCard.querySelector('.share-btn');
+        shareBtn.addEventListener('click', () => shareCall(call));
+
+        callsList.appendChild(callCard);
+      });
+    }
+
+    // Display user's responses
+    function displayMyResponses() {
+      myResponses.innerHTML = '';
+      
+      if (userResponses.length === 0) {
+        myResponses.innerHTML = '<p class="text-gray-500 text-center">You haven\'t responded to any calls yet.</p>';
+        return;
+      }
+
+      userResponses.forEach(response => {
+        const call = openCalls.find(c => c.id === response.callId);
+        if (!call) return;
+
+        const responseCard = document.createElement('div');
+        responseCard.className = 'bg-green-50 p-3 rounded border-l-4 border-green-400';
+        responseCard.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h5 class="font-semibold text-gray-800">${call.title}</h5>
+              <p class="text-sm text-gray-600">Responded: ${new Date(response.date).toLocaleDateString()}</p>
+              <p class="text-xs text-gray-500">${response.message}</p>
+            </div>
+            <span class="text-xs text-green-600">✅ Responded</span>
+          </div>
+        `;
+        myResponses.appendChild(responseCard);
+      });
+    }
+
+    // Handle response to call
+    function respondToCall(callId) {
+      const message = prompt('Add a message with your response (optional):');
+      if (message === null) return; // User cancelled
+
+      const response = {
+        id: Date.now(),
+        callId: callId,
+        date: new Date().toISOString(),
+        message: message || 'I can help with this call!'
+      };
+
+      userResponses.push(response);
+      localStorage.setItem('userResponses', JSON.stringify(userResponses));
+
+      // Add response to the call
+      const callIndex = openCalls.findIndex(call => call.id === callId);
+      if (callIndex !== -1) {
+        openCalls[callIndex].responses.push(response);
+        localStorage.setItem('openCalls', JSON.stringify(openCalls));
+      }
+
+      alert('Thank you for responding! The call creator will be notified of your interest to help.');
+      displayCalls();
+      displayMyResponses();
+      updateStats();
+    }
+
+    // Handle sharing a call
+    function shareCall(call) {
+      const shareText = `🚨 URGENT CALL: ${call.title}\n\n${call.description}\n\nLocation: ${call.location}\nDeadline: ${new Date(call.deadline).toLocaleDateString()}\n\nHelp spread the word!`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: call.title,
+          text: shareText,
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+          alert('Call details copied to clipboard! Share it to help spread the word.');
+        });
+      }
+    }
+
+    // Get time left until deadline
+    function getTimeLeft(deadline) {
+      const now = new Date();
+      const deadlineDate = new Date(deadline);
+      const diffMs = deadlineDate - now;
+      
+      if (diffMs < 0) return 'Expired';
+      
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffHours / 24);
+      
+      if (diffDays > 0) return `${diffDays} days left`;
+      if (diffHours > 0) return `${diffHours} hours left`;
+      return 'Less than 1 hour';
+    }
+
+    // Update statistics
+    function updateStats() {
+      const activeCalls = openCalls.filter(call => call.status === 'active').length;
+      const totalResponses = userResponses.length;
+      const today = new Date().toDateString();
+      const resolvedToday = openCalls.filter(call => 
+        call.status === 'resolved' && new Date(call.resolvedDate).toDateString() === today
+      ).length;
+
+      document.getElementById('activeCalls').textContent = activeCalls;
+      document.getElementById('totalResponses').textContent = totalResponses;
+      document.getElementById('resolvedToday').textContent = resolvedToday;
+    }
+
+    // Set default deadline to 24 hours from now
+    const now = new Date();
+    now.setHours(now.getHours() + 24);
+    document.getElementById('deadline').value = now.toISOString().slice(0, 16);
+
+    // Enhanced visual features for OpenCall
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add UI components
+      if (typeof showLoading !== 'function') {
+        window.showLoading = function(message) {
+          const loading = document.createElement('div');
+          loading.id = 'loadingOverlay';
+          loading.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+          loading.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-4"></div>
+              <p class="text-gray-700">${message}</p>
+            </div>
+          `;
+          document.body.appendChild(loading);
+        };
+
+        window.hideLoading = function() {
+          const loading = document.getElementById('loadingOverlay');
+          if (loading) loading.remove();
+        };
+
+        window.showToast = function(message, type = 'success') {
+          const toast = document.createElement('div');
+          toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300 ${
+            type === 'success' ? 'bg-red-500 text-white' : 
+            type === 'warning' ? 'bg-orange-500 text-white' : 
+            'bg-blue-500 text-white'
+          }`;
+          toast.textContent = message;
+          document.body.appendChild(toast);
+          
+          setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+          setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => toast.remove(), 300);
+          }, 3000);
+        };
+      }
+
+      // Enhanced form animations
+      const formInputs = document.querySelectorAll('#callForm input, #callForm textarea, #callForm select');
+      formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('ring-2', 'ring-red-200');
+          this.classList.add('transform', 'scale-105');
+        });
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('ring-2', 'ring-red-200');
+          this.classList.remove('transform', 'scale-105');
+        });
+      });
+
+      // Enhanced form submission
+      const callForm = document.getElementById('callForm');
+      const originalSubmit = callForm.onsubmit;
+      callForm.onsubmit = function(e) {
+        e.preventDefault();
+        showLoading('Broadcasting urgent call... 🚨');
+        
+        setTimeout(() => {
+          hideLoading();
+          if (originalSubmit) originalSubmit.call(this, e);
+          showToast('🚨 Urgent call posted! Community members will be notified immediately.', 'success');
+        }, 1000);
+      };
+
+      // Enhanced call cards with urgency animations
+      function enhanceCallCards() {
+        const callCards = document.querySelectorAll('#callsList .bg-white');
+        callCards.forEach((card, index) => {
+          card.classList.add('card-hover', 'transition-all', 'duration-300');
+          
+          // Add urgency-based animations and colors
+          const urgencyEl = card.querySelector('.px-2.py-1.text-xs.rounded-full');
+          if (urgencyEl) {
+            const urgency = urgencyEl.textContent.toLowerCase();
+            if (urgency.includes('critical')) {
+              card.classList.add('border-l-4', 'border-red-600', 'pulse-urgent');
+              urgencyEl.classList.add('animate-pulse');
+            } else if (urgency.includes('high')) {
+              card.classList.add('border-l-4', 'border-orange-500');
+            } else if (urgency.includes('medium')) {
+              card.classList.add('border-l-4', 'border-yellow-500');
+            } else {
+              card.classList.add('border-l-4', 'border-green-500');
+            }
+          }
+
+          // Stagger entrance animations
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 100);
+        });
+      }
+
+      // Enhanced respond functionality
+      window.originalRespondToCall = window.respondToCall;
+      window.respondToCall = function(callId) {
+        showLoading('Processing your response...');
+        setTimeout(() => {
+          hideLoading();
+          originalRespondToCall(callId);
+          showToast('🙏 Thank you for responding! Your help can make a real difference.', 'success');
+        }, 800);
+      };
+
+      // Auto-refresh with animations
+      const originalDisplayCalls = window.displayCalls;
+      window.displayCalls = function() {
+        originalDisplayCalls();
+        setTimeout(enhanceCallCards, 100);
+      };
+
+      // Initial enhancements
+      setTimeout(enhanceCallCards, 500);
+    });
+  </script>
+  <script src="ui-components.js"></script>
+</body>
+</html>

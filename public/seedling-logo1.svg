@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="seedlingGradient" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Seedling Inspired -->
+  <circle cx="20" cy="20" r="18" fill="url(#seedlingGradient)"/>
+  
+  <!-- Young seedling exactly like emoji -->
+  <g transform="translate(20, 26)">
+    <!-- Stem -->
+    <line x1="0" y1="0" x2="0" y2="-12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    
+    <!-- First leaf (left) -->
+    <ellipse cx="-5" cy="-8" rx="4" ry="2.5" fill="white" opacity="0.95" transform="rotate(-45)"/>
+    
+    <!-- Second leaf (right) -->
+    <ellipse cx="5" cy="-10" rx="4" ry="2.5" fill="white" opacity="0.95" transform="rotate(45)"/>
+    
+    <!-- Small soil indication -->
+    <ellipse cx="0" cy="1" rx="8" ry="2" fill="white" opacity="0.3"/>
+  </g>
+</svg>

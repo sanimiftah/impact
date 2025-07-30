@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impact Card</title>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800 leading-relaxed">
+<nav class="mb-6 text-center space-x-4">
+  <a href="opencall.html" class="text-indigo-600 hover:underline">OpenCall</a>
+  <a href="impactlog.html" class="text-green-600 hover:underline">ImpactLog</a>
+  <a href="dashboard.html" class="text-purple-600 hover:underline">Dashboard</a>
+  <a href="impactcard.html" class="text-blue-600 hover:underline font-semibold">Impact Card</a>
+</nav>
+  <section class="max-w-md mx-auto p-6">
+    <header class="mb-6 text-center">
+      <h2 class="text-2xl font-bold text-blue-700">🎉 Your Impact Card</h2>
+      <p class="text-gray-600">A snapshot of your journey and growth.</p>
+    </header>
+
+    <!-- Impact Card -->
+    <div id="card" class="bg-white rounded-lg shadow-lg p-6 text-center space-y-4">
+      <h3 class="text-xl font-semibold text-blue-700">🌱 Volunteer Impact Summary</h3>
+      <p id="volunteerName" class="text-lg font-medium text-gray-700"></p>
+      <p id="topCause" class="text-sm text-gray-600">Top Cause: </p>
+      <p id="totalReflections" class="text-sm text-gray-600">Total Reflections: </p>
+      <blockquote class="italic text-blue-600 mt-4">“Your journey matters. Every reflection is a seed of change.”</blockquote>
+    </div>
+
+    <!-- Name Input + Download -->
+    <div class="mt-6 space-y-4 text-center">
+      <input type="text" id="nameInput" placeholder="Enter your name (optional)" class="border border-gray-300 rounded p-2 w-full" />
+      <button onclick="generateCard()" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+        🔄 Update Card
+      </button>
+      <button onclick="downloadCard()" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">
+        📥 Download Card
+      </button>
+    </div>
+  </section>
+
+  <script>
+    // Load reflections from localStorage
+    const logs = JSON.parse(localStorage.getItem('impactLogs')) || [];
+
+    function generateCard() {
+      const name = document.getElementById('nameInput').value;
+      document.getElementById('volunteerName').textContent = name ? `Name: ${name}` : '';
+
+      // Count reflections by cause
+      const causeCount = {};
+      logs.forEach(log => {
+        const cause = log.values?.replace('Cause: ', '') || 'Unspecified';
+        causeCount[cause] = (causeCount[cause] || 0) + 1;
+      });
+
+      // Find top cause
+      let topCause = 'Unspecified';
+      let max = 0;
+      for (const cause in causeCount) {
+        if (causeCount[cause] > max) {
+          max = causeCount[cause];
+          topCause = cause;
+        }
+      }
+
+      document.getElementById('topCause').textContent = `Top Cause: ${topCause}`;
+      document.getElementById('totalReflections').textContent = `Total Reflections: ${logs.length}`;
+    }
+
+    // Auto-generate on load
+    generateCard();
+
+    // Download card as image
+    function downloadCard() {
+      html2canvas(document.getElementById('card')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'impact-card.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+
+  <!-- Include html2canvas library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>

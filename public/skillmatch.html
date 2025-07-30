@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="output.css" rel="stylesheet">
+  <link href="animations.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillMatch – Share What You Know</title>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 leading-relaxed">
+
+  <section class="max-w-6xl mx-auto p-6">
+    <header class="mb-6 text-center">
+      <h2 class="text-2xl font-bold text-yellow-700">🧠 SkillMatch – Share What You Know</h2>
+      <p class="text-lg text-gray-700">Match your skills with causes that need you.</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="index.html" class="text-blue-500 hover:underline">← Back to Home</a>
+        <a href="dashboard_enhanced.html" class="text-purple-500 hover:underline">📊 Back to Dashboard</a>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- Left Column: Skill Registration -->
+      <div class="space-y-6">
+        
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          <strong>Success!</strong> Your skills have been registered! 🎯 Check your matches below.
+        </div>
+
+        <!-- Skill Input Form -->
+        <form id="skillForm" class="bg-yellow-50 p-6 rounded-lg shadow-md space-y-4">
+          <h3 class="text-xl font-semibold text-yellow-700 mb-4">🔧 Register Your Skills</h3>
+          
+          <div>
+            <label for="volunteerName" class="block font-medium text-gray-700">Your Name:</label>
+            <input type="text" id="volunteerName" class="w-full border border-gray-300 rounded p-2" placeholder="Enter your name" required />
+          </div>
+
+          <div>
+            <label for="skillCategory" class="block font-medium text-gray-700">Skill Category:</label>
+            <select id="skillCategory" class="w-full border border-gray-300 rounded p-2" required>
+              <option value="">Select a category</option>
+              <option value="education">📘 Education & Teaching</option>
+              <option value="design">🎨 Design & Creative</option>
+              <option value="tech">💻 Technology & Programming</option>
+              <option value="wellness">💖 Mental Health & Wellness</option>
+              <option value="climate">🌿 Climate & Environment</option>
+              <option value="business">💼 Business & Marketing</option>
+              <option value="community">🤝 Community Organizing</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="specificSkills" class="block font-medium text-gray-700">Specific Skills:</label>
+            <input type="text" id="specificSkills" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="e.g., JavaScript, Graphic Design, Project Management" required />
+          </div>
+
+          <div>
+            <label for="experience" class="block font-medium text-gray-700">Experience Level:</label>
+            <select id="experience" class="w-full border border-gray-300 rounded p-2" required>
+              <option value="">Select experience</option>
+              <option value="beginner">🌱 Beginner (0-2 years)</option>
+              <option value="intermediate">🌿 Intermediate (2-5 years)</option>
+              <option value="expert">🌳 Expert (5+ years)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="availability" class="block font-medium text-gray-700">Availability:</label>
+            <select id="availability" class="w-full border border-gray-300 rounded p-2" required>
+              <option value="">Select availability</option>
+              <option value="weekends">🏠 Weekends Only</option>
+              <option value="weekdays">💼 Weekdays</option>
+              <option value="flexible">⏰ Flexible</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="location" class="block font-medium text-gray-700">Location (Optional):</label>
+            <input type="text" id="location" class="w-full border border-gray-300 rounded p-2" 
+                   placeholder="e.g., Kuala Lumpur, Remote" />
+          </div>
+
+          <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded">
+            🔍 Register Skills & Find Matches
+          </button>
+        </form>
+
+        <!-- Registered Volunteers -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-yellow-700 mb-4">👥 Registered Volunteers</h3>
+          <div id="volunteerList" class="space-y-3">
+            <!-- Volunteers will be displayed here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Matching Ideas -->
+      <div class="space-y-6">
+        
+        <!-- Filter for Ideas -->
+        <div class="bg-gray-100 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">🎯 Filter Ideas by Category</h3>
+          <select id="categoryFilter" class="w-full border border-gray-300 rounded p-2">
+            <option value="">All Categories</option>
+            <option value="education">📘 Education</option>
+            <option value="design">🎨 Design</option>
+            <option value="tech">💻 Technology</option>
+            <option value="wellness">💖 Wellness</option>
+            <option value="climate">🌿 Climate</option>
+            <option value="business">💼 Business</option>
+            <option value="community">🤝 Community</option>
+          </select>
+        </div>
+
+        <!-- Matching Ideas from Seedboard -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-yellow-700 mb-4">💡 Ideas That Need Your Skills</h3>
+          <div id="matchingIdeas" class="space-y-4">
+            <!-- Matching ideas will be displayed here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const skillForm = document.getElementById('skillForm');
+    const volunteerList = document.getElementById('volunteerList');
+    const matchingIdeas = document.getElementById('matchingIdeas');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const successMessage = document.getElementById('successMessage');
+
+    let volunteers = JSON.parse(localStorage.getItem('volunteers')) || [];
+    let ideas = JSON.parse(localStorage.getItem('impactIdeas')) || [];
+
+    // Skill category mapping for better matching
+    const skillCategoryMap = {
+      'education': ['education', 'teaching', 'learning', 'school', 'students', 'training'],
+      'design': ['design', 'creative', 'art', 'visual', 'graphics', 'ui', 'ux'],
+      'tech': ['technology', 'programming', 'coding', 'software', 'app', 'website', 'digital'],
+      'wellness': ['wellness', 'mental health', 'health', 'therapy', 'counseling', 'support'],
+      'climate': ['climate', 'environment', 'sustainability', 'green', 'eco', 'nature'],
+      'business': ['business', 'marketing', 'management', 'strategy', 'finance', 'planning'],
+      'community': ['community', 'organizing', 'social', 'volunteer', 'outreach', 'engagement']
+    };
+
+    // Initialize display
+    displayVolunteers();
+    displayMatchingIdeas();
+
+    // Handle skill form submission
+    skillForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const volunteer = {
+        id: Date.now(),
+        name: document.getElementById('volunteerName').value,
+        category: document.getElementById('skillCategory').value,
+        skills: document.getElementById('specificSkills').value,
+        experience: document.getElementById('experience').value,
+        availability: document.getElementById('availability').value,
+        location: document.getElementById('location').value,
+        registrationDate: new Date().toLocaleDateString()
+      };
+
+      volunteers.push(volunteer);
+      localStorage.setItem('volunteers', JSON.stringify(volunteers));
+      
+      // Show success message
+      successMessage.classList.remove('hidden');
+      setTimeout(() => {
+        successMessage.classList.add('hidden');
+      }, 3000);
+      
+      skillForm.reset();
+      displayVolunteers();
+      displayMatchingIdeas();
+    });
+
+    // Handle category filter
+    categoryFilter.addEventListener('change', displayMatchingIdeas);
+
+    // Display registered volunteers
+    function displayVolunteers() {
+      volunteerList.innerHTML = '';
+      
+      if (volunteers.length === 0) {
+        volunteerList.innerHTML = '<p class="text-gray-500 text-center">No volunteers registered yet.</p>';
+        return;
+      }
+
+      volunteers.forEach(volunteer => {
+        const experienceIcons = {
+          'beginner': '🌱',
+          'intermediate': '🌿',
+          'expert': '🌳'
+        };
+
+        const availabilityIcons = {
+          'weekends': '🏠',
+          'weekdays': '💼',
+          'flexible': '⏰'
+        };
+
+        const volunteerCard = document.createElement('div');
+        volunteerCard.className = 'bg-yellow-50 p-3 rounded border-l-4 border-yellow-400';
+        volunteerCard.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-semibold text-gray-800">${volunteer.name}</h4>
+              <p class="text-sm text-gray-600">${getCategoryDisplay(volunteer.category)}</p>
+              <p class="text-xs text-gray-500 mt-1">Skills: ${volunteer.skills}</p>
+              <div class="flex gap-2 mt-2 text-xs">
+                <span class="bg-gray-200 px-2 py-1 rounded">${experienceIcons[volunteer.experience]} ${volunteer.experience}</span>
+                <span class="bg-gray-200 px-2 py-1 rounded">${availabilityIcons[volunteer.availability]} ${volunteer.availability}</span>
+              </div>
+            </div>
+            <span class="text-xs text-gray-400">${volunteer.registrationDate}</span>
+          </div>
+        `;
+        volunteerList.appendChild(volunteerCard);
+      });
+    }
+
+    // Display matching ideas from Seedboard
+    function displayMatchingIdeas() {
+      matchingIdeas.innerHTML = '';
+      
+      if (ideas.length === 0) {
+        matchingIdeas.innerHTML = `
+          <div class="text-center py-6 text-gray-500">
+            <div class="text-3xl mb-2">💡</div>
+            <p>No ideas available yet.</p>
+            <p class="text-sm mt-2">Visit the <a href="seedboard.html" class="text-yellow-600 hover:underline">Seedboard</a> to submit ideas!</p>
+          </div>
+        `;
+        return;
+      }
+
+      const filteredIdeas = categoryFilter.value 
+        ? ideas.filter(idea => matchesCategory(idea, categoryFilter.value))
+        : ideas;
+
+      if (filteredIdeas.length === 0) {
+        matchingIdeas.innerHTML = '<p class="text-center text-gray-500 py-4">No ideas match the selected category.</p>';
+        return;
+      }
+
+      filteredIdeas.forEach(idea => {
+        const matchingVolunteers = findMatchingVolunteers(idea);
+        const matchPercentage = calculateMatchPercentage(idea, volunteers);
+        
+        const ideaCard = document.createElement('div');
+        ideaCard.className = 'border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow';
+        
+        const tagChips = idea.tags
+          ? idea.tags.split(',').map(tag => `<span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">${tag.trim()}</span>`).join(' ')
+          : '<span class="text-gray-400">No tags</span>';
+
+        ideaCard.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="font-bold text-gray-800">${idea.title}</h4>
+            <div class="text-right">
+              <div class="text-xs font-semibold text-green-600">${matchPercentage}% Match</div>
+              <div class="text-xs text-gray-500">${matchingVolunteers.length} volunteers match</div>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600 mb-3">${idea.description}</p>
+          
+          <div class="flex flex-wrap gap-2 mb-3">
+            ${tagChips}
+          </div>
+          
+          <div class="text-xs text-gray-500 mb-3">
+            📍 ${idea.location || 'Location not specified'} • ${idea.date}
+          </div>
+          
+          ${matchingVolunteers.length > 0 ? `
+            <div class="bg-green-50 p-3 rounded mt-3">
+              <h5 class="text-sm font-semibold text-green-700 mb-2">🎯 Matching Volunteers:</h5>
+              ${matchingVolunteers.map(vol => `
+                <div class="text-xs text-green-600">• ${vol.name} (${vol.skills}) - ${vol.experience} level</div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="bg-yellow-50 p-3 rounded mt-3">
+              <p class="text-sm text-yellow-700">🔍 No exact skill matches yet. This could be a great opportunity to learn!</p>
+            </div>
+          `}
+          
+          <div class="flex gap-2 mt-3">
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm volunteer-btn">
+              🙋‍♀️ I Can Help
+            </button>
+            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1 px-3 rounded text-sm">
+              💾 Save Idea
+            </button>
+          </div>
+        `;
+
+        // Add volunteer button functionality
+        const volunteerBtn = ideaCard.querySelector('.volunteer-btn');
+        volunteerBtn.addEventListener('click', () => {
+          volunteerBtn.innerHTML = '✅ Volunteered!';
+          volunteerBtn.disabled = true;
+          volunteerBtn.className = 'bg-green-600 text-white py-1 px-3 rounded text-sm cursor-not-allowed';
+          
+          // Here you could add logic to save volunteer assignments
+          alert(`Great! You've volunteered for "${idea.title}". The idea creator will be notified!`);
+        });
+
+        matchingIdeas.appendChild(ideaCard);
+      });
+    }
+
+    // Helper functions
+    function getCategoryDisplay(category) {
+      const categoryDisplayMap = {
+        'education': '📘 Education & Teaching',
+        'design': '🎨 Design & Creative',
+        'tech': '💻 Technology & Programming',
+        'wellness': '💖 Mental Health & Wellness',
+        'climate': '🌿 Climate & Environment',
+        'business': '💼 Business & Marketing',
+        'community': '🤝 Community Organizing'
+      };
+      return categoryDisplayMap[category] || category;
+    }
+
+    function matchesCategory(idea, category) {
+      const keywords = skillCategoryMap[category] || [];
+      const searchText = `${idea.title} ${idea.description} ${idea.tags}`.toLowerCase();
+      return keywords.some(keyword => searchText.includes(keyword));
+    }
+
+    function findMatchingVolunteers(idea) {
+      return volunteers.filter(volunteer => {
+        const ideaCategories = Object.keys(skillCategoryMap).filter(cat => matchesCategory(idea, cat));
+        return ideaCategories.includes(volunteer.category);
+      });
+    }
+
+    function calculateMatchPercentage(idea, allVolunteers) {
+      if (allVolunteers.length === 0) return 0;
+      const matching = findMatchingVolunteers(idea);
+      return Math.round((matching.length / allVolunteers.length) * 100);
+    }
+
+    // Enhanced visual features for SkillMatch
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add UI components
+      if (typeof showLoading !== 'function') {
+        window.showLoading = function(message) {
+          const loading = document.createElement('div');
+          loading.id = 'loadingOverlay';
+          loading.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+          loading.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+              <p class="text-gray-700">${message}</p>
+            </div>
+          `;
+          document.body.appendChild(loading);
+        };
+
+        window.hideLoading = function() {
+          const loading = document.getElementById('loadingOverlay');
+          if (loading) loading.remove();
+        };
+
+        window.showToast = function(message, type = 'success') {
+          const toast = document.createElement('div');
+          toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300 ${
+            type === 'success' ? 'bg-yellow-500 text-white' : 
+            type === 'warning' ? 'bg-orange-500 text-white' : 
+            'bg-blue-500 text-white'
+          }`;
+          toast.textContent = message;
+          document.body.appendChild(toast);
+          
+          setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+          setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => toast.remove(), 300);
+          }, 3000);
+        };
+      }
+
+      // Enhanced form animations
+      const formInputs = document.querySelectorAll('#volunteerForm input, #volunteerForm textarea, #volunteerForm select');
+      formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('ring-2', 'ring-yellow-200');
+          this.classList.add('transform', 'scale-105');
+        });
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('ring-2', 'ring-yellow-200');
+          this.classList.remove('transform', 'scale-105');
+        });
+      });
+
+      // Enhanced form submission
+      const volunteerForm = document.getElementById('volunteerForm');
+      const originalSubmit = volunteerForm.onsubmit;
+      volunteerForm.onsubmit = function(e) {
+        e.preventDefault();
+        showLoading('Matching your skills with opportunities... 🧠');
+        
+        setTimeout(() => {
+          hideLoading();
+          if (originalSubmit) originalSubmit.call(this, e);
+          showToast('🧠 Your skills are now in the system! We\'ll match you with perfect opportunities.', 'success');
+        }, 1500);
+      };
+
+      // Add skill tag animations
+      function enhanceSkillTags() {
+        const skillTags = document.querySelectorAll('.bg-yellow-100, .bg-blue-100, .bg-green-100');
+        skillTags.forEach((tag, index) => {
+          tag.classList.add('transition-all', 'duration-300', 'hover:scale-110', 'cursor-pointer');
+          tag.style.animationDelay = `${index * 0.1}s`;
+          tag.classList.add('animate-pulse');
+          
+          setTimeout(() => tag.classList.remove('animate-pulse'), 2000 + (index * 100));
+        });
+      }
+
+      // Enhanced volunteer cards
+      function enhanceVolunteerCards() {
+        const cards = document.querySelectorAll('.bg-white.p-4.rounded-lg.shadow-md');
+        cards.forEach((card, index) => {
+          card.classList.add('card-hover', 'transition-all', 'duration-300');
+          
+          // Add skill-based border colors
+          const category = card.querySelector('strong')?.textContent;
+          if (category) {
+            const categoryColors = {
+              'Environment': 'border-l-4 border-green-500',
+              'Education': 'border-l-4 border-blue-500', 
+              'Healthcare': 'border-l-4 border-red-500',
+              'Technology': 'border-l-4 border-purple-500',
+              'Community': 'border-l-4 border-yellow-500'
+            };
+            const colorClass = categoryColors[category] || 'border-l-4 border-gray-500';
+            card.className += ' ' + colorClass;
+          }
+
+          // Stagger entrance animations
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 150);
+        });
+      }
+
+      // Enhanced matching animations
+      const originalDisplayVolunteers = window.displayVolunteers;
+      window.displayVolunteers = function() {
+        originalDisplayVolunteers();
+        setTimeout(enhanceVolunteerCards, 100);
+      };
+
+      const originalDisplayMatchingSuggestions = window.displayMatchingSuggestions;
+      window.displayMatchingSuggestions = function() {
+        originalDisplayMatchingSuggestions();
+        setTimeout(enhanceSkillTags, 200);
+      };
+
+      // Initial enhancements
+      setTimeout(() => {
+        enhanceVolunteerCards();
+        enhanceSkillTags();
+      }, 500);
+    });
+  </script>
+  <script src="ui-components.js"></script>
+</body>
+</html>

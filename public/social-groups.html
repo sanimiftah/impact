@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Groups - IMPACT Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .group-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e5e7eb;
+    }
+
+    .group-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      border-color: #10b981;
+    }
+
+    .member-avatar {
+      transition: all 0.2s ease;
+    }
+
+    .member-avatar:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+
+    .discussion-item {
+      transition: all 0.2s ease;
+    }
+
+    .discussion-item:hover {
+      background-color: #f9fafb;
+      border-left: 4px solid #10b981;
+      padding-left: 16px;
+    }
+
+    .floating-create {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 40;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .pulse-activity {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .category-filter {
+      transition: all 0.2s ease;
+    }
+
+    .category-filter.active {
+      background-color: #10b981;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .search-glow {
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-800">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-40 backdrop-blur-sm bg-white/90">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="flex items-center space-x-2 text-lg font-bold gradient-text">
+          🌱 IMPACT
+        </a>
+        <span class="text-gray-400">|</span>
+        <h1 class="text-lg font-semibold text-gray-700">Community Groups</h1>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <button onclick="showCreateGroupModal()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+          ➕ Create Group
+        </button>
+        <a href="social-features.html" class="text-gray-600 hover:text-green-600 transition-colors">
+          ← Back to Social Hub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search and Filters -->
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <!-- Search Bar -->
+        <div class="flex-1 relative">
+          <input type="text" id="groupSearch" placeholder="Search groups by name, category, or interest..." 
+                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent search-glow">
+          <span class="absolute right-3 top-3 text-gray-400">🔍</span>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="filterByCategory('all')" class="category-filter active px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+            All
+          </button>
+          <button onclick="filterByCategory('Environment')" class="category-filter px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+            🌱 Environment
+          </button>
+          <button onclick="filterByCategory('Education')" class="category-filter px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+            📚 Education
+          </button>
+          <button onclick="filterByCategory('Health')" class="category-filter px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+            🏥 Health
+          </button>
+          <button onclick="filterByCategory('Technology')" class="category-filter px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+            💻 Technology
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-green-600" id="totalGroups">0</div>
+          <div class="text-sm text-gray-500">Total Groups</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-blue-600" id="totalMembers">0</div>
+          <div class="text-sm text-gray-500">Total Members</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-purple-600" id="activeDiscussions">0</div>
+          <div class="text-sm text-gray-500">Active Discussions</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-orange-600" id="weeklyEvents">0</div>
+          <div class="text-sm text-gray-500">Weekly Events</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Groups Grid -->
+    <div id="groupsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Groups will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <!-- Create Group Modal -->
+  <div id="createGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Create New Group</h3>
+        <button onclick="hideCreateGroupModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+
+      <form onsubmit="createGroup(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Group Name</label>
+            <input type="text" id="groupName" required
+                   placeholder="e.g., Sustainable Living Community"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+            <select id="groupCategory" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+              <option value="">Select a category</option>
+              <option value="Environment">🌱 Environment</option>
+              <option value="Education">📚 Education</option>
+              <option value="Health">🏥 Health</option>
+              <option value="Technology">💻 Technology</option>
+              <option value="Community">🏘️ Community</option>
+              <option value="Arts">🎨 Arts & Culture</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea id="groupDescription" required
+                      placeholder="Describe the purpose and goals of your group..."
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Privacy Settings</label>
+            <select id="groupPrivacy" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+              <option value="public">🌍 Public - Anyone can join</option>
+              <option value="private">🔒 Private - Invitation only</option>
+              <option value="request">📝 Join by request</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Focus Areas (Optional)</label>
+            <input type="text" id="groupTags"
+                   placeholder="e.g., sustainability, recycling, climate action"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            <p class="text-xs text-gray-500 mt-1">Separate multiple areas with commas</p>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <button type="button" onclick="hideCreateGroupModal()" 
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors">
+            Create Group
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Group Details Modal -->
+  <div id="groupDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="groupDetailsContent">
+        <!-- Group details will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="floating-create">
+    <button onclick="showCreateGroupModal()" 
+            class="w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center text-2xl">
+      ➕
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  <script src="social-engine.js"></script>
+  
+  <script>
+    // Sample groups data
+    const sampleGroups = [
+      {
+        id: 'urban-gardeners',
+        name: 'Urban Gardeners',
+        category: 'Environment',
+        description: 'Creating green spaces in urban environments through community gardens, rooftop farming, and sustainable growing practices.',
+        memberCount: 234,
+        privacy: 'public',
+        tags: ['gardening', 'sustainability', 'urban planning', 'food security'],
+        creator: 'Maya Chen',
+        createdAt: '2024-01-15',
+        isActive: true,
+        discussions: 45,
+        events: 8,
+        recentActivity: 'New discussion: "Vertical Farming in Small Spaces"',
+        members: [
+          { name: 'Maya Chen', avatar: 'M', role: 'Admin', color: 'blue' },
+          { name: 'Rahul Sharma', avatar: 'R', role: 'Moderator', color: 'green' },
+          { name: 'Luna Santos', avatar: 'L', role: 'Member', color: 'purple' }
+        ]
+      },
+      {
+        id: 'tech-for-good',
+        name: 'Tech for Good',
+        category: 'Technology',
+        description: 'Leveraging technology to solve social problems and create positive impact in communities worldwide.',
+        memberCount: 567,
+        privacy: 'public',
+        tags: ['programming', 'social impact', 'innovation', 'digital literacy'],
+        creator: 'Sani Miftah',
+        createdAt: '2024-02-01',
+        isActive: true,
+        discussions: 89,
+        events: 12,
+        recentActivity: 'Event: "AI for Social Good Workshop" this Saturday',
+        members: [
+          { name: 'Sani Miftah', avatar: 'S', role: 'Admin', color: 'green' },
+          { name: 'Aria Wilson', avatar: 'A', role: 'Moderator', color: 'blue' },
+          { name: 'Jake Park', avatar: 'J', role: 'Member', color: 'purple' }
+        ]
+      },
+      {
+        id: 'mental-health-advocates',
+        name: 'Mental Health Advocates',
+        category: 'Health',
+        description: 'Supporting mental wellness through advocacy, education, and creating safe spaces for open conversations.',
+        memberCount: 189,
+        privacy: 'public',
+        tags: ['mental health', 'wellness', 'support', 'advocacy'],
+        creator: 'Luna Santos',
+        createdAt: '2024-01-20',
+        isActive: true,
+        discussions: 67,
+        events: 6,
+        recentActivity: 'Discussion: "Workplace Mental Health Initiatives"',
+        members: [
+          { name: 'Luna Santos', avatar: 'L', role: 'Admin', color: 'purple' },
+          { name: 'Maya Chen', avatar: 'M', role: 'Member', color: 'blue' },
+          { name: 'Dr. Sarah Kim', avatar: 'S', role: 'Expert', color: 'green' }
+        ]
+      },
+      {
+        id: 'youth-mentorship',
+        name: 'Youth Mentorship Network',
+        category: 'Education',
+        description: 'Connecting experienced professionals with young people to provide guidance, support, and career development.',
+        memberCount: 342,
+        privacy: 'public',
+        tags: ['mentorship', 'youth development', 'career guidance', 'education'],
+        creator: 'Dr. Ahmed Hassan',
+        createdAt: '2024-02-10',
+        isActive: true,
+        discussions: 78,
+        events: 15,
+        recentActivity: 'Mentor matching event next Friday',
+        members: [
+          { name: 'Dr. Ahmed Hassan', avatar: 'A', role: 'Admin', color: 'blue' },
+          { name: 'Maya Chen', avatar: 'M', role: 'Mentor', color: 'blue' },
+          { name: 'Student Ali', avatar: 'A', role: 'Mentee', color: 'green' }
+        ]
+      },
+      {
+        id: 'climate-action',
+        name: 'Climate Action Coalition',
+        category: 'Environment',
+        description: 'Taking collective action against climate change through awareness campaigns, sustainable practices, and policy advocacy.',
+        memberCount: 456,
+        privacy: 'public',
+        tags: ['climate change', 'sustainability', 'activism', 'environment'],
+        creator: 'Rahul Sharma',
+        createdAt: '2024-01-05',
+        isActive: true,
+        discussions: 123,
+        events: 20,
+        recentActivity: 'Planning Earth Day cleanup events',
+        members: [
+          { name: 'Rahul Sharma', avatar: 'R', role: 'Admin', color: 'green' },
+          { name: 'Eco Emma', avatar: 'E', role: 'Moderator', color: 'blue' },
+          { name: 'Green Pete', avatar: 'P', role: 'Member', color: 'green' }
+        ]
+      },
+      {
+        id: 'digital-literacy',
+        name: 'Digital Literacy Champions',
+        category: 'Education',
+        description: 'Teaching digital skills to seniors, underserved communities, and anyone looking to bridge the digital divide.',
+        memberCount: 156,
+        privacy: 'public',
+        tags: ['digital literacy', 'seniors', 'education', 'technology'],
+        creator: 'Tech Teacher Tom',
+        createdAt: '2024-02-15',
+        isActive: true,
+        discussions: 34,
+        events: 10,
+        recentActivity: 'Free smartphone basics workshop tomorrow',
+        members: [
+          { name: 'Tech Teacher Tom', avatar: 'T', role: 'Admin', color: 'blue' },
+          { name: 'Senior Sue', avatar: 'S', role: 'Member', color: 'purple' },
+          { name: 'Helper Hal', avatar: 'H', role: 'Volunteer', color: 'green' }
+        ]
+      }
+    ];
+
+    let allGroups = [];
+    let filteredGroups = [];
+
+    // Initialize groups page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadGroups();
+      updateStats();
+      
+      // Setup search functionality
+      document.getElementById('groupSearch').addEventListener('input', handleSearch);
+    });
+
+    // Load groups data
+    function loadGroups() {
+      try {
+        if (window.socialEngine && window.socialEngine.initialized) {
+          allGroups = window.socialEngine.getSuggestedGroups().concat(
+            window.socialEngine.getGroups().map(group => ({
+              ...group,
+              id: group.name.toLowerCase().replace(/\s+/g, '-'),
+              isJoined: true
+            }))
+          );
+        } else {
+          // Load from localStorage or use sample data
+          const savedGroups = localStorage.getItem('communityGroups');
+          allGroups = savedGroups ? JSON.parse(savedGroups) : sampleGroups;
+        }
+        
+        // Add sample groups if we don't have enough
+        if (allGroups.length === 0) {
+          allGroups = sampleGroups;
+          localStorage.setItem('communityGroups', JSON.stringify(allGroups));
+        }
+        
+        filteredGroups = [...allGroups];
+        displayGroups();
+        
+      } catch (error) {
+        console.error('Error loading groups:', error);
+        allGroups = sampleGroups;
+        filteredGroups = [...allGroups];
+        displayGroups();
+      }
+    }
+
+    // Display groups
+    function displayGroups() {
+      const container = document.getElementById('groupsContainer');
+      container.innerHTML = '';
+
+      if (filteredGroups.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No groups found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your search or create a new group!</p>
+            <button onclick="showCreateGroupModal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+              Create First Group
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      filteredGroups.forEach(group => {
+        const groupCard = createGroupCard(group);
+        container.appendChild(groupCard);
+      });
+    }
+
+    // Create group card element
+    function createGroupCard(group) {
+      const card = document.createElement('div');
+      card.className = 'group-card bg-white rounded-xl shadow-sm p-6 cursor-pointer';
+      
+      const categoryColors = {
+        Environment: { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' },
+        Education: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200' },
+        Health: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200' },
+        Technology: { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-200' },
+        Community: { bg: 'bg-orange-100', text: 'text-orange-700', border: 'border-orange-200' },
+        Arts: { bg: 'bg-pink-100', text: 'text-pink-700', border: 'border-pink-200' }
+      };
+      
+      const colors = categoryColors[group.category] || categoryColors.Community;
+      
+      card.innerHTML = `
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="font-semibold text-lg text-gray-800">${group.name}</h3>
+              ${group.isJoined ? '<span class="text-green-500">✓</span>' : ''}
+            </div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text} ${colors.border} border">
+              ${getCategoryIcon(group.category)} ${group.category}
+            </span>
+          </div>
+          <div class="text-right">
+            <div class="text-sm text-gray-500">${group.memberCount} members</div>
+            ${group.isActive ? '<div class="text-xs text-green-500 pulse-activity">● Active</div>' : ''}
+          </div>
+        </div>
+
+        <p class="text-gray-600 text-sm mb-4 line-clamp-3">${group.description}</p>
+
+        <!-- Recent Activity -->
+        ${group.recentActivity ? `
+          <div class="bg-gray-50 rounded-lg p-3 mb-4">
+            <div class="text-xs text-gray-500 mb-1">Recent Activity</div>
+            <div class="text-sm text-gray-700">${group.recentActivity}</div>
+          </div>
+        ` : ''}
+
+        <!-- Members Preview -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex -space-x-2">
+            ${(group.members || []).slice(0, 4).map(member => `
+              <div class="member-avatar w-8 h-8 bg-${member.color}-100 text-${member.color}-600 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white" title="${member.name}">
+                ${member.avatar}
+              </div>
+            `).join('')}
+            ${group.memberCount > 4 ? `<div class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">+${group.memberCount - 4}</div>` : ''}
+          </div>
+          
+          <div class="text-xs text-gray-500">
+            ${group.discussions || 0} discussions • ${group.events || 0} events
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1 mb-4">
+          ${(group.tags || []).slice(0, 3).map(tag => `
+            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">#${tag}</span>
+          `).join('')}
+          ${group.tags && group.tags.length > 3 ? `<span class="px-2 py-1 bg-gray-100 text-gray-500 rounded-full text-xs">+${group.tags.length - 3}</span>` : ''}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2">
+          ${group.isJoined ? 
+            `<button onclick="leaveGroup('${group.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Leave Group
+            </button>` :
+            `<button onclick="joinGroup('${group.id}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Join Group
+            </button>`
+          }
+          <button onclick="showGroupDetails('${group.id}')" class="flex-1 border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            View Details
+          </button>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Get category icon
+    function getCategoryIcon(category) {
+      const icons = {
+        Environment: '🌱',
+        Education: '📚',
+        Health: '🏥',
+        Technology: '💻',
+        Community: '🏘️',
+        Arts: '🎨'
+      };
+      return icons[category] || '🏘️';
+    }
+
+    // Filter by category
+    function filterByCategory(category) {
+      // Update active filter button
+      document.querySelectorAll('.category-filter').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Filter groups
+      if (category === 'all') {
+        filteredGroups = [...allGroups];
+      } else {
+        filteredGroups = allGroups.filter(group => group.category === category);
+      }
+      
+      displayGroups();
+    }
+
+    // Handle search
+    function handleSearch(event) {
+      const query = event.target.value.toLowerCase();
+      
+      if (!query) {
+        filteredGroups = [...allGroups];
+      } else {
+        filteredGroups = allGroups.filter(group => 
+          group.name.toLowerCase().includes(query) ||
+          group.description.toLowerCase().includes(query) ||
+          group.category.toLowerCase().includes(query) ||
+          (group.tags && group.tags.some(tag => tag.toLowerCase().includes(query)))
+        );
+      }
+      
+      displayGroups();
+    }
+
+    // Show create group modal
+    function showCreateGroupModal() {
+      document.getElementById('createGroupModal').style.display = 'flex';
+    }
+
+    // Hide create group modal
+    function hideCreateGroupModal() {
+      document.getElementById('createGroupModal').style.display = 'none';
+      // Clear form
+      document.getElementById('groupName').value = '';
+      document.getElementById('groupCategory').value = '';
+      document.getElementById('groupDescription').value = '';
+      document.getElementById('groupTags').value = '';
+    }
+
+    // Create group
+    function createGroup(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('groupName').value;
+      const category = document.getElementById('groupCategory').value;
+      const description = document.getElementById('groupDescription').value;
+      const privacy = document.getElementById('groupPrivacy').value;
+      const tags = document.getElementById('groupTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+      
+      const newGroup = {
+        id: name.toLowerCase().replace(/\s+/g, '-'),
+        name: name,
+        category: category,
+        description: description,
+        memberCount: 1,
+        privacy: privacy,
+        tags: tags,
+        creator: 'Current User',
+        createdAt: new Date().toISOString().split('T')[0],
+        isActive: true,
+        discussions: 0,
+        events: 0,
+        recentActivity: 'Group created!',
+        isJoined: true,
+        members: [
+          { name: 'Current User', avatar: 'S', role: 'Admin', color: 'green' }
+        ]
+      };
+      
+      allGroups.unshift(newGroup);
+      filteredGroups = [...allGroups];
+      
+      // Save to localStorage
+      localStorage.setItem('communityGroups', JSON.stringify(allGroups));
+      
+      // Save to social engine if available
+      if (window.socialEngine && window.socialEngine.initialized) {
+        window.socialEngine.joinGroup(newGroup.id, newGroup);
+      }
+      
+      hideCreateGroupModal();
+      displayGroups();
+      updateStats();
+      
+      showNotification(`Group "${name}" created successfully! 🎉`, 'success');
+    }
+
+    // Join group
+    function joinGroup(groupId) {
+      const group = allGroups.find(g => g.id === groupId);
+      if (group) {
+        group.isJoined = true;
+        group.memberCount += 1;
+        
+        // Save changes
+        localStorage.setItem('communityGroups', JSON.stringify(allGroups));
+        
+        if (window.socialEngine && window.socialEngine.initialized) {
+          window.socialEngine.joinGroup(groupId, group);
+        }
+        
+        displayGroups();
+        updateStats();
+        showNotification(`Joined "${group.name}"! Welcome to the community! 🎉`, 'success');
+      }
+    }
+
+    // Leave group
+    function leaveGroup(groupId) {
+      const group = allGroups.find(g => g.id === groupId);
+      if (group) {
+        group.isJoined = false;
+        group.memberCount = Math.max(0, group.memberCount - 1);
+        
+        // Save changes
+        localStorage.setItem('communityGroups', JSON.stringify(allGroups));
+        
+        if (window.socialEngine && window.socialEngine.initialized) {
+          window.socialEngine.leaveGroup(groupId);
+        }
+        
+        displayGroups();
+        updateStats();
+        showNotification(`Left "${group.name}". You can rejoin anytime!`, 'info');
+      }
+    }
+
+    // Show group details
+    function showGroupDetails(groupId) {
+      const group = allGroups.find(g => g.id === groupId);
+      if (!group) return;
+      
+      const modal = document.getElementById('groupDetailsModal');
+      const content = document.getElementById('groupDetailsContent');
+      
+      const categoryColors = {
+        Environment: { bg: 'bg-green-100', text: 'text-green-700' },
+        Education: { bg: 'bg-blue-100', text: 'text-blue-700' },
+        Health: { bg: 'bg-purple-100', text: 'text-purple-700' },
+        Technology: { bg: 'bg-indigo-100', text: 'text-indigo-700' },
+        Community: { bg: 'bg-orange-100', text: 'text-orange-700' },
+        Arts: { bg: 'bg-pink-100', text: 'text-pink-700' }
+      };
+      
+      const colors = categoryColors[group.category] || categoryColors.Community;
+      
+      content.innerHTML = `
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">${group.name}</h2>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${colors.bg} ${colors.text}">
+              ${getCategoryIcon(group.category)} ${group.category}
+            </span>
+          </div>
+          <button onclick="hideGroupDetails()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Main Content -->
+          <div class="md:col-span-2 space-y-6">
+            <!-- Description -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-2">About This Group</h3>
+              <p class="text-gray-700">${group.description}</p>
+            </div>
+
+            <!-- Recent Discussions -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Recent Discussions</h3>
+              <div class="space-y-3">
+                <div class="discussion-item p-3 rounded-lg border-l-4 border-transparent">
+                  <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">M</div>
+                    <div class="flex-1">
+                      <h4 class="font-medium text-sm">Maya Chen</h4>
+                      <p class="text-sm text-gray-600">How can we scale our urban garden project to reach more communities?</p>
+                      <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                        <span>12 replies</span>
+                        <span>2 hours ago</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="discussion-item p-3 rounded-lg border-l-4 border-transparent">
+                  <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-sm">R</div>
+                    <div class="flex-1">
+                      <h4 class="font-medium text-sm">Rahul Sharma</h4>
+                      <p class="text-sm text-gray-600">Sharing my experience with composting in small apartments</p>
+                      <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                        <span>8 replies</span>
+                        <span>1 day ago</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Upcoming Events</h3>
+              <div class="space-y-3">
+                <div class="border border-green-200 rounded-lg p-3 bg-green-50">
+                  <div class="font-medium text-sm text-green-800">Community Garden Workshop</div>
+                  <div class="text-xs text-green-600">This Saturday, 10:00 AM</div>
+                  <div class="text-xs text-gray-600 mt-1">Learn hands-on sustainable gardening techniques</div>
+                </div>
+                
+                <div class="border border-blue-200 rounded-lg p-3 bg-blue-50">
+                  <div class="font-medium text-sm text-blue-800">Seed Swap Meet</div>
+                  <div class="text-xs text-blue-600">Next Sunday, 2:00 PM</div>
+                  <div class="text-xs text-gray-600 mt-1">Bring seeds to share and discover new varieties</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-6">
+            <!-- Group Stats -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Group Stats</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Members</span>
+                  <span class="font-semibold">${group.memberCount}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Discussions</span>
+                  <span class="font-semibold">${group.discussions || 0}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Events</span>
+                  <span class="font-semibold">${group.events || 0}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Created</span>
+                  <span class="font-semibold">${new Date(group.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Members -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Active Members</h3>
+              <div class="space-y-3">
+                ${(group.members || []).map(member => `
+                  <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-${member.color}-100 rounded-full flex items-center justify-center text-${member.color}-600 font-bold">
+                      ${member.avatar}
+                    </div>
+                    <div class="flex-1">
+                      <div class="font-medium text-sm">${member.name}</div>
+                      <div class="text-xs text-gray-500">${member.role}</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Tags</h3>
+              <div class="flex flex-wrap gap-2">
+                ${(group.tags || []).map(tag => `
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">#${tag}</span>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+              ${group.isJoined ? 
+                `<button onclick="leaveGroup('${group.id}'); hideGroupDetails();" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                  Leave Group
+                </button>` :
+                `<button onclick="joinGroup('${group.id}'); hideGroupDetails();" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                  Join Group
+                </button>`
+              }
+              <button class="w-full border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                Start Discussion
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      modal.style.display = 'flex';
+    }
+
+    // Hide group details
+    function hideGroupDetails() {
+      document.getElementById('groupDetailsModal').style.display = 'none';
+    }
+
+    // Update statistics
+    function updateStats() {
+      const totalGroups = allGroups.length;
+      const totalMembers = allGroups.reduce((sum, group) => sum + group.memberCount, 0);
+      const activeDiscussions = allGroups.reduce((sum, group) => sum + (group.discussions || 0), 0);
+      const weeklyEvents = allGroups.reduce((sum, group) => sum + (group.events || 0), 0);
+      
+      document.getElementById('totalGroups').textContent = totalGroups;
+      document.getElementById('totalMembers').textContent = totalMembers.toLocaleString();
+      document.getElementById('activeDiscussions').textContent = activeDiscussions;
+      document.getElementById('weeklyEvents').textContent = weeklyEvents;
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white max-w-sm transform transition-all duration-300 translate-x-full`;
+      
+      switch (type) {
+        case 'success':
+          notification.classList.add('bg-green-500');
+          break;
+        case 'error':
+          notification.classList.add('bg-red-500');
+          break;
+        case 'warning':
+          notification.classList.add('bg-yellow-500');
+          break;
+        default:
+          notification.classList.add('bg-blue-500');
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>

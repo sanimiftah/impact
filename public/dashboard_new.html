@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="output.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Community Impact Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 leading-relaxed">
+
+  <section class="max-w-7xl mx-auto p-6">
+    <header class="mb-8 text-center">
+      <h2 class="text-3xl font-bold text-blue-700">🔍 Dashboard – Community Impact Analytics</h2>
+      <p class="text-lg text-gray-700 mt-2">Track progress, measure impact, and celebrate community achievements</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="index.html" class="text-blue-500 hover:underline">← Back to Home</a>
+        <a href="dashboard_enhanced.html" class="text-purple-500 hover:underline">📊 Enhanced Dashboard</a>
+      </div>
+    </header>
+
+    <!-- Key Metrics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-medium opacity-90">Total Ideas</h3>
+            <p id="totalIdeas" class="text-3xl font-bold">0</p>
+          </div>
+          <div class="text-4xl opacity-75">🌱</div>
+        </div>
+        <p class="text-sm opacity-90 mt-2">+<span id="newIdeasToday">0</span> today</p>
+      </div>
+
+      <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-medium opacity-90">Active Volunteers</h3>
+            <p id="totalVolunteers" class="text-3xl font-bold">0</p>
+          </div>
+          <div class="text-4xl opacity-75">🧠</div>
+        </div>
+        <p class="text-sm opacity-90 mt-2">+<span id="newVolunteersToday">0</span> new today</p>
+      </div>
+
+      <div class="bg-gradient-to-r from-red-400 to-red-600 text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-medium opacity-90">Urgent Calls</h3>
+            <p id="totalCalls" class="text-3xl font-bold">0</p>
+          </div>
+          <div class="text-4xl opacity-75">📣</div>
+        </div>
+        <p class="text-sm opacity-90 mt-2"><span id="criticalCalls">0</span> critical</p>
+      </div>
+
+      <div class="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-6 rounded-lg shadow-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-medium opacity-90">Total Responses</h3>
+            <p id="totalResponses" class="text-3xl font-bold">0</p>
+          </div>
+          <div class="text-4xl opacity-75">🤝</div>
+        </div>
+        <p class="text-sm opacity-90 mt-2"><span id="responseRate">0</span>% response rate</p>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      
+      <!-- Ideas by Category Chart -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">💡 Ideas by Category</h3>
+        <div class="relative h-64">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Activity Timeline Chart -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">📈 Activity Over Time</h3>
+        <div class="relative h-64">
+          <canvas id="activityChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      
+      <!-- Recent Activities -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">🕒 Recent Activities</h3>
+        <div id="recentActivities" class="space-y-3 max-h-80 overflow-y-auto">
+          <!-- Activities will be populated here -->
+        </div>
+      </div>
+
+      <!-- Top Contributors -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">🌟 Top Contributors</h3>
+        <div id="topContributors" class="space-y-3">
+          <!-- Contributors will be populated here -->
+        </div>
+      </div>
+
+      <!-- Impact Metrics -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">📊 Impact Metrics</h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Ideas with Support</span>
+            <div class="flex items-center gap-2">
+              <div class="w-20 bg-gray-200 rounded-full h-2">
+                <div id="ideasSupportedBar" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+              <span id="ideasSupportedPercent" class="text-sm font-semibold">0%</span>
+            </div>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Call Response Rate</span>
+            <div class="flex items-center gap-2">
+              <div class="w-20 bg-gray-200 rounded-full h-2">
+                <div id="callResponseBar" class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+              <span id="callResponsePercent" class="text-sm font-semibold">0%</span>
+            </div>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Skill Match Success</span>
+            <div class="flex items-center gap-2">
+              <div class="w-20 bg-gray-200 rounded-full h-2">
+                <div id="skillMatchBar" class="bg-yellow-500 h-2 rounded-full" style="width: 0%"></div>
+              </div>
+              <span id="skillMatchPercent" class="text-sm font-semibold">0%</span>
+            </div>
+          </div>
+          
+          <div class="border-t pt-4 mt-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-600" id="impactScore">0</div>
+              <div class="text-sm text-gray-600">Community Impact Score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location and Skills Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      
+      <!-- Geographic Distribution -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">🌍 Geographic Distribution</h3>
+        <div id="locationStats" class="space-y-3">
+          <!-- Location data will be populated here -->
+        </div>
+      </div>
+
+      <!-- Skills in Demand -->
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">🎯 Skills in Demand</h3>
+        <div id="skillsStats" class="space-y-3">
+          <!-- Skills data will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Export and Refresh Controls -->
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <div class="flex flex-wrap gap-4 justify-between items-center">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Data Controls</h3>
+          <p class="text-sm text-gray-600">Last updated: <span id="lastUpdated">Never</span></p>
+        </div>
+        <div class="flex gap-3">
+          <button id="refreshData" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+            🔄 Refresh Data
+          </button>
+          <button id="exportData" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+            📊 Export Report
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Initialize data from localStorage
+    let impactIdeas = JSON.parse(localStorage.getItem('impactIdeas')) || [];
+    let volunteers = JSON.parse(localStorage.getItem('volunteers')) || [];
+    let openCalls = JSON.parse(localStorage.getItem('openCalls')) || [];
+    let userResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
+
+    // Chart instances
+    let categoryChart, activityChart;
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      updateMetrics();
+      createCharts();
+      updateRecentActivities();
+      updateTopContributors();
+      updateImpactMetrics();
+      updateLocationStats();
+      updateSkillsStats();
+      updateLastUpdated();
+    });
+
+    // Update key metrics
+    function updateMetrics() {
+      const today = new Date().toDateString();
+      
+      // Total ideas and new today
+      document.getElementById('totalIdeas').textContent = impactIdeas.length;
+      const newIdeasToday = impactIdeas.filter(idea => 
+        new Date(idea.date).toDateString() === today
+      ).length;
+      document.getElementById('newIdeasToday').textContent = newIdeasToday;
+
+      // Total volunteers and new today
+      document.getElementById('totalVolunteers').textContent = volunteers.length;
+      const newVolunteersToday = volunteers.filter(vol => 
+        vol.registrationDate === new Date().toLocaleDateString()
+      ).length;
+      document.getElementById('newVolunteersToday').textContent = newVolunteersToday;
+
+      // Total calls and critical ones
+      const activeCalls = openCalls.filter(call => call.status === 'active');
+      document.getElementById('totalCalls').textContent = activeCalls.length;
+      const criticalCalls = activeCalls.filter(call => call.urgency === 'critical').length;
+      document.getElementById('criticalCalls').textContent = criticalCalls;
+
+      // Total responses and response rate
+      document.getElementById('totalResponses').textContent = userResponses.length;
+      const responseRate = activeCalls.length > 0 ? 
+        Math.round((userResponses.length / activeCalls.length) * 100) : 0;
+      document.getElementById('responseRate').textContent = responseRate;
+    }
+
+    // Create charts
+    function createCharts() {
+      createCategoryChart();
+      createActivityChart();
+    }
+
+    // Category distribution chart
+    function createCategoryChart() {
+      const ctx = document.getElementById('categoryChart').getContext('2d');
+      
+      // Count ideas by category
+      const categoryCount = {};
+      const categoryColors = {
+        'education': '#3B82F6',
+        'design': '#F59E0B', 
+        'tech': '#10B981',
+        'wellness': '#EF4444',
+        'climate': '#06B6D4',
+        'business': '#8B5CF6',
+        'community': '#F97316'
+      };
+
+      impactIdeas.forEach(idea => {
+        // Try to categorize based on tags and content
+        const category = categorizeidea(idea);
+        categoryCount[category] = (categoryCount[category] || 0) + 1;
+      });
+
+      const labels = Object.keys(categoryCount);
+      const data = Object.values(categoryCount);
+      const colors = labels.map(label => categoryColors[label] || '#6B7280');
+
+      categoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels.map(label => label.charAt(0).toUpperCase() + label.slice(1)),
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    // Activity timeline chart
+    function createActivityChart() {
+      const ctx = document.getElementById('activityChart').getContext('2d');
+      
+      // Get last 7 days of activity
+      const last7Days = [];
+      const activityData = [];
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateString = date.toDateString();
+        last7Days.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        
+        // Count activities for this day
+        const ideasCount = impactIdeas.filter(idea => 
+          new Date(idea.date).toDateString() === dateString
+        ).length;
+        
+        const volunteersCount = volunteers.filter(vol => 
+          vol.registrationDate === date.toLocaleDateString()
+        ).length;
+        
+        const callsCount = openCalls.filter(call => 
+          new Date(call.createdDate).toDateString() === dateString
+        ).length;
+        
+        activityData.push(ideasCount + volunteersCount + callsCount);
+      }
+
+      activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: last7Days,
+          datasets: [{
+            label: 'Daily Activities',
+            data: activityData,
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Update recent activities
+    function updateRecentActivities() {
+      const recentActivities = document.getElementById('recentActivities');
+      
+      // Combine all activities with timestamps
+      const activities = [];
+      
+      impactIdeas.forEach(idea => {
+        activities.push({
+          type: 'idea',
+          title: idea.title,
+          date: new Date(idea.date),
+          icon: '💡',
+          color: 'text-green-600'
+        });
+      });
+      
+      volunteers.forEach(vol => {
+        activities.push({
+          type: 'volunteer',
+          title: `${vol.name} registered as volunteer`,
+          date: new Date(vol.registrationDate),
+          icon: '🙋‍♀️',
+          color: 'text-yellow-600'
+        });
+      });
+      
+      openCalls.forEach(call => {
+        activities.push({
+          type: 'call',
+          title: call.title,
+          date: new Date(call.createdDate),
+          icon: '📣',
+          color: 'text-red-600'
+        });
+      });
+
+      // Sort by date (newest first) and take top 10
+      activities.sort((a, b) => b.date - a.date);
+      const recentActivitiesList = activities.slice(0, 10);
+
+      recentActivities.innerHTML = '';
+      
+      if (recentActivitiesList.length === 0) {
+        recentActivities.innerHTML = '<p class="text-gray-500 text-center">No recent activities</p>';
+        return;
+      }
+
+      recentActivitiesList.forEach(activity => {
+        const activityDiv = document.createElement('div');
+        activityDiv.className = 'flex items-start gap-3 p-2 hover:bg-gray-50 rounded';
+        activityDiv.innerHTML = `
+          <span class="text-lg">${activity.icon}</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-gray-800 truncate">${activity.title}</p>
+            <p class="text-xs text-gray-500">${getRelativeTime(activity.date)}</p>
+          </div>
+        `;
+        recentActivities.appendChild(activityDiv);
+      });
+    }
+
+    // Update top contributors
+    function updateTopContributors() {
+      const topContributors = document.getElementById('topContributors');
+      
+      // Count contributions per person
+      const contributors = {};
+      
+      // Count ideas submitted
+      impactIdeas.forEach(idea => {
+        if (idea.submitter) {
+          contributors[idea.submitter] = (contributors[idea.submitter] || 0) + 1;
+        }
+      });
+      
+      // Count volunteer registrations
+      volunteers.forEach(vol => {
+        contributors[vol.name] = (contributors[vol.name] || 0) + 1;
+      });
+      
+      // Count call responses
+      userResponses.forEach(response => {
+        if (response.name) {
+          contributors[response.name] = (contributors[response.name] || 0) + 1;
+        }
+      });
+
+      // Sort contributors by contribution count
+      const sortedContributors = Object.entries(contributors)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5);
+
+      topContributors.innerHTML = '';
+      
+      if (sortedContributors.length === 0) {
+        topContributors.innerHTML = '<p class="text-gray-500 text-center">No contributors yet</p>';
+        return;
+      }
+
+      sortedContributors.forEach(([name, count], index) => {
+        const contributorDiv = document.createElement('div');
+        contributorDiv.className = 'flex items-center justify-between p-2 hover:bg-gray-50 rounded';
+        
+        const medals = ['🥇', '🥈', '🥉', '🏅', '⭐'];
+        const medal = medals[index] || '⭐';
+        
+        contributorDiv.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-lg">${medal}</span>
+            <span class="font-medium text-gray-800">${name}</span>
+          </div>
+          <span class="text-sm font-semibold text-blue-600">${count}</span>
+        `;
+        topContributors.appendChild(contributorDiv);
+      });
+    }
+
+    // Update impact metrics
+    function updateImpactMetrics() {
+      // Ideas with support percentage
+      const ideasWithSupport = impactIdeas.filter(idea => 
+        idea.supportCount && idea.supportCount > 0
+      ).length;
+      const ideasSupportedPercent = impactIdeas.length > 0 ? 
+        Math.round((ideasWithSupport / impactIdeas.length) * 100) : 0;
+      
+      document.getElementById('ideasSupportedBar').style.width = ideasSupportedPercent + '%';
+      document.getElementById('ideasSupportedPercent').textContent = ideasSupportedPercent + '%';
+
+      // Call response rate
+      const activeCalls = openCalls.filter(call => call.status === 'active');
+      const callResponsePercent = activeCalls.length > 0 ? 
+        Math.round((userResponses.length / activeCalls.length) * 100) : 0;
+      
+      document.getElementById('callResponseBar').style.width = Math.min(callResponsePercent, 100) + '%';
+      document.getElementById('callResponsePercent').textContent = callResponsePercent + '%';
+
+      // Skill match success (volunteers to ideas ratio)
+      const skillMatchPercent = impactIdeas.length > 0 ? 
+        Math.min(Math.round((volunteers.length / impactIdeas.length) * 100), 100) : 0;
+      
+      document.getElementById('skillMatchBar').style.width = skillMatchPercent + '%';
+      document.getElementById('skillMatchPercent').textContent = skillMatchPercent + '%';
+
+      // Calculate overall impact score
+      const impactScore = Math.round(
+        (ideasSupportedPercent + callResponsePercent + skillMatchPercent) / 3
+      );
+      document.getElementById('impactScore').textContent = impactScore;
+    }
+
+    // Update location statistics
+    function updateLocationStats() {
+      const locationStats = document.getElementById('locationStats');
+      const locations = {};
+      
+      // Count locations from ideas, volunteers, and calls
+      [...impactIdeas, ...volunteers, ...openCalls].forEach(item => {
+        if (item.location) {
+          const location = item.location.toLowerCase();
+          locations[location] = (locations[location] || 0) + 1;
+        }
+      });
+
+      const sortedLocations = Object.entries(locations)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5);
+
+      locationStats.innerHTML = '';
+      
+      if (sortedLocations.length === 0) {
+        locationStats.innerHTML = '<p class="text-gray-500 text-center">No location data</p>';
+        return;
+      }
+
+      const maxCount = sortedLocations[0][1];
+      
+      sortedLocations.forEach(([location, count]) => {
+        const percentage = Math.round((count / maxCount) * 100);
+        const locationDiv = document.createElement('div');
+        locationDiv.className = 'flex items-center justify-between';
+        locationDiv.innerHTML = `
+          <span class="text-sm font-medium text-gray-700 capitalize">${location}</span>
+          <div class="flex items-center gap-2">
+            <div class="w-20 bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-500 h-2 rounded-full" style="width: ${percentage}%"></div>
+            </div>
+            <span class="text-sm font-semibold text-gray-600">${count}</span>
+          </div>
+        `;
+        locationStats.appendChild(locationDiv);
+      });
+    }
+
+    // Update skills statistics
+    function updateSkillsStats() {
+      const skillsStats = document.getElementById('skillsStats');
+      const skills = {};
+      
+      // Count skills from volunteers
+      volunteers.forEach(vol => {
+        if (vol.category) {
+          skills[vol.category] = (skills[vol.category] || 0) + 1;
+        }
+      });
+
+      const sortedSkills = Object.entries(skills)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5);
+
+      skillsStats.innerHTML = '';
+      
+      if (sortedSkills.length === 0) {
+        skillsStats.innerHTML = '<p class="text-gray-500 text-center">No skills data</p>';
+        return;
+      }
+
+      const maxCount = sortedSkills[0][1];
+      
+      sortedSkills.forEach(([skill, count]) => {
+        const percentage = Math.round((count / maxCount) * 100);
+        const skillDiv = document.createElement('div');
+        skillDiv.className = 'flex items-center justify-between';
+        
+        const skillIcons = {
+          'education': '📘',
+          'design': '🎨',
+          'tech': '💻',
+          'wellness': '💖',
+          'climate': '🌿',
+          'business': '💼',
+          'community': '🤝'
+        };
+        
+        skillDiv.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span>${skillIcons[skill] || '🔧'}</span>
+            <span class="text-sm font-medium text-gray-700 capitalize">${skill}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-16 bg-gray-200 rounded-full h-2">
+              <div class="bg-yellow-500 h-2 rounded-full" style="width: ${percentage}%"></div>
+            </div>
+            <span class="text-sm font-semibold text-gray-600">${count}</span>
+          </div>
+        `;
+        skillsStats.appendChild(skillDiv);
+      });
+    }
+
+    // Helper functions
+    function categorizeidea(idea) {
+      const text = `${idea.title} ${idea.description} ${idea.tags}`.toLowerCase();
+      
+      const categories = {
+        'education': ['education', 'school', 'teach', 'learn', 'student'],
+        'design': ['design', 'creative', 'art', 'visual'],
+        'tech': ['tech', 'digital', 'app', 'website', 'code'],
+        'wellness': ['health', 'mental', 'wellness', 'support'],
+        'climate': ['climate', 'environment', 'green', 'sustainability'],
+        'business': ['business', 'startup', 'entrepreneur', 'marketing'],
+        'community': ['community', 'social', 'volunteer', 'local']
+      };
+      
+      for (const [category, keywords] of Object.entries(categories)) {
+        if (keywords.some(keyword => text.includes(keyword))) {
+          return category;
+        }
+      }
+      
+      return 'community'; // default category
+    }
+
+    function getRelativeTime(date) {
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+      
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString();
+    }
+
+    function updateLastUpdated() {
+      document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+    }
+
+    // Event listeners
+    document.getElementById('refreshData').addEventListener('click', function() {
+      // Reload data from localStorage
+      impactIdeas = JSON.parse(localStorage.getItem('impactIdeas')) || [];
+      volunteers = JSON.parse(localStorage.getItem('volunteers')) || [];
+      openCalls = JSON.parse(localStorage.getItem('openCalls')) || [];
+      userResponses = JSON.parse(localStorage.getItem('userResponses')) || [];
+      
+      // Update all components
+      updateMetrics();
+      
+      // Destroy and recreate charts
+      if (categoryChart) categoryChart.destroy();
+      if (activityChart) activityChart.destroy();
+      createCharts();
+      
+      updateRecentActivities();
+      updateTopContributors();
+      updateImpactMetrics();
+      updateLocationStats();
+      updateSkillsStats();
+      updateLastUpdated();
+      
+      // Show success message
+      alert('Dashboard data refreshed successfully!');
+    });
+
+    document.getElementById('exportData').addEventListener('click', function() {
+      const reportData = {
+        generated: new Date().toISOString(),
+        summary: {
+          totalIdeas: impactIdeas.length,
+          totalVolunteers: volunteers.length,
+          totalCalls: openCalls.length,
+          totalResponses: userResponses.length
+        },
+        ideas: impactIdeas,
+        volunteers: volunteers,
+        calls: openCalls,
+        responses: userResponses
+      };
+      
+      const dataStr = JSON.stringify(reportData, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `impact-dashboard-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

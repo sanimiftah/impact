@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#065f46;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Option 4: Modern Circle with Abstract Growth -->
+  <circle cx="20" cy="20" r="18" fill="url(#gradient4)"/>
+  
+  <!-- Abstract growth pattern -->
+  <g transform="translate(20, 20)">
+    <!-- Central dot -->
+    <circle cx="0" cy="0" r="2" fill="white" opacity="0.9"/>
+    
+    <!-- Growth arcs -->
+    <path d="M 0,-6 A 6,6 0 0,1 6,0" stroke="white" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M 6,0 A 6,6 0 0,1 0,6" stroke="white" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M 0,6 A 6,6 0 0,1 -6,0" stroke="white" stroke-width="2" fill="none" opacity="0.3"/>
+    <path d="M -6,0 A 6,6 0 0,1 0,-6" stroke="white" stroke-width="2" fill="none" opacity="0.3"/>
+    
+    <!-- Small growth indicators -->
+    <circle cx="0" cy="-8" r="1" fill="white" opacity="0.6"/>
+    <circle cx="8" cy="0" r="1" fill="white" opacity="0.6"/>
+    <circle cx="0" cy="8" r="1" fill="white" opacity="0.6"/>
+    <circle cx="-8" cy="0" r="1" fill="white" opacity="0.6"/>
+  </g>
+</svg>

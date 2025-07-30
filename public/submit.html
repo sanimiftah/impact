@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plant a Seed</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-green-50 text-gray-800 font-sans">
+  <div class="max-w-2xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4 text-green-700">🌱 Plant a Seed</h1>
+    
+    <form id="seedForm" class="space-y-4">
+      <!-- Title -->
+      <div>
+        <label class="block text-sm font-medium">Seed Title</label>
+        <input type="text" name="title" required class="w-full p-2 border rounded" placeholder="e.g. Community Garden Project" />
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium">Description</label>
+        <textarea name="description" required class="w-full p-2 border rounded" rows="4" placeholder="Describe your idea..."></textarea>
+      </div>
+
+      <!-- Tags -->
+      <div>
+        <label class="block text-sm font-medium">Tags</label>
+        <input type="text" name="tags" class="w-full p-2 border rounded" placeholder="e.g. sustainability, youth, art" />
+      </div>
+
+      <!-- Emotional Tone -->
+      <div>
+        <label class="block text-sm font-medium">Emotional Tone</label>
+        <select name="emotion" class="w-full p-2 border rounded">
+          <option value="">Select one</option>
+          <option value="hopeful">Hopeful</option>
+          <option value="urgent">Urgent</option>
+          <option value="joyful">Joyful</option>
+          <option value="reflective">Reflective</option>
+        </select>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <label class="block text-sm font-medium">Location</label>
+        <input type="text" name="location" class="w-full p-2 border rounded" placeholder="e.g. Kuala Lumpur, Malaysia" />
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        🌿 Submit Seed
+      </button>
+    </form>
+
+    <!-- Confirmation Message -->
+    <div id="confirmation" class="mt-4 text-green-700 font-semibold hidden">
+    <div id="confirmation" class="mt-4 text-green-700 font-semibold opacity-0 transform scale-95 transition-all duration-500">
+  ✅ Your seed has been planted!
+</div>
+
+    </div>
+  </div>
+
+  <script src="submit.js"></script>
+</body>
+</html>

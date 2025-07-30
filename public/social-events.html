@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Events - IMPACT Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .event-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e5e7eb;
+    }
+
+    .event-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-color: #10b981;
+    }
+
+    .calendar-day {
+      transition: all 0.2s ease;
+    }
+
+    .calendar-day:hover {
+      background-color: #10b981;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .calendar-day.has-event {
+      background-color: #fef3c7;
+      border: 2px solid #f59e0b;
+    }
+
+    .calendar-day.has-event:hover {
+      background-color: #f59e0b;
+      color: white;
+    }
+
+    .floating-calendar {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 40;
+    }
+
+    .live-indicator {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .event-type-badge {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .event-type-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .event-type-badge:hover::before {
+      left: 100%;
+    }
+
+    .attendee-count {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-800">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-40 backdrop-blur-sm bg-white/90">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="flex items-center space-x-2 text-lg font-bold gradient-text">
+          🌱 IMPACT
+        </a>
+        <span class="text-gray-400">|</span>
+        <h1 class="text-lg font-semibold text-gray-700">Community Events</h1>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <button onclick="showCreateEventModal()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+          ➕ Create Event
+        </button>
+        <a href="social-features.html" class="text-gray-600 hover:text-green-600 transition-colors">
+          ← Back to Social Hub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Event Dashboard -->
+  <div class="max-w-7xl mx-auto p-6">
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-3xl font-bold text-green-600" id="totalEvents">0</div>
+        <div class="text-sm text-gray-500">Total Events</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-3xl font-bold text-blue-600" id="myEvents">0</div>
+        <div class="text-sm text-gray-500">My Events</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-3xl font-bold text-purple-600" id="attending">0</div>
+        <div class="text-sm text-gray-500">Attending</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+        <div class="text-3xl font-bold text-orange-600" id="hosted">0</div>
+        <div class="text-sm text-gray-500">Hosted</div>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <div class="flex-1 relative">
+          <input type="text" id="eventSearch" placeholder="Search events..." 
+                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+          <span class="absolute right-3 top-3 text-gray-400">🔍</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <select id="eventTypeFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="">All Types</option>
+            <option value="workshop">Workshop</option>
+            <option value="cleanup">Cleanup</option>
+            <option value="meetup">Meetup</option>
+            <option value="training">Training</option>
+            <option value="fundraiser">Fundraiser</option>
+          </select>
+          
+          <select id="dateFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+          
+          <select id="locationFilter" class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="">All Locations</option>
+            <option value="online">Online</option>
+            <option value="kuala-lumpur">Kuala Lumpur</option>
+            <option value="jakarta">Jakarta</option>
+            <option value="manila">Manila</option>
+            <option value="mumbai">Mumbai</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Tabs -->
+    <div class="mb-6">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8">
+          <button onclick="switchTab('all')" class="event-tab active py-2 px-1 border-b-2 border-green-500 font-medium text-sm text-green-600">
+            All Events
+          </button>
+          <button onclick="switchTab('upcoming')" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            Upcoming
+          </button>
+          <button onclick="switchTab('attending')" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            Attending
+          </button>
+          <button onclick="switchTab('my-events')" class="event-tab py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+            My Events
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Events Grid -->
+    <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Events will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <!-- Mini Calendar Widget -->
+  <div class="floating-calendar">
+    <div class="bg-white rounded-xl shadow-lg p-4 w-64">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-gray-800">Event Calendar</h3>
+        <button onclick="toggleCalendar()" class="text-gray-400 hover:text-gray-600">📅</button>
+      </div>
+      
+      <div id="miniCalendar" class="grid grid-cols-7 gap-1 text-xs">
+        <!-- Calendar will be generated here -->
+      </div>
+      
+      <div class="mt-4 text-xs">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-3 h-3 bg-yellow-200 border border-yellow-400 rounded"></div>
+          <span class="text-gray-600">Has Events</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 bg-green-500 rounded"></div>
+          <span class="text-gray-600">Today</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Event Modal -->
+  <div id="createEventModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Create New Event</h3>
+        <button onclick="hideCreateEventModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+
+      <form onsubmit="createEvent(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Event Title</label>
+            <input type="text" id="eventTitle" required
+                   placeholder="e.g., Beach Cleanup Drive"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+              <select id="eventType" required class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Select type</option>
+                <option value="workshop">Workshop</option>
+                <option value="cleanup">Cleanup</option>
+                <option value="meetup">Meetup</option>
+                <option value="training">Training</option>
+                <option value="fundraiser">Fundraiser</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+              <input type="text" id="eventLocation" required
+                     placeholder="Location or 'Online'"
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+              <input type="date" id="eventDate" required
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+              <input type="time" id="eventTime" required
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <textarea id="eventDescription" required
+                      placeholder="Describe your event and what participants can expect..."
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Max Attendees</label>
+              <input type="number" id="eventCapacity" min="1" max="1000"
+                     placeholder="e.g., 50"
+                     class="w-full border border-gray-300 rounded-lg px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <select id="eventCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="Environment">🌱 Environment</option>
+                <option value="Education">📚 Education</option>
+                <option value="Health">🏥 Health</option>
+                <option value="Technology">💻 Technology</option>
+                <option value="Community">🏘️ Community</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <button type="button" onclick="hideCreateEventModal()" 
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors">
+            Create Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Details Modal -->
+  <div id="eventDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="eventDetailsContent">
+        <!-- Event details will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  <script src="social-engine.js"></script>
+  
+  <script>
+    // Sample events data
+    const sampleEvents = [
+      {
+        id: 'beach-cleanup-2025',
+        title: 'Beach Cleanup Drive',
+        type: 'cleanup',
+        category: 'Environment',
+        description: 'Join us for a massive beach cleanup initiative! We\'ll be collecting plastic waste, planting mangroves, and making our coastlines beautiful again.',
+        organizer: 'Rahul Sharma',
+        organizerAvatar: 'R',
+        organizerColor: 'green',
+        date: '2025-08-05',
+        time: '09:00',
+        location: 'Marina Beach, Mumbai',
+        capacity: 100,
+        attendees: 67,
+        isAttending: true,
+        isOrganizer: false,
+        tags: ['#ClimateAction', '#BeachCleanup', '#Environment'],
+        status: 'confirmed',
+        attendeesList: [
+          { name: 'Maya Chen', avatar: 'M', color: 'blue' },
+          { name: 'Luna Santos', avatar: 'L', color: 'purple' },
+          { name: 'Jake Park', avatar: 'J', color: 'green' }
+        ]
+      },
+      {
+        id: 'coding-workshop-youth',
+        title: 'Coding Workshop for Youth',
+        type: 'workshop',
+        category: 'Education',
+        description: 'Teaching basic programming skills to underprivileged youth. Laptops will be provided. No prior experience needed!',
+        organizer: 'Maya Chen',
+        organizerAvatar: 'M',
+        organizerColor: 'blue',
+        date: '2025-08-08',
+        time: '14:00',
+        location: 'Community Center, Kuala Lumpur',
+        capacity: 30,
+        attendees: 18,
+        isAttending: false,
+        isOrganizer: false,
+        tags: ['#Education', '#Youth', '#Programming'],
+        status: 'confirmed',
+        attendeesList: [
+          { name: 'Tech Student 1', avatar: 'T', color: 'blue' },
+          { name: 'Volunteer 2', avatar: 'V', color: 'green' }
+        ]
+      },
+      {
+        id: 'mental-health-workshop',
+        title: 'Mental Health Awareness Workshop',
+        type: 'workshop',
+        category: 'Health',
+        description: 'Interactive workshop on recognizing mental health challenges and creating supportive workplace environments.',
+        organizer: 'Luna Santos',
+        organizerAvatar: 'L',
+        organizerColor: 'purple',
+        date: '2025-08-12',
+        time: '10:00',
+        location: 'Online',
+        capacity: 200,
+        attendees: 89,
+        isAttending: true,
+        isOrganizer: false,
+        tags: ['#MentalHealth', '#Wellness', '#Workplace'],
+        status: 'confirmed',
+        attendeesList: [
+          { name: 'Support Person 1', avatar: 'S', color: 'purple' },
+          { name: 'Advocate 2', avatar: 'A', color: 'blue' }
+        ]
+      },
+      {
+        id: 'community-garden-setup',
+        title: 'Community Garden Setup',
+        type: 'meetup',
+        category: 'Environment',
+        description: 'Help us establish a new community garden! We\'ll be planting vegetables, setting up irrigation, and creating growing spaces.',
+        organizer: 'Garden Team',
+        organizerAvatar: 'G',
+        organizerColor: 'green',
+        date: '2025-08-15',
+        time: '08:00',
+        location: 'Vacant Lot, Jakarta',
+        capacity: 40,
+        attendees: 23,
+        isAttending: false,
+        isOrganizer: false,
+        tags: ['#Gardening', '#Community', '#Food'],
+        status: 'confirmed',
+        attendeesList: []
+      },
+      {
+        id: 'ai-social-good-summit',
+        title: 'AI for Social Good Summit',
+        type: 'training',
+        category: 'Technology',
+        description: 'Explore how artificial intelligence can be leveraged to solve social problems and create positive impact.',
+        organizer: 'Sani Miftah',
+        organizerAvatar: 'S',
+        organizerColor: 'green',
+        date: '2025-08-20',
+        time: '09:00',
+        location: 'Tech Hub, Manila',
+        capacity: 150,
+        attendees: 134,
+        isAttending: true,
+        isOrganizer: true,
+        tags: ['#AI', '#Technology', '#SocialGood'],
+        status: 'confirmed',
+        attendeesList: [
+          { name: 'AI Developer 1', avatar: 'A', color: 'blue' },
+          { name: 'Data Scientist', avatar: 'D', color: 'purple' }
+        ]
+      }
+    ];
+
+    let allEvents = [];
+    let filteredEvents = [];
+    let currentTab = 'all';
+
+    // Initialize events page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadEvents();
+      updateStats();
+      generateMiniCalendar();
+      
+      // Set minimum date to today
+      document.getElementById('eventDate').min = new Date().toISOString().split('T')[0];
+      
+      // Setup search and filters
+      document.getElementById('eventSearch').addEventListener('input', filterEvents);
+      document.getElementById('eventTypeFilter').addEventListener('change', filterEvents);
+      document.getElementById('dateFilter').addEventListener('change', filterEvents);
+      document.getElementById('locationFilter').addEventListener('change', filterEvents);
+    });
+
+    // Load events data
+    function loadEvents() {
+      try {
+        // Load from localStorage or use sample data
+        const savedEvents = localStorage.getItem('communityEvents');
+        allEvents = savedEvents ? JSON.parse(savedEvents) : sampleEvents;
+        
+        // Add sample events if we don't have enough
+        if (allEvents.length === 0) {
+          allEvents = sampleEvents;
+          localStorage.setItem('communityEvents', JSON.stringify(allEvents));
+        }
+        
+        filteredEvents = [...allEvents];
+        displayEvents();
+        
+      } catch (error) {
+        console.error('Error loading events:', error);
+        allEvents = sampleEvents;
+        filteredEvents = [...allEvents];
+        displayEvents();
+      }
+    }
+
+    // Display events
+    function displayEvents() {
+      const container = document.getElementById('eventsContainer');
+      container.innerHTML = '';
+
+      if (filteredEvents.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="text-6xl mb-4">📅</div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No events found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your filters or create a new event!</p>
+            <button onclick="showCreateEventModal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+              Create First Event
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      filteredEvents.forEach(event => {
+        const eventCard = createEventCard(event);
+        container.appendChild(eventCard);
+      });
+    }
+
+    // Create event card element
+    function createEventCard(event) {
+      const card = document.createElement('div');
+      card.className = 'event-card bg-white rounded-xl shadow-sm p-6 cursor-pointer';
+      
+      const eventDate = new Date(event.date + 'T' + event.time);
+      const isUpcoming = eventDate > new Date();
+      const isToday = eventDate.toDateString() === new Date().toDateString();
+      
+      const typeColors = {
+        workshop: { bg: 'bg-blue-100', text: 'text-blue-700', icon: '📚' },
+        cleanup: { bg: 'bg-green-100', text: 'text-green-700', icon: '🌊' },
+        meetup: { bg: 'bg-purple-100', text: 'text-purple-700', icon: '🤝' },
+        training: { bg: 'bg-orange-100', text: 'text-orange-700', icon: '🎓' },
+        fundraiser: { bg: 'bg-pink-100', text: 'text-pink-700', icon: '💝' }
+      };
+      
+      const colors = typeColors[event.type] || typeColors.meetup;
+      
+      card.innerHTML = `
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <h3 class="font-semibold text-lg text-gray-800">${event.title}</h3>
+              ${isToday ? '<span class="live-indicator bg-red-500 text-white text-xs px-2 py-1 rounded-full">LIVE</span>' : ''}
+              ${event.isOrganizer ? '<span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full">HOST</span>' : ''}
+            </div>
+            <span class="event-type-badge inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${colors.bg} ${colors.text}">
+              ${colors.icon} ${event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+            </span>
+          </div>
+          <div class="text-right">
+            <div class="attendee-count">${event.attendees}/${event.capacity || '∞'}</div>
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="space-y-2 mb-4">
+          <div class="flex items-center text-sm text-gray-600">
+            <span class="w-4">📅</span>
+            <span class="ml-2">${formatEventDate(eventDate)}</span>
+          </div>
+          <div class="flex items-center text-sm text-gray-600">
+            <span class="w-4">📍</span>
+            <span class="ml-2">${event.location}</span>
+          </div>
+          <div class="flex items-center text-sm text-gray-600">
+            <span class="w-4">👤</span>
+            <span class="ml-2">by ${event.organizer}</span>
+          </div>
+        </div>
+
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">${event.description}</p>
+
+        <!-- Attendees Preview -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex -space-x-2">
+            ${(event.attendeesList || []).slice(0, 4).map(attendee => `
+              <div class="w-6 h-6 bg-${attendee.color}-100 text-${attendee.color}-600 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white" title="${attendee.name}">
+                ${attendee.avatar}
+              </div>
+            `).join('')}
+            ${event.attendees > 4 ? `<div class="w-6 h-6 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white">+${event.attendees - 4}</div>` : ''}
+          </div>
+          
+          <div class="text-xs text-gray-500">
+            ${event.attendees} attending
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1 mb-4">
+          ${(event.tags || []).map(tag => `
+            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">${tag}</span>
+          `).join('')}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2">
+          ${event.isAttending ? 
+            `<button onclick="leaveEvent('${event.id}')" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              Can't Attend
+            </button>` :
+            `<button onclick="joinEvent('${event.id}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              ${isUpcoming ? 'Join Event' : 'View Event'}
+            </button>`
+          }
+          <button onclick="showEventDetails('${event.id}')" class="flex-1 border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Details
+          </button>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Format event date
+    function formatEventDate(date) {
+      const options = {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return date.toLocaleDateString('en-US', options);
+    }
+
+    // Switch tabs
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      // Update tab styling
+      document.querySelectorAll('.event-tab').forEach(btn => {
+        btn.classList.remove('active', 'border-green-500', 'text-green-600');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+      event.target.classList.add('active', 'border-green-500', 'text-green-600');
+      event.target.classList.remove('border-transparent', 'text-gray-500');
+      
+      filterEvents();
+    }
+
+    // Filter events
+    function filterEvents() {
+      let filtered = [...allEvents];
+      
+      // Tab filter
+      if (currentTab === 'upcoming') {
+        filtered = filtered.filter(event => new Date(event.date + 'T' + event.time) > new Date());
+      } else if (currentTab === 'attending') {
+        filtered = filtered.filter(event => event.isAttending);
+      } else if (currentTab === 'my-events') {
+        filtered = filtered.filter(event => event.isOrganizer);
+      }
+      
+      // Search filter
+      const searchQuery = document.getElementById('eventSearch').value.toLowerCase();
+      if (searchQuery) {
+        filtered = filtered.filter(event => 
+          event.title.toLowerCase().includes(searchQuery) ||
+          event.description.toLowerCase().includes(searchQuery) ||
+          event.organizer.toLowerCase().includes(searchQuery) ||
+          event.location.toLowerCase().includes(searchQuery)
+        );
+      }
+      
+      // Type filter
+      const typeFilter = document.getElementById('eventTypeFilter').value;
+      if (typeFilter) {
+        filtered = filtered.filter(event => event.type === typeFilter);
+      }
+      
+      // Date filter
+      const dateFilter = document.getElementById('dateFilter').value;
+      if (dateFilter) {
+        const now = new Date();
+        filtered = filtered.filter(event => {
+          const eventDate = new Date(event.date);
+          switch (dateFilter) {
+            case 'today':
+              return eventDate.toDateString() === now.toDateString();
+            case 'week':
+              const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+              return eventDate >= now && eventDate <= weekLater;
+            case 'month':
+              const monthLater = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+              return eventDate >= now && eventDate <= monthLater;
+            default:
+              return true;
+          }
+        });
+      }
+      
+      // Location filter
+      const locationFilter = document.getElementById('locationFilter').value;
+      if (locationFilter) {
+        filtered = filtered.filter(event => 
+          event.location.toLowerCase().includes(locationFilter.toLowerCase())
+        );
+      }
+      
+      filteredEvents = filtered;
+      displayEvents();
+    }
+
+    // Show create event modal
+    function showCreateEventModal() {
+      document.getElementById('createEventModal').style.display = 'flex';
+    }
+
+    // Hide create event modal
+    function hideCreateEventModal() {
+      document.getElementById('createEventModal').style.display = 'none';
+      // Clear form
+      document.getElementById('eventTitle').value = '';
+      document.getElementById('eventType').value = '';
+      document.getElementById('eventLocation').value = '';
+      document.getElementById('eventDate').value = '';
+      document.getElementById('eventTime').value = '';
+      document.getElementById('eventDescription').value = '';
+      document.getElementById('eventCapacity').value = '';
+    }
+
+    // Create event
+    function createEvent(event) {
+      event.preventDefault();
+      
+      const title = document.getElementById('eventTitle').value;
+      const type = document.getElementById('eventType').value;
+      const location = document.getElementById('eventLocation').value;
+      const date = document.getElementById('eventDate').value;
+      const time = document.getElementById('eventTime').value;
+      const description = document.getElementById('eventDescription').value;
+      const capacity = parseInt(document.getElementById('eventCapacity').value) || null;
+      const category = document.getElementById('eventCategory').value;
+      
+      const newEvent = {
+        id: title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+        title: title,
+        type: type,
+        category: category,
+        description: description,
+        organizer: 'Current User',
+        organizerAvatar: 'S',
+        organizerColor: 'green',
+        date: date,
+        time: time,
+        location: location,
+        capacity: capacity,
+        attendees: 1,
+        isAttending: true,
+        isOrganizer: true,
+        tags: [`#${category}`, `#${type}`],
+        status: 'confirmed',
+        attendeesList: [
+          { name: 'Current User', avatar: 'S', color: 'green' }
+        ]
+      };
+      
+      allEvents.unshift(newEvent);
+      filteredEvents = [...allEvents];
+      
+      // Save to localStorage
+      localStorage.setItem('communityEvents', JSON.stringify(allEvents));
+      
+      hideCreateEventModal();
+      displayEvents();
+      updateStats();
+      generateMiniCalendar();
+      
+      showNotification(`Event "${title}" created successfully! 🎉`, 'success');
+    }
+
+    // Join event
+    function joinEvent(eventId) {
+      const event = allEvents.find(e => e.id === eventId);
+      if (event && (!event.capacity || event.attendees < event.capacity)) {
+        event.isAttending = true;
+        event.attendees += 1;
+        event.attendeesList.push({ name: 'Current User', avatar: 'S', color: 'green' });
+        
+        // Save changes
+        localStorage.setItem('communityEvents', JSON.stringify(allEvents));
+        
+        displayEvents();
+        updateStats();
+        showNotification(`Joined "${event.title}"! See you there! 🎉`, 'success');
+      } else if (event && event.capacity && event.attendees >= event.capacity) {
+        showNotification('Sorry, this event is full!', 'warning');
+      }
+    }
+
+    // Leave event
+    function leaveEvent(eventId) {
+      const event = allEvents.find(e => e.id === eventId);
+      if (event && event.isAttending) {
+        event.isAttending = false;
+        event.attendees = Math.max(0, event.attendees - 1);
+        event.attendeesList = event.attendeesList.filter(a => a.name !== 'Current User');
+        
+        // Save changes
+        localStorage.setItem('communityEvents', JSON.stringify(allEvents));
+        
+        displayEvents();
+        updateStats();
+        showNotification(`You're no longer attending "${event.title}"`, 'info');
+      }
+    }
+
+    // Show event details
+    function showEventDetails(eventId) {
+      const event = allEvents.find(e => e.id === eventId);
+      if (!event) return;
+      
+      const modal = document.getElementById('eventDetailsModal');
+      const content = document.getElementById('eventDetailsContent');
+      
+      const eventDate = new Date(event.date + 'T' + event.time);
+      const isUpcoming = eventDate > new Date();
+      
+      content.innerHTML = `
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">${event.title}</h2>
+            <p class="text-gray-600">Organized by ${event.organizer}</p>
+          </div>
+          <button onclick="hideEventDetails()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Main Content -->
+          <div class="md:col-span-2 space-y-6">
+            <!-- Event Info -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-3">Event Details</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex items-center">
+                  <span class="w-6">📅</span>
+                  <span>${formatEventDate(eventDate)}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-6">📍</span>
+                  <span>${event.location}</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-6">👥</span>
+                  <span>${event.attendees}${event.capacity ? '/' + event.capacity : ''} attendees</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-6">🏷️</span>
+                  <span>${event.type.charAt(0).toUpperCase() + event.type.slice(1)} • ${event.category}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-3">About This Event</h3>
+              <p class="text-gray-700">${event.description}</p>
+            </div>
+
+            <!-- Tags -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-3">Tags</h3>
+              <div class="flex flex-wrap gap-2">
+                ${(event.tags || []).map(tag => `
+                  <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">${tag}</span>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-6">
+            <!-- Attendees -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-4">Attendees (${event.attendees})</h3>
+              <div class="space-y-3">
+                ${(event.attendeesList || []).slice(0, 10).map(attendee => `
+                  <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-${attendee.color}-100 rounded-full flex items-center justify-center text-${attendee.color}-600 font-bold">
+                      ${attendee.avatar}
+                    </div>
+                    <div class="flex-1">
+                      <div class="font-medium text-sm">${attendee.name}</div>
+                    </div>
+                  </div>
+                `).join('')}
+                ${event.attendees > 10 ? `<div class="text-center text-sm text-gray-500">+${event.attendees - 10} more</div>` : ''}
+              </div>
+            </div>
+
+            <!-- Organizer -->
+            <div class="bg-white border rounded-lg p-4">
+              <h3 class="font-semibold text-gray-800 mb-3">Organizer</h3>
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-${event.organizerColor}-100 rounded-full flex items-center justify-center text-${event.organizerColor}-600 font-bold">
+                  ${event.organizerAvatar}
+                </div>
+                <div>
+                  <div class="font-medium">${event.organizer}</div>
+                  <div class="text-sm text-gray-500">Event Host</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="space-y-3">
+              ${event.isAttending ? 
+                `<button onclick="leaveEvent('${event.id}'); hideEventDetails();" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                  Can't Attend
+                </button>` :
+                `<button onclick="joinEvent('${event.id}'); hideEventDetails();" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                  ${isUpcoming ? 'Join Event' : 'View Event'}
+                </button>`
+              }
+              <button class="w-full border border-gray-300 hover:border-gray-400 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                Share Event
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      modal.style.display = 'flex';
+    }
+
+    // Hide event details
+    function hideEventDetails() {
+      document.getElementById('eventDetailsModal').style.display = 'none';
+    }
+
+    // Generate mini calendar
+    function generateMiniCalendar() {
+      const calendar = document.getElementById('miniCalendar');
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      
+      // Get first day of month and number of days
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      // Clear calendar
+      calendar.innerHTML = '';
+      
+      // Add day headers
+      const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      dayHeaders.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'text-center font-semibold text-gray-600 p-1';
+        header.textContent = day;
+        calendar.appendChild(header);
+      });
+      
+      // Add empty cells for days before month starts
+      for (let i = 0; i < firstDay; i++) {
+        const emptyDay = document.createElement('div');
+        calendar.appendChild(emptyDay);
+      }
+      
+      // Add days of month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day text-center p-1 cursor-pointer rounded';
+        dayElement.textContent = day;
+        
+        const dayDate = new Date(year, month, day);
+        const dayString = dayDate.toISOString().split('T')[0];
+        
+        // Check if this day has events
+        const hasEvents = allEvents.some(event => event.date === dayString);
+        if (hasEvents) {
+          dayElement.classList.add('has-event');
+        }
+        
+        // Highlight today
+        if (dayDate.toDateString() === now.toDateString()) {
+          dayElement.classList.add('bg-green-500', 'text-white');
+        }
+        
+        calendar.appendChild(dayElement);
+      }
+    }
+
+    // Toggle calendar visibility
+    function toggleCalendar() {
+      const calendar = document.querySelector('.floating-calendar');
+      calendar.style.display = calendar.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Update statistics
+    function updateStats() {
+      const totalEvents = allEvents.length;
+      const myEvents = allEvents.filter(e => e.isOrganizer).length;
+      const attending = allEvents.filter(e => e.isAttending).length;
+      const hosted = allEvents.filter(e => e.isOrganizer).length;
+      
+      document.getElementById('totalEvents').textContent = totalEvents;
+      document.getElementById('myEvents').textContent = myEvents;
+      document.getElementById('attending').textContent = attending;
+      document.getElementById('hosted').textContent = hosted;
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white max-w-sm transform transition-all duration-300 translate-x-full`;
+      
+      switch (type) {
+        case 'success':
+          notification.classList.add('bg-green-500');
+          break;
+        case 'error':
+          notification.classList.add('bg-red-500');
+          break;
+        case 'warning':
+          notification.classList.add('bg-yellow-500');
+          break;
+        default:
+          notification.classList.add('bg-blue-500');
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>

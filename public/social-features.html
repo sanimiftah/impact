@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Hub - IMPACT Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+  
+  <!-- Social Meta Tags -->
+  <meta property="og:title" content="Social Hub - IMPACT Platform">
+  <meta property="og:description" content="Connect, collaborate, and share your impact journey with a global community of changemakers">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .social-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e5e7eb;
+    }
+
+    .social-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border-color: #10b981;
+    }
+
+    .pulse-notification {
+      animation: pulse 2s infinite;
+    }
+
+    .activity-item {
+      transition: all 0.2s ease;
+    }
+
+    .activity-item:hover {
+      background-color: #f9fafb;
+      border-left: 4px solid #10b981;
+      padding-left: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-green {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-blue {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-purple {
+      background-color: #f3e8ff;
+      color: #7c3aed;
+    }
+
+    .badge-orange {
+      background-color: #fed7aa;
+      color: #ea580c;
+    }
+
+    .trending-tag {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .social-interaction {
+      transition: all 0.2s ease;
+    }
+
+    .social-interaction:hover {
+      transform: scale(1.1);
+    }
+
+    .connection-line {
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      height: 2px;
+      width: 100%;
+      opacity: 0.3;
+    }
+
+    @media (max-width: 768px) {
+      .grid-cols-social {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .grid-cols-social {
+        grid-template-columns: 1fr 2fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="font-sans bg-gray-50 text-gray-800">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-40 backdrop-blur-sm bg-white/90">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="flex items-center space-x-2 text-lg font-bold gradient-text">
+          🌱 IMPACT
+        </a>
+        <span class="text-gray-400">|</span>
+        <h1 class="text-lg font-semibold text-gray-700">Social Hub</h1>
+      </div>
+      
+      <!-- Social Navigation -->
+      <div class="hidden md:flex items-center space-x-6 text-sm">
+        <a href="#feed" class="text-green-600 font-medium border-b-2 border-green-600 pb-1">🏠 Feed</a>
+        <a href="#connections" class="text-gray-600 hover:text-green-600 transition-colors">👥 Connections</a>
+        <a href="social-groups.html" class="text-gray-600 hover:text-green-600 transition-colors">🏘️ Groups</a>
+        <a href="#events" class="text-gray-600 hover:text-green-600 transition-colors">📅 Events</a>
+        <a href="#leaderboard" class="text-gray-600 hover:text-green-600 transition-colors">🏆 Leaderboard</a>
+      </div>
+
+      <!-- Notifications -->
+      <div class="flex items-center space-x-4">
+        <button class="relative p-2 text-gray-600 hover:text-green-600 transition-colors">
+          🔔
+          <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center pulse-notification">3</span>
+        </button>
+        <a href="profile.html" class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">
+          S
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden mt-4 flex justify-around text-xs">
+      <a href="#feed" class="flex flex-col items-center text-green-600">
+        <span class="text-lg">🏠</span>
+        <span>Feed</span>
+      </a>
+      <a href="#connections" class="flex flex-col items-center text-gray-600">
+        <span class="text-lg">👥</span>
+        <span>People</span>
+      </a>
+      <a href="social-groups.html" class="flex flex-col items-center text-gray-600">
+        <span class="text-lg">🏘️</span>
+        <span>Groups</span>
+      </a>
+      <a href="#events" class="flex flex-col items-center text-gray-600">
+        <span class="text-lg">📅</span>
+        <span>Events</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto p-4 grid grid-cols-social gap-6">
+    
+    <!-- Left Sidebar - Quick Actions & Stats -->
+    <div class="space-y-6">
+      <!-- Share Impact Card -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+          ✨ Share Your Impact
+        </h3>
+        <button onclick="showPostModal()" class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+          📝 Create Post
+        </button>
+        
+        <div class="mt-4 text-xs text-gray-500 space-y-2">
+          <div class="flex justify-between">
+            <span>Your Posts</span>
+            <span class="font-semibold text-green-600">12</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Total Likes</span>
+            <span class="font-semibold text-blue-600">84</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Comments</span>
+            <span class="font-semibold text-purple-600">23</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending Topics -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4">🔥 Trending</h3>
+        <div class="space-y-3">
+          <div class="trending-tag">
+            <span class="badge badge-green">#ClimateAction</span>
+            <span class="text-xs text-gray-500 ml-2">234 posts</span>
+          </div>
+          <div class="trending-tag" style="animation-delay: 0.5s;">
+            <span class="badge badge-blue">#MentalHealth</span>
+            <span class="text-xs text-gray-500 ml-2">189 posts</span>
+          </div>
+          <div class="trending-tag" style="animation-delay: 1s;">
+            <span class="badge badge-purple">#YouthMentoring</span>
+            <span class="text-xs text-gray-500 ml-2">156 posts</span>
+          </div>
+          <div class="trending-tag" style="animation-delay: 1.5s;">
+            <span class="badge badge-orange">#CommunityGarden</span>
+            <span class="text-xs text-gray-500 ml-2">98 posts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Connections -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4">👥 People You May Know</h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                A
+              </div>
+              <div>
+                <div class="font-medium text-sm">Aria Wilson</div>
+                <div class="text-xs text-gray-500">Education Mentor</div>
+              </div>
+            </div>
+            <button class="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 transition-colors">
+              Connect
+            </button>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">
+                J
+              </div>
+              <div>
+                <div class="font-medium text-sm">Jake Park</div>
+                <div class="text-xs text-gray-500">Climate Activist</div>
+              </div>
+            </div>
+            <button class="text-xs bg-green-500 text-white px-3 py-1 rounded-full hover:bg-green-600 transition-colors">
+              Connect
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Feed -->
+    <div class="space-y-6" id="feed">
+      <!-- Post Creation -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-lg">
+            S
+          </div>
+          <button onclick="showPostModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-left px-4 py-3 rounded-full text-gray-500 transition-colors">
+            Share your latest impact story...
+          </button>
+        </div>
+        
+        <div class="flex items-center justify-between mt-4 pt-4 border-t">
+          <button onclick="showPostModal('photo')" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors">
+            <span>📸</span>
+            <span class="text-sm">Photo</span>
+          </button>
+          <button onclick="showPostModal('event')" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors">
+            <span>📅</span>
+            <span class="text-sm">Event</span>
+          </button>
+          <button onclick="showPostModal('achievement')" class="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors">
+            <span>🏆</span>
+            <span class="text-sm">Achievement</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Social Posts Feed -->
+      <div id="postsContainer">
+        <!-- Posts will be dynamically loaded here -->
+      </div>
+    </div>
+
+    <!-- Right Sidebar - Activity & Groups -->
+    <div class="space-y-6">
+      <!-- Recent Activity -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4">🔔 Recent Activity</h3>
+        <div class="space-y-4">
+          <div class="activity-item p-2 rounded-lg">
+            <div class="flex items-start space-x-3">
+              <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xs">
+                M
+              </div>
+              <div class="flex-1">
+                <p class="text-sm"><strong>Maya Chen</strong> liked your post</p>
+                <p class="text-xs text-gray-500">2 minutes ago</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="activity-item p-2 rounded-lg">
+            <div class="flex items-start space-x-3">
+              <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs">
+                R
+              </div>
+              <div class="flex-1">
+                <p class="text-sm"><strong>Rahul Sharma</strong> commented on your beach cleanup post</p>
+                <p class="text-xs text-gray-500">5 minutes ago</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="activity-item p-2 rounded-lg">
+            <div class="flex items-start space-x-3">
+              <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold text-xs">
+                L
+              </div>
+              <div class="flex-1">
+                <p class="text-sm"><strong>Luna Santos</strong> started following you</p>
+                <p class="text-xs text-gray-500">1 hour ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Groups -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4">🏘️ Your Groups</h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                🌱
+              </div>
+              <div>
+                <div class="font-medium text-sm">Urban Gardeners</div>
+                <div class="text-xs text-gray-500">234 members</div>
+              </div>
+            </div>
+            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                💻
+              </div>
+              <div>
+                <div class="font-medium text-sm">Tech for Good</div>
+                <div class="text-xs text-gray-500">567 members</div>
+              </div>
+            </div>
+            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                🧠
+              </div>
+              <div>
+                <div class="font-medium text-sm">Mental Health Advocates</div>
+                <div class="text-xs text-gray-500">189 members</div>
+              </div>
+            </div>
+            <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+          </div>
+        </div>
+        
+        <button class="w-full mt-4 text-sm text-green-600 hover:text-green-700 font-medium">
+          <a href="social-groups.html">Discover More Groups →</a>
+        </button>
+      </div>
+
+      <!-- Upcoming Events -->
+      <div class="bg-white rounded-xl shadow-sm p-6 social-card">
+        <h3 class="font-semibold text-gray-800 mb-4">📅 Upcoming Events</h3>
+        <div class="space-y-4">
+          <div class="border border-green-200 rounded-lg p-3 bg-green-50">
+            <div class="font-medium text-sm text-green-800">Beach Cleanup Drive</div>
+            <div class="text-xs text-green-600">Tomorrow, 9:00 AM</div>
+            <div class="text-xs text-gray-600 mt-1">45 volunteers going</div>
+          </div>
+          
+          <div class="border border-blue-200 rounded-lg p-3 bg-blue-50">
+            <div class="font-medium text-sm text-blue-800">Coding Workshop</div>
+            <div class="text-xs text-blue-600">This Weekend</div>
+            <div class="text-xs text-gray-600 mt-1">12 mentors needed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Creation Modal -->
+  <div id="postModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Share Your Impact</h3>
+        <button onclick="hidePostModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+
+      <form onsubmit="createPost(event)">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Post Type</label>
+            <select id="postType" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+              <option value="story">Impact Story</option>
+              <option value="achievement">Achievement</option>
+              <option value="event">Event Announcement</option>
+              <option value="opportunity">Volunteer Opportunity</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">What's happening?</label>
+            <textarea id="postContent" placeholder="Share your story, achievement, or call to action..." 
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 h-32 resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+            <input type="text" id="postTags" placeholder="e.g., #ClimateAction #Mentoring #Community" 
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Privacy</label>
+            <select id="postPrivacy" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+              <option value="public">🌍 Public</option>
+              <option value="connections">👥 Connections Only</option>
+              <option value="groups">🏘️ Groups Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+          <button type="button" onclick="hidePostModal()" 
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" 
+                  class="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors">
+            Share Impact
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Sample social data
+    const samplePosts = [
+      {
+        id: 1,
+        author: "Maya Chen",
+        authorAvatar: "M",
+        authorColor: "blue",
+        role: "Community Mentor",
+        timestamp: "2 hours ago",
+        type: "achievement",
+        content: "Just finished my 100th mentoring session! 🎉 Teaching coding to underprivileged youth has been the most rewarding journey. Seeing Aisha build her first mobile app today brought tears to my eyes. Technology really can change lives! 💻✨",
+        tags: ["#Mentoring", "#TechForGood", "#YouthDevelopment"],
+        likes: 42,
+        comments: 8,
+        shares: 5,
+        image: null,
+        likedByUser: false
+      },
+      {
+        id: 2,
+        author: "Rahul Sharma",
+        authorAvatar: "R",
+        authorColor: "green",
+        role: "Environmental Advocate",
+        timestamp: "4 hours ago",
+        type: "event",
+        content: "AMAZING turnout at today's beach cleanup! 🌊 We collected over 500kg of plastic waste and planted 50 mangroves. Special thanks to the 80+ volunteers who showed up despite the rain. Next cleanup is scheduled for next Saturday - who's in?",
+        tags: ["#ClimateAction", "#BeachCleanup", "#Community"],
+        likes: 67,
+        comments: 15,
+        shares: 12,
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+        likedByUser: true
+      },
+      {
+        id: 3,
+        author: "Luna Santos",
+        authorAvatar: "L",
+        authorColor: "purple",
+        role: "Mental Health Champion",
+        timestamp: "6 hours ago",
+        type: "story",
+        content: "Mental Health Awareness Week starts tomorrow! 🧠💚 Our workplace wellness initiative has grown from 5 participants to over 200 across 10 companies. Sometimes the smallest conversations create the biggest ripples. Remember: it's okay to not be okay, and it's brave to ask for help.",
+        tags: ["#MentalHealth", "#WorkplaceWellness", "#Community"],
+        likes: 89,
+        comments: 23,
+        shares: 18,
+        image: null,
+        likedByUser: false
+      },
+      {
+        id: 4,
+        author: "Sani Miftah",
+        authorAvatar: "S",
+        authorColor: "green",
+        role: "Platform Creator",
+        timestamp: "8 hours ago",
+        type: "announcement",
+        content: "🚀 Exciting news! IMPACT Platform just reached 1,000 active volunteers across Asia-Pacific! From coding workshops in KL to beach cleanups in Mumbai, from mental health advocacy in Manila to urban gardening in Jakarta - we're proof that technology can unite us for good. Here's to the next 1,000! 🌱",
+        tags: ["#IMPACT", "#Milestone", "#Community", "#TechForGood"],
+        likes: 156,
+        comments: 34,
+        shares: 28,
+        image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop",
+        likedByUser: true
+      }
+    ];
+
+    // Initialize social features
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSocialFeed();
+      initializeSocialData();
+    });
+
+    // Initialize social data
+    function initializeSocialData() {
+      if (!localStorage.getItem('socialPosts')) {
+        localStorage.setItem('socialPosts', JSON.stringify(samplePosts));
+      }
+      
+      if (!localStorage.getItem('userConnections')) {
+        localStorage.setItem('userConnections', JSON.stringify(['Maya Chen', 'Rahul Sharma', 'Luna Santos']));
+      }
+      
+      if (!localStorage.getItem('userGroups')) {
+        localStorage.setItem('userGroups', JSON.stringify(['Urban Gardeners', 'Tech for Good', 'Mental Health Advocates']));
+      }
+    }
+
+    // Load social feed
+    function loadSocialFeed() {
+      const posts = JSON.parse(localStorage.getItem('socialPosts') || '[]');
+      const container = document.getElementById('postsContainer');
+      
+      container.innerHTML = '';
+      
+      posts.forEach(post => {
+        const postElement = createPostElement(post);
+        container.appendChild(postElement);
+      });
+    }
+
+    // Create post element
+    function createPostElement(post) {
+      const postDiv = document.createElement('div');
+      postDiv.className = 'bg-white rounded-xl shadow-sm p-6 social-card';
+      
+      const colorClasses = {
+        green: { bg: 'bg-green-100', text: 'text-green-600' },
+        blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
+        purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
+        orange: { bg: 'bg-orange-100', text: 'text-orange-600' }
+      };
+      
+      const colors = colorClasses[post.authorColor] || colorClasses.green;
+      
+      postDiv.innerHTML = `
+        <div class="flex items-start space-x-4">
+          <div class="w-12 h-12 ${colors.bg} rounded-full flex items-center justify-center ${colors.text} font-bold text-lg">
+            ${post.authorAvatar}
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="font-semibold text-gray-800">${post.author}</h4>
+                <p class="text-sm text-gray-500">${post.role} • ${post.timestamp}</p>
+              </div>
+              <button class="text-gray-400 hover:text-gray-600">⋯</button>
+            </div>
+            
+            <div class="mt-3">
+              <p class="text-gray-700 leading-relaxed">${post.content}</p>
+              
+              ${post.image ? `
+                <div class="mt-4 rounded-lg overflow-hidden">
+                  <img src="${post.image}" alt="Post image" class="w-full h-64 object-cover">
+                </div>
+              ` : ''}
+              
+              <div class="flex flex-wrap gap-2 mt-3">
+                ${post.tags.map(tag => `
+                  <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 cursor-pointer">
+                    ${tag}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between mt-4 pt-4 border-t">
+              <button onclick="toggleLike(${post.id})" class="flex items-center space-x-2 ${post.likedByUser ? 'text-red-500' : 'text-gray-600'} hover:text-red-500 transition-colors social-interaction">
+                <span>${post.likedByUser ? '❤️' : '🤍'}</span>
+                <span class="text-sm">${post.likes}</span>
+              </button>
+              
+              <button onclick="showComments(${post.id})" class="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition-colors social-interaction">
+                <span>💬</span>
+                <span class="text-sm">${post.comments}</span>
+              </button>
+              
+              <button onclick="sharePost(${post.id})" class="flex items-center space-x-2 text-gray-600 hover:text-green-500 transition-colors social-interaction">
+                <span>📤</span>
+                <span class="text-sm">${post.shares}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return postDiv;
+    }
+
+    // Show post modal
+    function showPostModal(type = 'story') {
+      document.getElementById('postType').value = type;
+      document.getElementById('postModal').style.display = 'flex';
+    }
+
+    // Hide post modal
+    function hidePostModal() {
+      document.getElementById('postModal').style.display = 'none';
+      // Clear form
+      document.getElementById('postContent').value = '';
+      document.getElementById('postTags').value = '';
+    }
+
+    // Create new post
+    function createPost(event) {
+      event.preventDefault();
+      
+      const type = document.getElementById('postType').value;
+      const content = document.getElementById('postContent').value;
+      const tags = document.getElementById('postTags').value.split(' ').filter(tag => tag.trim());
+      const privacy = document.getElementById('postPrivacy').value;
+      
+      if (!content.trim()) {
+        alert('Please write something to share!');
+        return;
+      }
+      
+      const posts = JSON.parse(localStorage.getItem('socialPosts') || '[]');
+      
+      const newPost = {
+        id: Date.now(),
+        author: "You",
+        authorAvatar: "S",
+        authorColor: "green",
+        role: "Platform Creator",
+        timestamp: "Just now",
+        type: type,
+        content: content,
+        tags: tags,
+        likes: 0,
+        comments: 0,
+        shares: 0,
+        image: null,
+        likedByUser: false,
+        privacy: privacy
+      };
+      
+      posts.unshift(newPost);
+      localStorage.setItem('socialPosts', JSON.stringify(posts));
+      
+      hidePostModal();
+      loadSocialFeed();
+      
+      showNotification('Your impact story has been shared! 🌱', 'success');
+    }
+
+    // Toggle like
+    function toggleLike(postId) {
+      const posts = JSON.parse(localStorage.getItem('socialPosts') || '[]');
+      const post = posts.find(p => p.id === postId);
+      
+      if (post) {
+        post.likedByUser = !post.likedByUser;
+        post.likes += post.likedByUser ? 1 : -1;
+        
+        localStorage.setItem('socialPosts', JSON.stringify(posts));
+        loadSocialFeed();
+      }
+    }
+
+    // Show comments (placeholder)
+    function showComments(postId) {
+      showNotification('Comments feature coming soon! 💬', 'info');
+    }
+
+    // Share post (placeholder)
+    function sharePost(postId) {
+      showNotification('Post shared to your network! 📤', 'success');
+      
+      // Increment share count
+      const posts = JSON.parse(localStorage.getItem('socialPosts') || '[]');
+      const post = posts.find(p => p.id === postId);
+      if (post) {
+        post.shares += 1;
+        localStorage.setItem('socialPosts', JSON.stringify(posts));
+        loadSocialFeed();
+      }
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white max-w-sm transform transition-all duration-300 translate-x-full`;
+      
+      switch (type) {
+        case 'success':
+          notification.classList.add('bg-green-500');
+          break;
+        case 'error':
+          notification.classList.add('bg-red-500');
+          break;
+        case 'warning':
+          notification.classList.add('bg-yellow-500');
+          break;
+        default:
+          notification.classList.add('bg-blue-500');
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

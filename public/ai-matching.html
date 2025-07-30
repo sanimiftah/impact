@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered Matching - IMPACT</title>
+  <link href="output.css" rel="stylesheet">
+  <link href="animations.css" rel="stylesheet">
+  
+  <!-- Firebase Integration -->
+  <script type="module" src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  
+  <!-- AI Matching Engine -->
+  <script src="ai-matching-engine.js"></script>
+  <script src="ai-demo-data.js"></script>
+  
+  <!-- PWA Features -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+  
+  <style>
+    .match-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid #10b981;
+    }
+    
+    .match-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .match-score {
+      background: linear-gradient(135deg, #10b981, #059669);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+    
+    .match-reasons {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    }
+    
+    .profile-setup {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    }
+    
+    .ai-loading {
+      animation: pulse 2s infinite;
+    }
+    
+    .match-type-tab {
+      transition: all 0.2s ease;
+    }
+    
+    .match-type-tab.active {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .diversity-card {
+      border-left: 4px solid #f59e0b;
+    }
+    
+    .trending-card {
+      border-left: 4px solid #ef4444;
+    }
+    
+    .skill-tag {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .interest-tag {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-40">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="text-2xl">🌱</a>
+        <h1 class="text-xl font-bold text-gray-800">AI-Powered Matching</h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="aiStatus" class="text-sm text-gray-600">🤖 AI Ready</span>
+        <button id="refreshMatches" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+          🔄 Refresh
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Setup Banner -->
+  <div id="profileSetupBanner" class="profile-setup p-6 m-4 rounded-xl shadow-lg border-l-4 border-blue-400" style="display: none;">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold text-blue-800 mb-2">🎯 Enhance Your Matches</h3>
+        <p class="text-blue-700">Complete your profile to get more accurate AI recommendations!</p>
+      </div>
+      <button id="setupProfileBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
+        Setup Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Match Type Tabs -->
+  <div class="p-4">
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button class="match-type-tab active px-6 py-3 rounded-lg font-semibold" data-type="recommended">
+        🎯 AI Recommended
+      </button>
+      <button class="match-type-tab px-6 py-3 rounded-lg font-semibold bg-gray-200 text-gray-700" data-type="diversity">
+        🌈 Explore New Areas
+      </button>
+      <button class="match-type-tab px-6 py-3 rounded-lg font-semibold bg-gray-200 text-gray-700" data-type="trending">
+        📈 Trending Now
+      </button>
+      <button class="match-type-tab px-6 py-3 rounded-lg font-semibold bg-gray-200 text-gray-700" data-type="all">
+        📋 All Opportunities
+      </button>
+    </div>
+  </div>
+
+  <!-- AI Insights Panel -->
+  <div id="aiInsights" class="mx-4 mb-6 bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-400">
+    <h3 class="text-lg font-semibold text-purple-800 mb-3">🧠 AI Insights</h3>
+    <div id="insightsContent" class="text-gray-700">
+      <div class="ai-loading">🤖 Analyzing your preferences and generating personalized insights...</div>
+    </div>
+  </div>
+
+  <!-- Matching Results -->
+  <div class="p-4">
+    <div id="matchingResults" class="space-y-6">
+      <!-- Match cards will be dynamically inserted here -->
+      <div class="text-center py-12">
+        <div class="ai-loading text-4xl mb-4">🤖</div>
+        <p class="text-lg text-gray-600">AI is analyzing opportunities for you...</p>
+        <p class="text-sm text-gray-500 mt-2">This may take a few moments</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Setup Modal -->
+  <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">🎯 AI Profile Setup</h2>
+        <button id="closeProfileModal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+      </div>
+
+      <form id="profileForm" class="space-y-6">
+        <!-- Skills Section -->
+        <div>
+          <label class="block text-lg font-semibold text-gray-800 mb-3">💪 Your Skills</label>
+          <div id="skillsContainer" class="flex flex-wrap gap-2 mb-3">
+            <!-- Skill tags will be dynamically added here -->
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="programming">Programming</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="design">Design</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="marketing">Marketing</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="teaching">Teaching</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="leadership">Leadership</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="communication">Communication</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="healthcare">Healthcare</button>
+            <button type="button" class="skill-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-green-100" data-skill="fundraising">Fundraising</button>
+          </div>
+        </div>
+
+        <!-- Interests Section -->
+        <div>
+          <label class="block text-lg font-semibold text-gray-800 mb-3">❤️ Your Interests</label>
+          <div id="interestsContainer" class="flex flex-wrap gap-2 mb-3">
+            <!-- Interest tags will be dynamically added here -->
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="education">Education</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="environment">Environment</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="health">Health</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="community">Community</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="youth">Youth</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="elderly">Elderly</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="technology">Technology</button>
+            <button type="button" class="interest-option p-2 bg-gray-100 rounded-lg text-sm hover:bg-blue-100" data-interest="poverty">Poverty Relief</button>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="location" class="block font-semibold text-gray-800 mb-2">📍 Location</label>
+            <input type="text" id="location" class="w-full border border-gray-300 rounded-lg p-3" placeholder="Your city or region">
+          </div>
+          <div>
+            <label for="experience" class="block font-semibold text-gray-800 mb-2">⭐ Experience Level</label>
+            <select id="experience" class="w-full border border-gray-300 rounded-lg p-3">
+              <option value="beginner">Beginner - New to volunteering</option>
+              <option value="intermediate">Intermediate - Some experience</option>
+              <option value="advanced">Advanced - Experienced volunteer</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div>
+          <label class="block font-semibold text-gray-800 mb-3">⏰ Availability</label>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" name="availability" value="weekdays" class="rounded">
+              <span>Weekdays</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" name="availability" value="weekends" class="rounded">
+              <span>Weekends</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" name="availability" value="evenings" class="rounded">
+              <span>Evenings</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" name="availability" value="flexible" class="rounded">
+              <span>Flexible</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="timeCommitment" class="block font-semibold text-gray-800 mb-2">⏱️ Time Commitment</label>
+            <select id="timeCommitment" class="w-full border border-gray-300 rounded-lg p-3">
+              <option value="flexible">Flexible</option>
+              <option value="low">Low (1-5 hours/month)</option>
+              <option value="medium">Medium (5-15 hours/month)</option>
+              <option value="high">High (15+ hours/month)</option>
+            </select>
+          </div>
+          <div>
+            <label for="workStyle" class="block font-semibold text-gray-800 mb-2">👥 Work Style</label>
+            <select id="workStyle" class="w-full border border-gray-300 rounded-lg p-3">
+              <option value="team">Team collaboration</option>
+              <option value="independent">Independent work</option>
+              <option value="leadership">Leadership roles</option>
+              <option value="support">Support roles</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-end space-x-4 pt-6 border-t">
+          <button type="button" id="cancelProfile" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg font-semibold">Cancel</button>
+          <button type="submit" class="px-8 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold">Save Profile & Get Matches</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Match Detail Modal -->
+  <div id="matchModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="matchModalContent">
+        <!-- Match details will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentMatchType = 'recommended';
+    let userProfile = null;
+
+    // Initialize AI matching interface
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🤖 AI Matching Interface initializing...');
+      
+      // Wait for AI matching engine to be ready
+      const waitForAI = setInterval(async () => {
+        if (window.aiMatchingEngine && window.aiMatchingEngine.initialized) {
+          clearInterval(waitForAI);
+          console.log('✅ AI Matching Engine ready');
+          document.getElementById('aiStatus').textContent = '🤖 AI Ready';
+          
+          await loadUserProfile();
+          await loadMatches();
+          setupEventListeners();
+          generateAIInsights();
+        }
+      }, 500);
+
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        clearInterval(waitForAI);
+        if (!window.aiMatchingEngine?.initialized) {
+          console.warn('⚠️ AI Matching Engine failed to initialize');
+          document.getElementById('aiStatus').textContent = '⚠️ AI Offline';
+          showFallbackMatches();
+        }
+      }, 10000);
+    });
+
+    // Load user profile
+    async function loadUserProfile() {
+      try {
+        if (window.impactDataLayer) {
+          userProfile = await window.impactDataLayer.getData('userProfile');
+        } else {
+          userProfile = JSON.parse(localStorage.getItem('userProfile') || 'null');
+        }
+
+        // Check if profile is incomplete
+        if (!userProfile || 
+            !userProfile.skills?.length || 
+            !userProfile.interests?.length || 
+            !userProfile.location) {
+          document.getElementById('profileSetupBanner').style.display = 'block';
+        }
+
+        console.log('📊 User profile loaded:', userProfile);
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+      }
+    }
+
+    // Load and display matches
+    async function loadMatches() {
+      const resultsContainer = document.getElementById('matchingResults');
+      resultsContainer.innerHTML = `
+        <div class="text-center py-12">
+          <div class="ai-loading text-4xl mb-4">🤖</div>
+          <p class="text-lg text-gray-600">AI is analyzing opportunities for you...</p>
+        </div>
+      `;
+
+      try {
+        let matches = [];
+        
+        switch (currentMatchType) {
+          case 'recommended':
+            matches = await window.aiMatchingEngine.getRecommendations(10);
+            break;
+          case 'diversity':
+            matches = await window.aiMatchingEngine.getDiversityRecommendations(8);
+            break;
+          case 'trending':
+            matches = await window.aiMatchingEngine.getTrendingOpportunities(8);
+            break;
+          case 'all':
+            matches = window.aiMatchingEngine.opportunities.map(opp => ({
+              ...opp,
+              matchScore: window.aiMatchingEngine.calculateMatchScore(opp),
+              matchReasons: ['General opportunity']
+            })).sort((a, b) => b.matchScore - a.matchScore);
+            break;
+        }
+
+        displayMatches(matches);
+        console.log(`✅ Loaded ${matches.length} ${currentMatchType} matches`);
+      } catch (error) {
+        console.error('Error loading matches:', error);
+        showErrorState();
+      }
+    }
+
+    // Display matches in the UI
+    function displayMatches(matches) {
+      const resultsContainer = document.getElementById('matchingResults');
+      
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="text-center py-12">
+            <div class="text-4xl mb-4">🔍</div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No matches found</h3>
+            <p class="text-gray-600">Try adjusting your profile or explore different categories.</p>
+            <button onclick="showProfileModal()" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+              Update Profile
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const matchCards = matches.map(match => createMatchCard(match)).join('');
+      resultsContainer.innerHTML = matchCards;
+    }
+
+    // Create individual match card
+    function createMatchCard(match) {
+      const scorePercentage = Math.round(match.matchScore * 100);
+      const cardClass = currentMatchType === 'diversity' ? 'diversity-card' : 
+                       currentMatchType === 'trending' ? 'trending-card' : 'match-card';
+      
+      const reasons = currentMatchType === 'diversity' ? match.diversityReasons :
+                     currentMatchType === 'trending' ? match.trendingReasons :
+                     match.matchReasons || ['Good match for your profile'];
+
+      return `
+        <div class="${cardClass} bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all" onclick="showMatchDetails('${match.id}')">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-800 mb-2">${match.title}</h3>
+              <p class="text-gray-600 mb-3">${match.description?.slice(0, 120) || 'Great opportunity to make an impact'}...</p>
+              
+              <div class="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+                <span>📍 ${match.location || 'Various locations'}</span>
+                <span>⏰ ${match.timeCommitment || 'Flexible'} commitment</span>
+                <span>👥 ${match.teamSize || 'Medium'} team</span>
+              </div>
+
+              <!-- Skills and Impact Area -->
+              <div class="flex flex-wrap gap-2 mb-3">
+                ${(match.requiredSkills || []).slice(0, 3).map(skill => 
+                  `<span class="skill-tag">${skill}</span>`
+                ).join('')}
+                ${match.impactArea ? `<span class="interest-tag">${match.impactArea}</span>` : ''}
+              </div>
+            </div>
+
+            <!-- Match Score -->
+            <div class="text-center ml-4">
+              <div class="match-score text-3xl font-bold">${scorePercentage}%</div>
+              <div class="text-xs text-gray-500">AI Match</div>
+            </div>
+          </div>
+
+          <!-- Match Reasons -->
+          <div class="match-reasons p-3 rounded-lg">
+            <div class="text-sm font-semibold text-green-700 mb-2">🎯 Why this matches you:</div>
+            <ul class="text-sm text-green-600 space-y-1">
+              ${reasons.slice(0, 3).map(reason => `<li>• ${reason}</li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex space-x-3 mt-4">
+            <button onclick="event.stopPropagation(); applyToOpportunity('${match.id}')" 
+                    class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold text-sm">
+              ✨ Apply Now
+            </button>
+            <button onclick="event.stopPropagation(); learnMore('${match.id}')" 
+                    class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-semibold text-sm">
+              📖 Learn More
+            </button>
+            <button onclick="event.stopPropagation(); dismissMatch('${match.id}')" 
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-3 rounded-lg text-sm">
+              ✕
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Match type tabs
+      document.querySelectorAll('.match-type-tab').forEach(tab => {
+        tab.addEventListener('click', async (e) => {
+          // Update active tab
+          document.querySelectorAll('.match-type-tab').forEach(t => {
+            t.classList.remove('active');
+            t.classList.add('bg-gray-200', 'text-gray-700');
+          });
+          
+          e.target.classList.add('active');
+          e.target.classList.remove('bg-gray-200', 'text-gray-700');
+          
+          // Load new matches
+          currentMatchType = e.target.dataset.type;
+          await loadMatches();
+          generateAIInsights();
+        });
+      });
+
+      // Refresh button
+      document.getElementById('refreshMatches').addEventListener('click', async () => {
+        await window.aiMatchingEngine.loadOpportunities();
+        await loadMatches();
+        generateAIInsights();
+      });
+
+      // Profile setup
+      document.getElementById('setupProfileBtn').addEventListener('click', showProfileModal);
+      document.getElementById('closeProfileModal').addEventListener('click', hideProfileModal);
+      document.getElementById('cancelProfile').addEventListener('click', hideProfileModal);
+
+      // Profile form
+      setupProfileForm();
+    }
+
+    // Setup profile form interactions
+    function setupProfileForm() {
+      const selectedSkills = new Set();
+      const selectedInterests = new Set();
+
+      // Skill selection
+      document.querySelectorAll('.skill-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const skill = e.target.dataset.skill;
+          if (selectedSkills.has(skill)) {
+            selectedSkills.delete(skill);
+            e.target.classList.remove('bg-green-500', 'text-white');
+            e.target.classList.add('bg-gray-100');
+          } else {
+            selectedSkills.add(skill);
+            e.target.classList.add('bg-green-500', 'text-white');
+            e.target.classList.remove('bg-gray-100');
+          }
+          updateSkillTags(selectedSkills);
+        });
+      });
+
+      // Interest selection
+      document.querySelectorAll('.interest-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const interest = e.target.dataset.interest;
+          if (selectedInterests.has(interest)) {
+            selectedInterests.delete(interest);
+            e.target.classList.remove('bg-blue-500', 'text-white');
+            e.target.classList.add('bg-gray-100');
+          } else {
+            selectedInterests.add(interest);
+            e.target.classList.add('bg-blue-500', 'text-white');
+            e.target.classList.remove('bg-gray-100');
+          }
+          updateInterestTags(selectedInterests);
+        });
+      });
+
+      // Form submission
+      document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await saveProfile(selectedSkills, selectedInterests);
+      });
+
+      // Load existing profile data
+      if (userProfile) {
+        loadProfileData(selectedSkills, selectedInterests);
+      }
+    }
+
+    // Update skill tags display
+    function updateSkillTags(skills) {
+      const container = document.getElementById('skillsContainer');
+      container.innerHTML = Array.from(skills).map(skill => 
+        `<span class="skill-tag">${skill} <button onclick="removeSkill('${skill}')" class="ml-1">×</button></span>`
+      ).join('');
+    }
+
+    // Update interest tags display
+    function updateInterestTags(interests) {
+      const container = document.getElementById('interestsContainer');
+      container.innerHTML = Array.from(interests).map(interest => 
+        `<span class="interest-tag">${interest} <button onclick="removeInterest('${interest}')" class="ml-1">×</button></span>`
+      ).join('');
+    }
+
+    // Load existing profile data into form
+    function loadProfileData(selectedSkills, selectedInterests) {
+      if (userProfile.skills) {
+        userProfile.skills.forEach(skill => {
+          selectedSkills.add(skill);
+          const btn = document.querySelector(`[data-skill="${skill}"]`);
+          if (btn) {
+            btn.classList.add('bg-green-500', 'text-white');
+            btn.classList.remove('bg-gray-100');
+          }
+        });
+        updateSkillTags(selectedSkills);
+      }
+
+      if (userProfile.interests) {
+        userProfile.interests.forEach(interest => {
+          selectedInterests.add(interest);
+          const btn = document.querySelector(`[data-interest="${interest}"]`);
+          if (btn) {
+            btn.classList.add('bg-blue-500', 'text-white');
+            btn.classList.remove('bg-gray-100');
+          }
+        });
+        updateInterestTags(selectedInterests);
+      }
+
+      // Fill other form fields
+      document.getElementById('location').value = userProfile.location || '';
+      document.getElementById('experience').value = userProfile.experience || 'beginner';
+      document.getElementById('timeCommitment').value = userProfile.timeCommitment || 'flexible';
+      document.getElementById('workStyle').value = userProfile.workStyle || 'team';
+
+      // Check availability checkboxes
+      if (userProfile.availability) {
+        userProfile.availability.forEach(avail => {
+          const checkbox = document.querySelector(`[name="availability"][value="${avail}"]`);
+          if (checkbox) checkbox.checked = true;
+        });
+      }
+    }
+
+    // Save profile
+    async function saveProfile(selectedSkills, selectedInterests) {
+      try {
+        const formData = new FormData(document.getElementById('profileForm'));
+        const availability = Array.from(formData.getAll('availability'));
+
+        const profileUpdate = {
+          skills: Array.from(selectedSkills),
+          interests: Array.from(selectedInterests),
+          location: document.getElementById('location').value,
+          experience: document.getElementById('experience').value,
+          availability: availability,
+          timeCommitment: document.getElementById('timeCommitment').value,
+          workStyle: document.getElementById('workStyle').value,
+          preferredImpactAreas: Array.from(selectedInterests), // Use interests as impact areas
+          updatedAt: new Date().toISOString()
+        };
+
+        await window.aiMatchingEngine.updateUserProfile(profileUpdate);
+        userProfile = { ...userProfile, ...profileUpdate };
+
+        hideProfileModal();
+        document.getElementById('profileSetupBanner').style.display = 'none';
+        
+        // Reload matches with new profile
+        await loadMatches();
+        generateAIInsights();
+
+        // Show success message
+        showNotification('✅ Profile updated! Getting better matches...', 'success');
+        
+        console.log('✅ Profile saved successfully');
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        showNotification('❌ Error saving profile', 'error');
+      }
+    }
+
+    // Generate AI insights
+    function generateAIInsights() {
+      const insightsContent = document.getElementById('insightsContent');
+      
+      if (!userProfile || !window.aiMatchingEngine?.initialized) {
+        insightsContent.innerHTML = '<div class="ai-loading">🤖 AI insights will appear once your profile is complete...</div>';
+        return;
+      }
+
+      const insights = [];
+
+      // Profile completeness
+      const profileScore = calculateProfileCompleteness();
+      if (profileScore < 0.8) {
+        insights.push(`📊 Profile ${Math.round(profileScore * 100)}% complete - add more details for better matches!`);
+      }
+
+      // Skill insights
+      if (userProfile.skills?.length > 0) {
+        insights.push(`💪 Your ${userProfile.skills.length} skills open up diverse opportunities`);
+      }
+
+      // Interest insights
+      if (userProfile.interests?.length > 0) {
+        insights.push(`❤️ Found ${window.aiMatchingEngine.opportunities.filter(opp => 
+          userProfile.interests.includes(opp.impactArea)).length} opportunities in your interest areas`);
+      }
+
+      // Match type specific insights
+      switch (currentMatchType) {
+        case 'recommended':
+          insights.push('🎯 Showing opportunities tailored to your skills and interests');
+          break;
+        case 'diversity':
+          insights.push('🌈 Explore new areas to expand your impact and learn new skills');
+          break;
+        case 'trending':
+          insights.push('📈 Popular opportunities with high community engagement');
+          break;
+      }
+
+      insightsContent.innerHTML = insights.map(insight => 
+        `<div class="mb-2 p-3 bg-purple-50 rounded-lg">${insight}</div>`
+      ).join('');
+    }
+
+    // Calculate profile completeness
+    function calculateProfileCompleteness() {
+      if (!userProfile) return 0;
+      
+      let score = 0;
+      if (userProfile.skills?.length > 0) score += 0.3;
+      if (userProfile.interests?.length > 0) score += 0.3;
+      if (userProfile.location) score += 0.2;
+      if (userProfile.availability?.length > 0) score += 0.1;
+      if (userProfile.experience) score += 0.1;
+      
+      return score;
+    }
+
+    // Show/hide modals
+    function showProfileModal() {
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function hideProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    // Match interaction functions
+    async function applyToOpportunity(opportunityId) {
+      try {
+        await window.aiMatchingEngine.learnFromInteraction(opportunityId, 'apply');
+        showNotification('✅ Application submitted! The organizer will be in touch.', 'success');
+        
+        // Could redirect to application form or team space
+        // window.location.href = `teamspace_new.html?apply=${opportunityId}`;
+      } catch (error) {
+        console.error('Error applying to opportunity:', error);
+        showNotification('❌ Error submitting application', 'error');
+      }
+    }
+
+    async function learnMore(opportunityId) {
+      await window.aiMatchingEngine.learnFromInteraction(opportunityId, 'view');
+      showMatchDetails(opportunityId);
+    }
+
+    async function dismissMatch(opportunityId) {
+      await window.aiMatchingEngine.learnFromInteraction(opportunityId, 'dismiss');
+      
+      // Remove the card from view
+      const card = event.target.closest('.match-card, .diversity-card, .trending-card');
+      if (card) {
+        card.style.opacity = '0.5';
+        card.style.pointerEvents = 'none';
+        setTimeout(() => card.remove(), 300);
+      }
+      
+      showNotification('Match dismissed', 'info');
+    }
+
+    // Show match details modal
+    function showMatchDetails(opportunityId) {
+      const opportunity = window.aiMatchingEngine.opportunities.find(opp => opp.id === opportunityId);
+      if (!opportunity) return;
+
+      const matchScore = Math.round(window.aiMatchingEngine.calculateMatchScore(opportunity) * 100);
+      
+      const modalContent = document.getElementById('matchModalContent');
+      modalContent.innerHTML = `
+        <div class="flex justify-between items-start mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">${opportunity.title}</h2>
+          <button onclick="document.getElementById('matchModal').style.display='none'" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div class="md:col-span-2">
+            <p class="text-gray-700 mb-4">${opportunity.description || 'A great opportunity to make a meaningful impact in the community.'}</p>
+            
+            <div class="space-y-3">
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold">📍 Location:</span>
+                <span>${opportunity.location || 'Flexible'}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold">⏰ Time Commitment:</span>
+                <span>${opportunity.timeCommitment || 'Flexible'}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold">👥 Team Size:</span>
+                <span>${opportunity.teamSize || 'Medium'}</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="font-semibold">⭐ Experience Level:</span>
+                <span>${opportunity.experienceLevel || 'Any'}</span>
+              </div>
+            </div>
+
+            ${opportunity.requiredSkills?.length ? `
+              <div class="mt-4">
+                <span class="font-semibold">💪 Skills Needed:</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  ${opportunity.requiredSkills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="text-center">
+            <div class="bg-green-50 rounded-xl p-6 mb-4">
+              <div class="match-score text-4xl font-bold mb-2">${matchScore}%</div>
+              <div class="text-green-600 font-semibold">AI Match Score</div>
+            </div>
+            
+            <div class="text-left">
+              <div class="font-semibold text-gray-800 mb-2">🎯 Why this matches:</div>
+              <ul class="text-sm text-gray-600 space-y-1">
+                ${(opportunity.matchReasons || ['Good general match']).map(reason => `<li>• ${reason}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex space-x-4">
+          <button onclick="applyToOpportunity('${opportunity.id}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold">
+            ✨ Apply Now
+          </button>
+          <button onclick="window.open('teamspace_new.html?view=${opportunity.id}', '_blank')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold">
+            👥 View Team
+          </button>
+          <button onclick="document.getElementById('matchModal').style.display='none'" class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-3 px-6 rounded-lg font-semibold">
+            Close
+          </button>
+        </div>
+      `;
+
+      document.getElementById('matchModal').style.display = 'flex';
+    }
+
+    // Show fallback matches if AI fails
+    function showFallbackMatches() {
+      const resultsContainer = document.getElementById('matchingResults');
+      resultsContainer.innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-4xl mb-4">⚠️</div>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">AI Matching Temporarily Unavailable</h3>
+          <p class="text-gray-600 mb-4">Don't worry! You can still browse all opportunities.</p>
+          <a href="seedboard.html" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold inline-block mr-4">
+            🌱 Browse Seedboard
+          </a>
+          <a href="opencall_new.html" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold inline-block">
+            📣 View Open Calls
+          </a>
+        </div>
+      `;
+    }
+
+    // Show error state
+    function showErrorState() {
+      const resultsContainer = document.getElementById('matchingResults');
+      resultsContainer.innerHTML = `
+        <div class="text-center py-12">
+          <div class="text-4xl mb-4">❌</div>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">Error Loading Matches</h3>
+          <p class="text-gray-600 mb-4">Something went wrong. Please try again.</p>
+          <button onclick="loadMatches()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+            🔄 Try Again
+          </button>
+        </div>
+      `;
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white max-w-sm transform transition-all duration-300 translate-x-full`;
+      
+      switch (type) {
+        case 'success':
+          notification.classList.add('bg-green-500');
+          break;
+        case 'error':
+          notification.classList.add('bg-red-500');
+          break;
+        case 'warning':
+          notification.classList.add('bg-yellow-500');
+          break;
+        default:
+          notification.classList.add('bg-blue-500');
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

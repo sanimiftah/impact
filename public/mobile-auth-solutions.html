@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Auth Solutions - IMPACT</title>
+  <link href="output.css" rel="stylesheet">
+  <style>
+    .demo-phone {
+      width: 375px;
+      height: 667px;
+      border: 8px solid #333;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      background: #f9fafb;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .demo-screen {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .option-container {
+      margin: 2rem 0;
+      padding: 2rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 1rem;
+      background: white;
+    }
+    
+    .current-option {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    
+    .option-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #374151;
+    }
+    
+    .current-option .option-title {
+      color: #10b981;
+    }
+    
+    /* Mock navigation */
+    .mock-nav {
+      background: white;
+      padding: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-size: 0.75rem;
+    }
+    
+    .mock-nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .mock-nav li {
+      padding: 0.25rem 0.5rem;
+      background: #f3f4f6;
+      border-radius: 0.5rem;
+    }
+    
+    /* Mock cards */
+    .mock-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #10b981;
+    }
+    
+    /* Mobile auth solutions */
+    .floating-bottom {
+      position: absolute;
+      bottom: 4rem;
+      right: 0.75rem;
+      background: white;
+      border-radius: 2rem;
+      padding: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 0.75rem;
+    }
+    
+    .bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .top-banner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      z-index: 10;
+    }
+    
+    .slide-tab {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #10b981;
+      color: white;
+      padding: 0.75rem 0.5rem;
+      border-radius: 0.5rem 0 0 0.5rem;
+      font-size: 0.75rem;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+    
+    .corner-badge {
+      position: absolute;
+      top: 4rem;
+      right: 0.5rem;
+      background: #10b981;
+      color: white;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .fab-mock {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      width: 3rem;
+      height: 3rem;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-6">
+
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-8">📱 Mobile Auth Solutions for IMPACT</h1>
+    <p class="text-center text-gray-600 mb-12">Solving the floating widget overlap issue on mobile screens</p>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+      
+      <!-- Option 1: Current - Bottom Floating (Improved) -->
+      <div class="option-container current-option">
+        <div class="option-title">✨ Option 1: Bottom Floating (Current - Improved)</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <nav class="mock-nav">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">Now visible!</p>
+              </div>
+            </div>
+            
+            <!-- Floating auth moved to bottom -->
+            <div class="floating-bottom">
+              <div class="flex items-center gap-2">
+                <span class="text-xs">👤 Guest</span>
+                <button class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">Sign In</button>
+              </div>
+            </div>
+            
+            <div class="fab-mock">🌱</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ Fixes overlap issue<br>
+          ✅ Maintains floating design<br>
+          ⚠️ Might conflict with FAB button
+        </p>
+      </div>
+
+      <!-- Option 2: Bottom Slide Bar -->
+      <div class="option-container">
+        <div class="option-title">Option 2: Bottom Slide Bar</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <nav class="mock-nav">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">Fully visible!</p>
+              </div>
+            </div>
+            
+            <!-- Bottom slide bar -->
+            <div class="bottom-bar">
+              <div class="flex items-center justify-between">
+                <span class="text-sm">👤 Guest Mode</span>
+                <button class="bg-green-500 text-white px-3 py-1 rounded-lg text-sm">Sign In</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ No overlap issues<br>
+          ✅ Always visible<br>
+          ✅ Native mobile feel<br>
+          ⚠️ Takes vertical space
+        </p>
+      </div>
+
+      <!-- Option 3: Top Banner -->
+      <div class="option-container">
+        <div class="option-title">Option 3: Top Banner</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <!-- Top banner auth -->
+            <div class="top-banner">
+              <div class="flex items-center justify-between">
+                <span class="text-xs">👤 Welcome Guest!</span>
+                <button class="bg-white text-green-600 px-2 py-1 rounded text-xs font-semibold">Sign In</button>
+              </div>
+            </div>
+            
+            <nav class="mock-nav" style="margin-top: 2.5rem;">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">Clear view!</p>
+              </div>
+            </div>
+            
+            <div class="fab-mock">🌱</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ No content overlap<br>
+          ✅ High visibility<br>
+          ✅ Welcoming message<br>
+          ⚠️ Takes header space
+        </p>
+      </div>
+
+      <!-- Option 4: Side Tab -->
+      <div class="option-container">
+        <div class="option-title">Option 4: Side Tab</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <nav class="mock-nav">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">No interference!</p>
+              </div>
+            </div>
+            
+            <!-- Side tab -->
+            <div class="slide-tab">👤 Account</div>
+            
+            <div class="fab-mock">🌱</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ Zero overlap<br>
+          ✅ Space efficient<br>
+          ✅ Unique design<br>
+          ⚠️ Less discoverable
+        </p>
+      </div>
+
+      <!-- Option 5: Corner Badge -->
+      <div class="option-container">
+        <div class="option-title">Option 5: Corner Badge</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <nav class="mock-nav">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">Perfect view!</p>
+              </div>
+            </div>
+            
+            <!-- Corner badge -->
+            <div class="corner-badge">👤</div>
+            
+            <div class="fab-mock">🌱</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ Minimal footprint<br>
+          ✅ Clean design<br>
+          ✅ No content blocking<br>
+          ⚠️ Limited information
+        </p>
+      </div>
+
+      <!-- Option 6: Sticky Header -->
+      <div class="option-container">
+        <div class="option-title">Option 6: Sticky Header</div>
+        <div class="demo-phone">
+          <div class="demo-screen">
+            <!-- Sticky header with auth -->
+            <div class="sticky-header">
+              <span class="font-semibold">🌱 IMPACT</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs">👤</span>
+                <button class="bg-green-500 text-white px-2 py-1 rounded text-xs">Sign In</button>
+              </div>
+            </div>
+            
+            <nav class="mock-nav">
+              <ul>
+                <li>🌱 Seedboard</li>
+                <li>🤖 AI</li>
+                <li>🔍 Dashboard</li>
+                <li>🧠 Skills</li>
+              </ul>
+            </nav>
+            
+            <div class="p-2">
+              <div class="mock-card">
+                <h3 class="font-semibold">🌱 Seedboard</h3>
+                <p class="text-xs text-gray-600">Submit ideas</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">🤖 AI Matching</h3>
+                <p class="text-xs text-gray-600">Get matched</p>
+              </div>
+              <div class="mock-card">
+                <h3 class="font-semibold">📣 OpenCall</h3>
+                <p class="text-xs text-gray-600">Always accessible!</p>
+              </div>
+            </div>
+            
+            <div class="fab-mock">🌱</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">
+          ✅ Always visible<br>
+          ✅ Professional layout<br>
+          ✅ Brand integration<br>
+          ⚠️ Traditional approach
+        </p>
+      </div>
+    </div>
+
+    <!-- Implementation Guide -->
+    <div class="mt-12 bg-white rounded-xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold mb-6">🛠️ Quick Implementation Guide</h2>
+      
+      <div class="space-y-6">
+        <div>
+          <h3 class="font-semibold text-lg mb-2 text-green-600">Recommended: Option 2 - Bottom Slide Bar</h3>
+          <div class="bg-gray-100 p-4 rounded-lg">
+            <p class="text-sm mb-3">Add this HTML after the floating auth widget:</p>
+            <pre class="text-xs bg-gray-800 text-green-400 p-3 rounded overflow-x-auto"><code>&lt;!-- Mobile Bottom Bar Auth --&gt;
+&lt;div id="mobileAuthBar" class="mobile-auth-bar"&gt;
+  &lt;div class="flex items-center justify-between"&gt;
+    &lt;span class="text-sm text-gray-700"&gt;👤 Guest Mode&lt;/span&gt;
+    &lt;button onclick="showAuthModal()" class="bg-green-500 text-white px-4 py-2 rounded-lg"&gt;
+      Sign In
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-2 text-blue-600">Alternative: Option 3 - Top Banner</h3>
+          <div class="bg-gray-100 p-4 rounded-lg">
+            <p class="text-sm mb-3">Add this before the navigation:</p>
+            <pre class="text-xs bg-gray-800 text-blue-400 p-3 rounded overflow-x-auto"><code>&lt;!-- Mobile Top Banner Auth --&gt;
+&lt;div id="mobileTopBanner" class="mobile-top-banner"&gt;
+  &lt;div class="flex items-center justify-between"&gt;
+    &lt;span class="text-sm"&gt;👤 Welcome to IMPACT!&lt;/span&gt;
+    &lt;button onclick="showAuthModal()" class="bg-white text-green-600 px-3 py-1 rounded"&gt;
+      Sign In
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decision Matrix -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+      <h2 class="text-xl font-bold text-blue-800 mb-4">📊 Decision Matrix</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left p-2">Solution</th>
+              <th class="text-center p-2">No Overlap</th>
+              <th class="text-center p-2">Visibility</th>
+              <th class="text-center p-2">UX Quality</th>
+              <th class="text-center p-2">Mobile Native</th>
+              <th class="text-center p-2">Easy Implementation</th>
+            </tr>
+          </thead>
+          <tbody class="text-blue-700">
+            <tr class="border-b bg-green-50">
+              <td class="p-2 font-semibold">Bottom Floating (Improved)</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">✅</td>
+            </tr>
+            <tr class="border-b">
+              <td class="p-2 font-semibold">Bottom Slide Bar</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+            </tr>
+            <tr class="border-b">
+              <td class="p-2 font-semibold">Top Banner</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">✅</td>
+            </tr>
+            <tr class="border-b">
+              <td class="p-2 font-semibold">Side Tab</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+            </tr>
+            <tr class="border-b">
+              <td class="p-2 font-semibold">Corner Badge</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">⚠️</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+            </tr>
+            <tr>
+              <td class="p-2 font-semibold">Sticky Header</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">✅</td>
+              <td class="text-center p-2">⚠️</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

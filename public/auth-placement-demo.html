@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth Button Placement Options - IMPACT</title>
+  <link href="output.css" rel="stylesheet">
+  <style>
+    .demo-container {
+      border: 2px dashed #e5e7eb;
+      border-radius: 1rem;
+      margin: 2rem 0;
+      padding: 1rem;
+      position: relative;
+    }
+    
+    .demo-label {
+      position: absolute;
+      top: -0.75rem;
+      left: 1rem;
+      background: white;
+      padding: 0.25rem 0.75rem;
+      font-weight: bold;
+      color: #374151;
+      border-radius: 0.5rem;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .current-option {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    
+    .current-option .demo-label {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 p-6">
+
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-8">🎨 Authentication Button Placement Options</h1>
+    
+    <!-- Current Implementation -->
+    <div class="demo-container current-option">
+      <div class="demo-label">✨ CURRENT - Floating Top Right</div>
+      
+      <!-- Mock Navigation -->
+      <nav class="bg-white shadow-md p-4 rounded-lg mb-4">
+        <ul class="flex flex-wrap gap-6 justify-center text-sm font-medium text-gray-700">
+          <li><span class="flex items-center gap-2">🌱 Seedboard</span></li>
+          <li><span class="flex items-center gap-2">🤖 AI Matching</span></li>
+          <li><span class="flex items-center gap-2">🔍 Dashboard</span></li>
+          <li><span class="flex items-center gap-2">🧠 SkillMatch</span></li>
+          <li><span class="flex items-center gap-2">🤝 TeamSpace</span></li>
+        </ul>
+      </nav>
+      
+      <!-- Floating Auth Widget -->
+      <div class="absolute top-4 right-4 bg-white rounded-full shadow-lg border border-gray-200 p-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 px-2">👤 Guest</span>
+          <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-xs font-semibold">
+            Sign In
+          </button>
+        </div>
+      </div>
+      
+      <p class="text-sm text-gray-600 mt-4">
+        ✅ <strong>Pros:</strong> Clean centered navigation, non-intrusive, modern floating design<br>
+        ⚠️ <strong>Considerations:</strong> Might be missed by some users, takes up corner space
+      </p>
+    </div>
+
+    <!-- Option 2: Top Bar Integration -->
+    <div class="demo-container">
+      <div class="demo-label">Option 2 - Top Bar Integration</div>
+      
+      <!-- Top Bar with Auth -->
+      <div class="flex justify-between items-center p-4 bg-gray-100 rounded-t-lg">
+        <div class="flex items-center space-x-4">
+          <span class="text-xl">🌙</span>
+          <span class="text-sm text-gray-600">Dark Mode</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-gray-600">👤 Guest</span>
+          <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+            Sign In
+          </button>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="bg-white shadow-md p-4 rounded-b-lg">
+        <ul class="flex flex-wrap gap-6 justify-center text-sm font-medium text-gray-700">
+          <li><span class="flex items-center gap-2">🌱 Seedboard</span></li>
+          <li><span class="flex items-center gap-2">🤖 AI Matching</span></li>
+          <li><span class="flex items-center gap-2">🔍 Dashboard</span></li>
+          <li><span class="flex items-center gap-2">🧠 SkillMatch</span></li>
+          <li><span class="flex items-center gap-2">🤝 TeamSpace</span></li>
+        </ul>
+      </nav>
+      
+      <p class="text-sm text-gray-600 mt-4">
+        ✅ <strong>Pros:</strong> Always visible, integrated with existing top bar, familiar placement<br>
+        ⚠️ <strong>Considerations:</strong> Takes more vertical space, less modern feel
+      </p>
+    </div>
+
+    <!-- Option 3: Hero Section Integration -->
+    <div class="demo-container">
+      <div class="demo-label">Option 3 - Hero Section Integration</div>
+      
+      <!-- Navigation -->
+      <nav class="bg-white shadow-md p-4 rounded-lg mb-4">
+        <ul class="flex flex-wrap gap-6 justify-center text-sm font-medium text-gray-700">
+          <li><span class="flex items-center gap-2">🌱 Seedboard</span></li>
+          <li><span class="flex items-center gap-2">🤖 AI Matching</span></li>
+          <li><span class="flex items-center gap-2">🔍 Dashboard</span></li>
+          <li><span class="flex items-center gap-2">🧠 SkillMatch</span></li>
+          <li><span class="flex items-center gap-2">🤝 TeamSpace</span></li>
+        </ul>
+      </nav>
+      
+      <!-- Hero Section with Auth -->
+      <header class="relative bg-gradient-to-r from-green-50 to-blue-50 text-center py-8 px-6 rounded-lg">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Planting Seeds of Change</h1>
+        <p class="text-gray-700 mb-6">Transform ideas into action. Connect with your community.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
+            🌱 Start Your Journey
+          </button>
+          <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold">
+            🔍 Explore Platform
+          </button>
+          <button class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">
+            👤 Sign In / Guest
+          </button>
+        </div>
+      </header>
+      
+      <p class="text-sm text-gray-600 mt-4">
+        ✅ <strong>Pros:</strong> Prominent placement, part of main action area, high visibility<br>
+        ⚠️ <strong>Considerations:</strong> Clutters hero section, competing with main CTAs
+      </p>
+    </div>
+
+    <!-- Option 4: Split Navigation -->
+    <div class="demo-container">
+      <div class="demo-label">Option 4 - Split Navigation</div>
+      
+      <!-- Split Navigation -->
+      <nav class="bg-white shadow-md p-4 rounded-lg">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <span class="text-2xl mr-4">🌱</span>
+          </div>
+          
+          <ul class="flex flex-wrap gap-6 text-sm font-medium text-gray-700">
+            <li><span class="flex items-center gap-2">🌱 Seedboard</span></li>
+            <li><span class="flex items-center gap-2">🤖 AI Matching</span></li>
+            <li><span class="flex items-center gap-2">🔍 Dashboard</span></li>
+            <li><span class="flex items-center gap-2">🧠 SkillMatch</span></li>
+            <li><span class="flex items-center gap-2">🤝 TeamSpace</span></li>
+          </ul>
+          
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-600">👤 Guest</span>
+            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </nav>
+      
+      <p class="text-sm text-gray-600 mt-4">
+        ✅ <strong>Pros:</strong> Traditional layout, balanced design, clear structure<br>
+        ⚠️ <strong>Considerations:</strong> Less centered navigation, can feel crowded on mobile
+      </p>
+    </div>
+
+    <!-- Option 5: Slide-out Widget -->
+    <div class="demo-container">
+      <div class="demo-label">Option 5 - Slide-out Widget</div>
+      
+      <!-- Navigation -->
+      <nav class="bg-white shadow-md p-4 rounded-lg mb-4">
+        <ul class="flex flex-wrap gap-6 justify-center text-sm font-medium text-gray-700">
+          <li><span class="flex items-center gap-2">🌱 Seedboard</span></li>
+          <li><span class="flex items-center gap-2">🤖 AI Matching</span></li>
+          <li><span class="flex items-center gap-2">🔍 Dashboard</span></li>
+          <li><span class="flex items-center gap-2">🧠 SkillMatch</span></li>
+          <li><span class="flex items-center gap-2">🤝 TeamSpace</span></li>
+        </ul>
+      </nav>
+      
+      <!-- Slide-out Tab -->
+      <div class="fixed right-0 top-1/2 transform -translate-y-1/2">
+        <div class="bg-green-500 text-white p-3 rounded-l-lg cursor-pointer">
+          <div class="writing-mode-vertical text-sm font-semibold">👤 Account</div>
+        </div>
+      </div>
+      
+      <p class="text-sm text-gray-600 mt-4">
+        ✅ <strong>Pros:</strong> Space-efficient, always accessible, unique design<br>
+        ⚠️ <strong>Considerations:</strong> Less discoverable, requires hover/click to reveal
+      </p>
+    </div>
+
+    <!-- Implementation Code Snippets -->
+    <div class="mt-12 bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold mb-6">🛠️ Quick Implementation Code</h2>
+      
+      <div class="space-y-6">
+        <div>
+          <h3 class="font-semibold text-lg mb-2">Option 2: Top Bar Integration</h3>
+          <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code><!-- Replace accessibility toggle section -->
+&lt;div class="flex justify-between items-center p-4"&gt;
+  &lt;div class="flex items-center space-x-4"&gt;
+    &lt;button id="darkModeToggle"&gt;🌙&lt;/button&gt;
+    &lt;span class="text-sm text-gray-600"&gt;Dark Mode&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div id="authSection"&gt;
+    &lt;!-- Auth buttons here --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-2">Option 3: Hero Section Integration</h3>
+          <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code><!-- Add to hero section buttons -->
+&lt;div class="flex flex-col sm:flex-row gap-4 justify-center"&gt;
+  &lt;a href="seedboard.html"&gt;🌱 Start Journey&lt;/a&gt;
+  &lt;button onclick="scrollToSection('dashboard')"&gt;🔍 Explore&lt;/button&gt;
+  &lt;button onclick="showAuthModal()"&gt;👤 Sign In&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+      <h2 class="text-xl font-bold text-blue-800 mb-4">💡 Recommendations</h2>
+      <div class="space-y-3 text-blue-700">
+        <p><strong>Current (Floating):</strong> Best for modern, clean design with centered navigation</p>
+        <p><strong>Top Bar:</strong> Best for maximum visibility and traditional layouts</p>
+        <p><strong>Hero Section:</strong> Best for high conversion and onboarding focus</p>
+        <p><strong>Split Navigation:</strong> Best for established platforms with clear branding</p>
+        <p><strong>Slide-out:</strong> Best for minimal interference with content</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

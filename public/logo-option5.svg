@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Option 5: Simple Circle with Heart-Leaf -->
+  <circle cx="20" cy="20" r="18" fill="url(#gradient5)"/>
+  
+  <!-- Heart-shaped leaf symbolizing care -->
+  <g transform="translate(20, 20)">
+    <path d="M0,2 C-4,-2 -8,-2 -8,2 C-8,6 -4,10 0,14 C4,10 8,6 8,2 C8,-2 4,-2 0,2Z" 
+          fill="white" opacity="0.9"/>
+    <!-- Subtle vein -->
+    <path d="M0,2 L0,10" stroke="white" stroke-width="0.5" opacity="0.5"/>
+  </g>
+</svg>

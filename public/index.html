@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="output.css" rel="stylesheet">
+  <link href="animations.css" rel="stylesheet">
+  <title>Impact – Planting Seeds of Change</title>
+  
+  <!-- Firebase Integration -->
+  <script type="module" src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  
+  <!-- Authentication -->
+  <script src="auth-manager.js"></script>
+  
+  <!-- AI Matching Engine -->
+  <script src="ai-matching-engine.js"></script>
+  <script src="ai-demo-data.js"></script>
+  
+  <!-- PWA Features -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="IMPACT">
+  
+  <!-- PWA Scripts -->
+  <script src="pwa-features.js"></script>
+  
+  <meta name="description" content="Transform ideas into action. Connect with your community and create meaningful change together.">
+  <link rel="icon" href="favicon-modern.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="clover-modern.svg">
+  <style>
+    /* Force all links and buttons to be clickable */
+    a, button, [onclick] {
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Ensure no invisible overlays */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Modern gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    /* Modern card hover effects */
+    .card-hover {
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+    
+    /* Modern button effects */
+    .btn-animate {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-animate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-animate::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-animate:hover::before {
+      left: 100%;
+    }
+    
+    /* Floating elements */
+    .fab {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: auto;
+      min-width: 3.5rem;
+      height: 3.5rem;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border-radius: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      padding: 0.75rem;
+      overflow: hidden;
+      gap: 0.5rem;
+    }
+    
+    .fab:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+      color: white;
+      padding: 0.75rem 1.5rem;
+    }
+    
+    .fab-icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .fab-text {
+      font-size: 0.875rem;
+      font-weight: 600;
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      display: inline-block;
+    }
+    
+    .fab:hover .fab-icon {
+      transform: rotate(90deg);
+    }
+    
+    .fab:hover .fab-text {
+      opacity: 1;
+      max-width: 4rem;
+      margin-left: 0.5rem;
+    }
+    
+    /* PWA Optimizations */
+    @media (display-mode: standalone) {
+      body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      .fab {
+        bottom: calc(env(safe-area-inset-bottom) + 1rem);
+      }
+    }
+    
+    /* Enhanced mobile touch interactions */
+    @media (max-width: 768px) {
+      .card-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      
+      .card-hover:active {
+        transform: scale(0.98);
+      }
+      
+      .btn-animate:active {
+        transform: scale(0.95);
+      }
+      
+      /* Better mobile navigation */
+      nav ul {
+        gap: 1rem;
+      }
+      
+      nav li a {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+    }
+    
+    /* Install prompt styles */
+    .install-prompt {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transform: translateY(100px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .install-prompt.show {
+      transform: translateY(0);
+    }
+    
+    .install-prompt-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    
+    .install-prompt-text {
+      flex: 1;
+    }
+    
+    .install-prompt-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .install-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .install-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .install-btn.primary {
+      background: white;
+      color: #10b981;
+    }
+    
+    .install-btn.primary:hover {
+      background: #f9fafb;
+    }
+    
+    /* Floating Authentication Widget */
+    #floatingAuth {
+      animation: fadeInSlide 0.6s ease-out;
+    }
+    
+    @keyframes fadeInSlide {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    #floatingAuth .bg-white {
+      transition: all 0.3s ease;
+    }
+    
+    #floatingAuth:hover .bg-white {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+    
+    /* Mobile floating auth adjustments */
+    @media (max-width: 640px) {
+      #floatingAuth {
+        position: fixed;
+        top: auto;
+        bottom: 5rem; /* Above the FAB button */
+        right: 0.75rem;
+        left: auto;
+      }
+      
+      #floatingAuth .bg-white {
+        padding: 0.375rem;
+      }
+      
+      #userDisplayName {
+        display: none !important;
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media (max-width: 1024px) and (min-width: 641px) {
+      #floatingAuth {
+        top: 5rem; /* Below the navigation bar */
+        right: 1rem;
+      }
+    }
+    
+    /* PWA safe area adjustments for floating auth */
+    @media (display-mode: standalone) {
+      #floatingAuth {
+        top: calc(env(safe-area-inset-top) + 1rem);
+        right: calc(env(safe-area-inset-right) + 1rem);
+      }
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 leading-relaxed">
+
+  <!-- Firebase Status Notification -->
+  <div id="firebaseStatus" class="fixed top-20 right-4 z-50 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg transform translate-x-full transition-transform duration-500">
+    <div class="flex items-center space-x-2">
+      <span id="statusIcon">🔄</span>
+      <span id="statusText">Connecting to cloud...</span>
+    </div>
+  </div>
+
+     <!-- Navigation Bar -->
+  <nav class="bg-white/5 backdrop-blur-3xl shadow-2xl shadow-black/10 rounded-2xl mx-4 mt-4 p-6 sticky top-4 z-40 border border-white/10">
+    <div class="flex items-center justify-between">
+      <!-- Logo Section -->
+      <div class="flex items-center">
+        <a href="index.html" class="flex items-center gap-3 hover:scale-105 transition-transform duration-300">
+          <!-- Logo Icon using Modern Clover -->
+          <img src="clover-modern.svg" alt="IMPACT Logo" class="h-8 w-8">
+          <div class="hidden sm:block">
+            <span class="text-lg font-bold gradient-text">IMPACT</span>
+          </div>
+        </a>
+      </div>
+      
+      <!-- Main Navigation - Responsive Layout -->
+      <div class="flex-1 flex justify-center">
+        <ul class="flex flex-wrap gap-8 lg:gap-12 text-sm font-semibold text-gray-900">
+      
+      <!-- Discovery -->
+      <li class="relative group">
+        <div class="flex items-center gap-3 hover:text-green-600 transition-all duration-300 px-6 py-4 rounded-xl hover:bg-white/10 hover:shadow-lg hover:backdrop-blur-md transform hover:-translate-y-0.5 cursor-pointer">
+          <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-300 w-0 group-hover:w-full"></div>
+          <span class="font-medium tracking-wide relative z-10 text-lg">Discovery</span>
+          <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <!-- Dropdown Menu -->
+        <div class="absolute top-full left-0 mt-2 w-72 bg-white/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+          <div class="p-4">
+            <a href="seedboard.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-green-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+              </div>
+              <div>
+                <div class="font-medium text-green-700 group-hover/item:text-green-800">Seedboard</div>
+                <div class="text-xs text-gray-600">Submit & explore ideas</div>
+              </div>
+            </a>
+            <a href="ai-matching.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-purple-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 bg-purple-500 rounded"></div>
+              </div>
+              <div>
+                <div class="font-medium text-purple-700 group-hover/item:text-purple-800">AI Matching</div>
+                <div class="text-xs text-gray-600">Smart opportunity finder</div>
+              </div>
+            </a>
+            <a href="dashboard_enhanced.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 grid grid-cols-2 gap-0.5">
+                  <div class="bg-blue-500 rounded-sm"></div>
+                  <div class="bg-blue-300 rounded-sm"></div>
+                  <div class="bg-blue-300 rounded-sm"></div>
+                  <div class="bg-blue-500 rounded-sm"></div>
+                </div>
+              </div>
+              <div>
+                <div class="font-medium text-blue-700 group-hover/item:text-blue-800">Dashboard</div>
+                <div class="text-xs text-gray-600">Analytics & insights</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Action -->
+      <li class="relative group">
+        <div class="flex items-center gap-3 hover:text-blue-600 transition-all duration-300 px-6 py-4 rounded-xl hover:bg-white/10 hover:shadow-lg hover:backdrop-blur-md transform hover:-translate-y-0.5 cursor-pointer">
+          <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-300 w-0 group-hover:w-full"></div>
+          <span class="font-medium tracking-wide relative z-10 text-lg">Action</span>
+          <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <!-- Dropdown Menu -->
+        <div class="absolute top-full left-0 mt-2 w-72 bg-white/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+          <div class="p-4">
+            <a href="skillmatch.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-yellow-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 bg-yellow-500 rounded-full border-2 border-yellow-300"></div>
+              </div>
+              <div>
+                <div class="font-medium text-yellow-700 group-hover/item:text-yellow-800">SkillMatch</div>
+                <div class="text-xs text-gray-600">Connect skills to causes</div>
+              </div>
+            </a>
+            <a href="opencall_new.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 bg-red-500 rounded"></div>
+              </div>
+              <div>
+                <div class="font-medium text-red-700 group-hover/item:text-red-800">OpenCall</div>
+                <div class="text-xs text-gray-600">Urgent volunteer calls</div>
+              </div>
+            </a>
+            <a href="teamspace_new.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-purple-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <div class="flex gap-1">
+                  <div class="w-1 h-3 bg-purple-500 rounded"></div>
+                  <div class="w-1 h-4 bg-purple-500 rounded"></div>
+                  <div class="w-1 h-3 bg-purple-500 rounded"></div>
+                </div>
+              </div>
+              <div>
+                <div class="font-medium text-purple-700 group-hover/item:text-purple-800">TeamSpace</div>
+                <div class="text-xs text-gray-600">Collaborate with others</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </li>
+      
+      <!-- Community -->
+      <li class="relative group">
+        <div class="flex items-center gap-3 hover:text-purple-600 transition-all duration-300 px-6 py-4 rounded-xl hover:bg-white/10 hover:shadow-lg hover:backdrop-blur-md transform hover:-translate-y-0.5 cursor-pointer">
+          <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-300 w-0 group-hover:w-full"></div>
+          <span class="font-medium tracking-wide relative z-10 text-lg">Community</span>
+          <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <!-- Dropdown Menu -->
+        <div class="absolute top-full left-0 mt-2 w-72 bg-white/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+          <div class="p-4">
+            <a href="social-features.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+                <div class="flex gap-1">
+                  <div class="w-2 h-2 bg-pink-500 rounded-full"></div>
+                  <div class="w-2 h-2 bg-pink-500 rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <div class="font-medium text-pink-700 group-hover/item:text-pink-800">Social Hub</div>
+                <div class="text-xs text-gray-600">Connect with changemakers</div>
+              </div>
+            </a>
+            <a href="sdg-tracking.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-indigo-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 border-2 border-indigo-500 rounded-full relative">
+                  <div class="absolute inset-1 bg-indigo-500 rounded-full"></div>
+                </div>
+              </div>
+              <div>
+                <div class="font-medium text-indigo-700 group-hover/item:text-indigo-800">SDG Tracking</div>
+                <div class="text-xs text-gray-600">Global impact goals</div>
+              </div>
+            </a>
+            <a href="impactlog_new.html" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group/item">
+              <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div class="w-4 h-4 bg-gray-500 transform rotate-45"></div>
+              </div>
+              <div>
+                <div class="font-medium text-gray-700 group-hover/item:text-gray-800">ImpactLog</div>
+                <div class="text-xs text-gray-600">Track your growth</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </li>
+      
+        </ul>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <div class="lg:hidden">
+        <button id="mobileMenuBtn" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+          <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden lg:hidden mt-4 p-4 bg-white/90 backdrop-blur-xl rounded-xl border border-white/20">
+      <div class="space-y-3">
+        <a href="seedboard.html" class="block p-3 rounded-lg hover:bg-green-50 text-green-700 font-medium">🌱 Seedboard</a>
+        <a href="ai-matching.html" class="block p-3 rounded-lg hover:bg-purple-50 text-purple-700 font-medium">🤖 AI Matching</a>
+        <a href="dashboard_enhanced.html" class="block p-3 rounded-lg hover:bg-blue-50 text-blue-700 font-medium">📊 Dashboard</a>
+        <a href="skillmatch.html" class="block p-3 rounded-lg hover:bg-yellow-50 text-yellow-700 font-medium">🎯 SkillMatch</a>
+        <a href="opencall_new.html" class="block p-3 rounded-lg hover:bg-red-50 text-red-700 font-medium">📣 OpenCall</a>
+        <a href="teamspace_new.html" class="block p-3 rounded-lg hover:bg-purple-50 text-purple-700 font-medium">👥 TeamSpace</a>
+        <a href="social-features.html" class="block p-3 rounded-lg hover:bg-pink-50 text-pink-700 font-medium">🤝 Social Hub</a>
+        <a href="sdg-tracking.html" class="block p-3 rounded-lg hover:bg-indigo-50 text-indigo-700 font-medium">🌍 SDG Tracking</a>
+        <a href="impactlog_new.html" class="block p-3 rounded-lg hover:bg-gray-50 text-gray-700 font-medium">✨ ImpactLog</a>
+      </div>
+    </div>
+  </nav>
+  <!-- Floating Authentication Widget -->
+  <div id="floatingAuth" class="fixed top-4 right-4 z-40">
+    <div id="authSection" class="bg-white rounded-full shadow-lg border border-gray-200 p-2 backdrop-blur-sm bg-white/95">
+      <!-- Guest User State -->
+      <div id="guestState" class="flex items-center gap-2">
+        <span class="text-xs text-gray-500 px-2 flex items-center gap-1">Guest</span>
+        <button onclick="showAuthModal()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105">
+          Sign In
+        </button>
+      </div>
+      
+      <!-- Authenticated User State -->
+      <div id="authenticatedState" class="flex items-center gap-2" style="display: none;">
+        <a href="profile.html" class="flex items-center gap-2 text-xs text-gray-700 hover:text-green-600 px-2">
+          <div id="userAvatar" class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold">
+            ?
+          </div>
+          <span id="userDisplayName" class="hidden sm:inline">User</span>
+        </a>
+        <button id="signOutBtn" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-full text-xs font-semibold transition-all hover:scale-105">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <header class="relative bg-gradient-to-r from-green-50 to-blue-50 text-center py-16 px-6 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-green-400/20 to-blue-400/20"></div>
+    <div class="relative z-10">
+      <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-6 animate-pulse">Planting Seeds of Change</h1>
+      <p class="text-lg md:text-xl text-gray-700 mt-4 max-w-4xl mx-auto leading-relaxed">
+        Turn passion into powerful impact, make a change with a meaningful act.<br>
+        Mentor leaders, build communities, create solutions that flow. Connect with purpose-driven opportunities and watch your actions transform tomorrow.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="seedboard.html" class="btn-animate bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-lg text-center flex items-center justify-center gap-2">
+          Start Your Journey
+        </a>
+        <button onclick="try { scrollToSection('dashboard'); } catch(e) { console.log('Scroll error:', e); }" class="btn-animate bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
+          Explore Platform
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Cards - User Journey Flow Organization -->
+  <section id="dashboard" class="w-full py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Journey Section Headers -->
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          Your Impact Journey
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Find your way, start today.</p>
+      </div>
+      
+      <!-- Discovery & Onboarding -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-sm">1</span>
+          Discovery & Onboarding
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-400 stagger-item" id="seedboard">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-green-700">Seedboard</h2>
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">🌱</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Submit and explore ideas for positive change.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="seedboard-count">0 active ideas</span>
+              <span>Trending</span>
+            </div>
+            <a href="seedboard.html" class="block w-full btn-animate bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              Explore Ideas
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-400 stagger-item" id="opportunity">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-blue-700">Dashboard</h2>
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">📊</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">View analytics and track community impact.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="dashboard-count">0 insights</span>
+              <span>Growing</span>
+            </div>
+            <a href="dashboard_enhanced.html" class="block w-full btn-animate bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              View Analytics
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-400 stagger-item" id="aimatching">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-purple-700">AI Matching</h2>
+              <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">🤖</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Get personalized opportunities powered by AI.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="ai-matches-count">0 smart matches</span>
+              <span class="text-purple-500 font-semibold">AI Powered</span>
+            </div>
+            <a href="ai-matching.html" class="block w-full btn-animate bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              Get AI Matches
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Engagement & Action -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm">2</span>
+          Engagement & Action
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-400 stagger-item" id="skillmatch">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-yellow-700">SkillMatch</h2>
+              <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">🎯</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Connect your skills with meaningful causes.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="skillmatch-count">0 matches</span>
+              <span>Quick match</span>
+            </div>
+            <a href="skillmatch.html" class="block w-full btn-animate bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              Find Matches
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-400 stagger-item" id="opencall">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-red-700">OpenCall</h2>
+              <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">📣</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Respond to calls for volunteers and ideas.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="opencall-count">0 urgent calls</span>
+              <span class="text-red-500 font-semibold">Live</span>
+            </div>
+            <a href="opencall_new.html" class="block w-full btn-animate bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all pulse-urgent">
+              Answer Calls
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-400 stagger-item" id="teamspace">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-purple-700">TeamSpace</h2>
+              <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">👥</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Collaborate with others who share your vision.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="teamspace-count">0 teams</span>
+              <span>Active</span>
+            </div>
+            <a href="teamspace_new.html" class="block w-full btn-animate bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              Join Teams
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Community & Growth -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold text-sm">3</span>
+          Community & Growth
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-pink-400 stagger-item" id="social">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-pink-700">Social Hub</h2>
+              <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">🤝</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Connect with changemakers and share your impact journey.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="social-count">0 connections</span>
+              <span class="text-pink-500 font-semibold">Community</span>
+            </div>
+            <a href="social-features.html" class="block w-full btn-animate bg-pink-500 hover:bg-pink-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              Join Community
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-indigo-400 stagger-item" id="sdg-tracking">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-indigo-700">SDG Tracking</h2>
+              <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">🌍</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Track global impact aligned with UN Sustainable Development Goals.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="sdg-progress-count">8/17 SDGs active</span>
+              <span class="text-indigo-500 font-semibold">Global</span>
+            </div>
+            <a href="sdg-tracking.html" class="block w-full btn-animate bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              View SDG Impact
+            </a>
+          </div>
+
+          <div class="card-hover bg-white rounded-xl shadow-lg p-6 border-l-4 border-gray-400 stagger-item" id="impactlog">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-semibold text-gray-700">ImpactLog</h2>
+              <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                <span class="text-2xl">✨</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Reflect on your contributions and growth.</p>
+            <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span id="impactlog-count">0 entries</span>
+              <span>Personal</span>
+            </div>
+            <a href="impactlog_new.html" class="block w-full btn-animate bg-gray-500 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-center font-semibold transition-all">
+              View Progress
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Filters -->
+  <section id="filters" class="w-full py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto bg-gray-100 p-6 lg:p-8 rounded-lg shadow-md">
+      <h2 class="text-xl lg:text-2xl font-semibold text-green-700 mb-6">Quick Filters</h2>
+      <form class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+      <div>
+        <label for="location" class="block font-medium text-gray-700">Location:</label>
+        <select id="location" class="w-full border border-gray-300 rounded p-2">
+          <option>Malaysia</option>
+          <option>Indonesia</option>
+          <option>Philippines</option>
+        </select>
+      </div>
+      <div>
+        <label for="theme" class="block font-medium text-gray-700">Theme:</label>
+        <select id="theme" class="w-full border border-gray-300 rounded p-2">
+          <option>Education</option>
+          <option>Climate</option>
+          <option>Mental Health</option>
+        </select>
+      </div>
+      <div>
+        <label for="availability" class="block font-medium text-gray-700">Availability:</label>
+        <select id="availability" class="w-full border border-gray-300 rounded p-2">
+          <option>Weekends</option>
+          <option>Weekdays</option>
+          <option>Flexible</option>
+        </select>
+      </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Volunteer Spotlight Section -->
+  <section id="volunteer-spotlight" class="w-full py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Volunteer Spotlight</h2>
+        <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Meet the amazing people making a difference in our community</p>
+      </div>
+      
+      <div id="spotlightContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+        <!-- Volunteer cards will be dynamically inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-green-100 to-blue-100 text-center py-8 text-sm text-gray-700 mt-16">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">🌱</span>
+          <span class="font-semibold">&copy; 2025 Impact Platform</span>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="font-medium gradient-text">Rooted in care, collaboration, and community.</p>
+          <p class="text-xs mt-1">Planting seeds of change, one idea at a time.</p>
+        </div>
+      </div>
+      <div class="mt-6 pt-4 border-t border-gray-300">
+        <div class="flex justify-center space-x-6 text-xs">
+          <a href="#" class="hover:text-green-600 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-green-600 transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-green-600 transition-colors">Contact Us</a>
+          <a href="#" class="hover:text-green-600 transition-colors">Help</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Action Button -->
+  <a href="seedboard.html" class="fab" title="Start Your Journey">
+    <span class="fab-icon">+</span>
+    <span class="fab-text">Start</span>
+  </a>
+
+  <!-- Scripts -->
+  <script src="api-client.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  <script src="ai-matching-engine.js"></script>
+  <script src="social-engine.js"></script>
+  <script src="sdg-engine.js"></script>
+  <script src="auth-manager.js"></script>
+  <script src="pwa-features.js"></script>
+  <script>
+    // Firebase status notification system
+    function showFirebaseStatus(message, type = 'info', duration = 3000) {
+      const statusDiv = document.getElementById('firebaseStatus');
+      const statusIcon = document.getElementById('statusIcon');
+      const statusText = document.getElementById('statusText');
+      
+      if (!statusDiv) return;
+      
+      // Set icon and color based on type
+      switch (type) {
+        case 'success':
+          statusIcon.textContent = '✅';
+          statusDiv.className = statusDiv.className.replace(/bg-\w+-500/, 'bg-green-500');
+          break;
+        case 'warning':
+          statusIcon.textContent = '⚠️';
+          statusDiv.className = statusDiv.className.replace(/bg-\w+-500/, 'bg-yellow-500');
+          break;
+        case 'error':
+          statusIcon.textContent = '❌';
+          statusDiv.className = statusDiv.className.replace(/bg-\w+-500/, 'bg-red-500');
+          break;
+        default:
+          statusIcon.textContent = '🔄';
+          statusDiv.className = statusDiv.className.replace(/bg-\w+-500/, 'bg-blue-500');
+      }
+      
+      statusText.textContent = message;
+      
+      // Show notification
+      statusDiv.classList.remove('translate-x-full');
+      
+      // Auto-hide after duration
+      if (duration > 0) {
+        setTimeout(() => {
+          statusDiv.classList.add('translate-x-full');
+        }, duration);
+      }
+    }
+
+    // Simple smooth scrolling function
+    function scrollToSection(sectionId) {
+      try {
+        document.getElementById(sectionId).scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } catch(e) {
+        console.log('Scroll error:', e);
+      }
+    }
+
+    // Update dashboard statistics with enhanced data layer
+    async function updateDashboardStats() {
+      try {
+        // Check if enhanced data layer is available
+        if (window.impactDataLayer) {
+          const stats = await window.impactDataLayer.getGlobalStats();
+          
+          document.getElementById('seedboard-count').textContent = `${stats.activeIdeas} active ideas`;
+          document.getElementById('skillmatch-count').textContent = `${stats.totalVolunteers} volunteers`;
+          document.getElementById('teamspace-count').textContent = `${stats.activeTeams} teams`;
+          document.getElementById('opencall-count').textContent = `${stats.urgentCalls} urgent calls`;
+          document.getElementById('impactlog-count').textContent = `${stats.totalEntries} entries`;
+          document.getElementById('dashboard-count').textContent = `${Math.floor(stats.totalImpactHours / 10)} insights`;
+          
+          // Update AI matching count
+          if (window.aiMatchingEngine && window.aiMatchingEngine.initialized) {
+            const recommendations = await window.aiMatchingEngine.getRecommendations(5, 0.5);
+            document.getElementById('ai-matches-count').textContent = `${recommendations.length} smart matches`;
+          }
+          
+          // Update social count
+          if (window.socialEngine && window.socialEngine.initialized) {
+            const connections = window.socialEngine.getConnections();
+            document.getElementById('social-count').textContent = `${connections.length} connections`;
+          }
+          
+          // Update SDG tracking count
+          if (window.sdgEngine && window.sdgEngine.isInitialized) {
+            const userContributions = window.sdgEngine.getAllUserContributions();
+            document.getElementById('sdg-progress-count').textContent = `${userContributions.length}/17 SDGs active`;
+          }
+          
+          console.log('✅ Dashboard stats updated from enhanced data layer');
+        } else {
+          // Fallback to localStorage
+          const seedboardIdeas = JSON.parse(localStorage.getItem('seedboardIdeas') || '[]');
+          const volunteers = JSON.parse(localStorage.getItem('volunteers') || '[]');
+          const teams = JSON.parse(localStorage.getItem('teams') || '[]');
+          const openCalls = JSON.parse(localStorage.getItem('openCalls') || '[]');
+          const impactEntries = JSON.parse(localStorage.getItem('impactEntries') || '[]');
+
+          document.getElementById('seedboard-count').textContent = `${seedboardIdeas.length} active ideas`;
+          document.getElementById('skillmatch-count').textContent = `${volunteers.length} volunteers`;
+          document.getElementById('teamspace-count').textContent = `${teams.length} teams`;
+          document.getElementById('opencall-count').textContent = `${openCalls.filter(call => call.status === 'active').length} urgent calls`;
+          document.getElementById('impactlog-count').textContent = `${impactEntries.length} entries`;
+          
+          // Update dashboard count
+          const totalInsights = Math.floor((seedboardIdeas.length + volunteers.length + teams.length + openCalls.length + impactEntries.length) / 2);
+          document.getElementById('dashboard-count').textContent = `${totalInsights} insights`;
+          
+          // AI matching fallback
+          if (window.aiMatchingEngine && window.aiMatchingEngine.initialized) {
+            const recommendations = await window.aiMatchingEngine.getRecommendations(5, 0.5);
+            document.getElementById('ai-matches-count').textContent = `${recommendations.length} smart matches`;
+          } else {
+            document.getElementById('ai-matches-count').textContent = 'AI loading...';
+          }
+          
+          // Social fallback
+          if (window.socialEngine && window.socialEngine.initialized) {
+            const connections = window.socialEngine.getConnections();
+            document.getElementById('social-count').textContent = `${connections.length} connections`;
+          } else {
+            document.getElementById('social-count').textContent = 'Connecting...';
+          }
+          
+          // SDG tracking fallback
+          if (window.sdgEngine && window.sdgEngine.isInitialized) {
+            const userContributions = window.sdgEngine.getAllUserContributions();
+            document.getElementById('sdg-progress-count').textContent = `${userContributions.length}/17 SDGs active`;
+          } else {
+            document.getElementById('sdg-progress-count').textContent = 'Loading SDGs...';
+          }
+          
+          console.log('⚠️ Dashboard stats updated from localStorage fallback');
+        }
+      } catch(e) {
+        console.log('Stats update error:', e);
+      }
+    }
+
+    // Initialize volunteer spotlight data with enhanced data layer
+    async function initializeSpotlightData() {
+      try {
+        if (window.impactDataLayer) {
+          const spotlightData = await window.impactDataLayer.getVolunteerSpotlight();
+          
+          if (spotlightData.length === 0) {
+            // Initialize with default data
+            const defaultSpotlight = [
+              {
+                id: 1,
+                name: "Sani Miftah",
+                role: "Platform Creator",
+                location: "Asia-Pacific",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "S",
+                color: "green",
+                story: "During Cognizant's Vibe Coding Week, I saw an opportunity to unify our scattered volunteer efforts across Asia-Pacific. IMPACT isn't just a platform—it's a movement toward intentional, values-driven change.",
+                stats: {
+                  impact: "6 Modules Built",
+                  hours: "100+ Hours",
+                  reach: "Global Platform"
+                },
+                tags: ["Platform Creator", "Tech for Good", "Innovation"],
+                featured: true
+              },
+              {
+                id: 2,
+                name: "Maya Chen",
+                role: "Community Mentor",
+                location: "Kuala Lumpur",
+                avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "M",
+                color: "blue",
+                story: "Teaching coding to underprivileged youth has been transformative. Seeing their faces light up when they build their first app—that's pure magic! 💻✨",
+                stats: {
+                  impact: "30 Students Mentored",
+                  hours: "200+ Hours",
+                  reach: "5 Schools"
+                },
+                tags: ["Education", "Mentorship", "Youth Development"]
+              },
+              {
+                id: 3,
+                name: "Rahul Sharma", 
+                role: "Environmental Advocate",
+                location: "Mumbai",
+                avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "R",
+                color: "green",
+                story: "Our beach cleanup started small but grew into a movement. IMPACT helped us coordinate 500+ volunteers across 12 beaches in one weekend! 🌊",
+                stats: {
+                  impact: "15 Beaches Cleaned",
+                  hours: "150+ Hours", 
+                  reach: "500+ Volunteers"
+                },
+                tags: ["Environment", "Climate Action", "Community"]
+              },
+              {
+                id: 4,
+                name: "Luna Santos",
+                role: "Mental Health Champion",
+                location: "Manila",
+                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "L",
+                color: "purple",
+                story: "Building safe spaces for mental health conversations has created ripples of positive change that extend far beyond our workplace walls. 💚",
+                stats: {
+                  impact: "200+ Lives Touched",
+                  hours: "300+ Hours",
+                  reach: "10 Workplaces"
+                },
+                tags: ["Mental Health", "Workplace Wellness", "Advocacy"]
+              }
+            ];
+            await window.impactDataLayer.saveVolunteerSpotlight(defaultSpotlight);
+            console.log('✅ Default volunteer spotlight data initialized in Firebase');
+          }
+        } else {
+          // Fallback to localStorage
+          const spotlightData = localStorage.getItem('volunteerSpotlight');
+          if (!spotlightData) {
+            const defaultSpotlight = [
+              {
+                id: 1,
+                name: "Sani Miftah",
+                role: "Platform Creator",
+                location: "Asia-Pacific",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "S",
+                color: "green",
+                story: "During Cognizant's Vibe Coding Week, I saw an opportunity to unify our scattered volunteer efforts across Asia-Pacific. IMPACT isn't just a platform—it's a movement toward intentional, values-driven change.",
+                stats: {
+                  impact: "6 Modules Built",
+                  hours: "100+ Hours",
+                  reach: "Global Platform"
+                },
+                tags: ["Platform Creator", "Tech for Good", "Innovation"],
+                featured: true
+              },
+              {
+                id: 2,
+                name: "Maya Chen",
+                role: "Community Mentor",
+                location: "Kuala Lumpur",
+                avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "M",
+                color: "blue",
+                story: "Teaching coding to underprivileged youth has been transformative. Seeing their faces light up when they build their first app—that's pure magic! 💻✨",
+                stats: {
+                  impact: "30 Students Mentored",
+                  hours: "200+ Hours",
+                  reach: "5 Schools"
+                },
+                tags: ["Education", "Mentorship", "Youth Development"]
+              },
+              {
+                id: 3,
+                name: "Rahul Sharma", 
+                role: "Environmental Advocate",
+                location: "Mumbai",
+                avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "R",
+                color: "green",
+                story: "Our beach cleanup started small but grew into a movement. IMPACT helped us coordinate 500+ volunteers across 12 beaches in one weekend! 🌊",
+                stats: {
+                  impact: "15 Beaches Cleaned",
+                  hours: "150+ Hours", 
+                  reach: "500+ Volunteers"
+                },
+                tags: ["Environment", "Climate Action", "Community"]
+              },
+              {
+                id: 4,
+                name: "Luna Santos",
+                role: "Mental Health Champion",
+                location: "Manila",
+                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                fallbackAvatar: "L",
+                color: "purple",
+                story: "Building safe spaces for mental health conversations has created ripples of positive change that extend far beyond our workplace walls. 💚",
+                stats: {
+                  impact: "200+ Lives Touched",
+                  hours: "300+ Hours",
+                  reach: "10 Workplaces"
+                },
+                tags: ["Mental Health", "Workplace Wellness", "Advocacy"]
+              }
+            ];
+            localStorage.setItem('volunteerSpotlight', JSON.stringify(defaultSpotlight));
+            console.log('⚠️ Default volunteer spotlight data initialized in localStorage');
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing spotlight data:', error);
+      }
+    }
+
+    // Create and display volunteer spotlight cards with enhanced data layer
+    async function displayVolunteerSpotlight() {
+      try {
+        let spotlightData = [];
+        
+        if (window.impactDataLayer) {
+          spotlightData = await window.impactDataLayer.getVolunteerSpotlight();
+          console.log('✅ Volunteer spotlight loaded from enhanced data layer');
+        } else {
+          spotlightData = JSON.parse(localStorage.getItem('volunteerSpotlight') || '[]');
+          console.log('⚠️ Volunteer spotlight loaded from localStorage fallback');
+        }
+        
+        const container = document.getElementById('spotlightContainer');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        spotlightData.forEach((volunteer, index) => {
+          const card = document.createElement('div');
+          
+          // Set base classes first
+          card.className = 'volunteer-card bg-white rounded-xl shadow-lg hover:shadow-xl p-6 cursor-pointer transform transition-all duration-300 hover:scale-105 border-l-4 opacity-0';
+          
+          // Add color-specific border class based on volunteer color
+          if (volunteer.color === 'green') {
+            card.classList.add('border-green-400');
+          } else if (volunteer.color === 'blue') {
+            card.classList.add('border-blue-400');
+          } else if (volunteer.color === 'purple') {
+            card.classList.add('border-purple-400');
+          } else {
+            card.classList.add('border-gray-400');
+          }
+          
+          card.style.animationDelay = `${index * 150}ms`;
+          
+          // Add entrance animation
+          setTimeout(() => {
+            card.classList.remove('opacity-0');
+            card.classList.add('opacity-100');
+          }, index * 150);
+          
+          // Create the card content with proper color classes
+          let cardHTML = '';
+          let titleColorClass = '';
+          let bgColorClass = '';
+          let textColorClass = '';
+          let buttonColorClass = '';
+          let buttonHoverClass = '';
+          let featuredColorClass = '';
+          
+          // Set color classes based on volunteer color
+          if (volunteer.color === 'green') {
+            titleColorClass = 'text-green-700';
+            bgColorClass = 'bg-green-100';
+            textColorClass = 'text-green-600';
+            buttonColorClass = 'bg-green-500';
+            buttonHoverClass = 'hover:bg-green-600';
+            featuredColorClass = 'text-green-500';
+          } else if (volunteer.color === 'blue') {
+            titleColorClass = 'text-blue-700';
+            bgColorClass = 'bg-blue-100';
+            textColorClass = 'text-blue-600';
+            buttonColorClass = 'bg-blue-500';
+            buttonHoverClass = 'hover:bg-blue-600';
+            featuredColorClass = 'text-blue-500';
+          } else if (volunteer.color === 'purple') {
+            titleColorClass = 'text-purple-700';
+            bgColorClass = 'bg-purple-100';
+            textColorClass = 'text-purple-600';
+            buttonColorClass = 'bg-purple-500';
+            buttonHoverClass = 'hover:bg-purple-600';
+            featuredColorClass = 'text-purple-500';
+          } else {
+            titleColorClass = 'text-gray-700';
+            bgColorClass = 'bg-gray-100';
+            textColorClass = 'text-gray-600';
+            buttonColorClass = 'bg-gray-500';
+            buttonHoverClass = 'hover:bg-gray-600';
+            featuredColorClass = 'text-gray-500';
+          }
+          
+          card.innerHTML = `
+            <div class="text-center">
+              <!-- Profile Picture -->
+              <div class="relative mb-4 flex items-center justify-between">
+                <h3 class="font-semibold text-lg ${titleColorClass}">${volunteer.name}</h3>
+                <div class="w-12 h-12 ${bgColorClass} rounded-full flex items-center justify-center overflow-hidden shadow-lg">
+                  <img src="${volunteer.avatar || ''}" alt="${volunteer.name}" class="w-full h-full object-cover rounded-full volunteer-avatar" 
+                       style="display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                  <span class="w-full h-full flex items-center justify-center text-xl font-bold ${textColorClass}" style="display: none;">${volunteer.fallbackAvatar || volunteer.name.charAt(0).toUpperCase()}</span>
+                </div>
+                ${volunteer.featured ? '<div class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold shadow-lg">⭐</div>' : ''}
+              </div>
+              
+              <!-- Role and Location -->
+              <p class="text-sm text-gray-600 mb-4">${volunteer.role} • ${volunteer.location}</p>
+              
+              <!-- Story Preview -->
+              <div class="mb-4">
+                <p class="text-sm text-gray-700 leading-relaxed">"${volunteer.story.slice(0, 80)}..."</p>
+              </div>
+              
+              <!-- Impact Stats -->
+              <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                <span>${volunteer.stats && volunteer.stats.impact ? volunteer.stats.impact : 'Impact Data'}</span>
+                <span class="${featuredColorClass} font-semibold">✨ Featured</span>
+              </div>
+              
+              <!-- Learn More Button -->
+              <button class="block w-full ${buttonColorClass} ${buttonHoverClass} text-white py-3 px-4 rounded-lg text-center font-semibold transition-all learn-more-btn" data-volunteer="${volunteer.name}">
+                Learn More
+              </button>
+            </div>
+          `;
+          
+          // Add click event for detailed view to the entire card
+          card.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Card clicked for:', volunteer.name);
+            showVolunteerDetails(volunteer);
+          });
+          
+          // Also add specific click event to the button
+          setTimeout(() => {
+            const button = card.querySelector('.learn-more-btn');
+            if (button) {
+              button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Button clicked for:', volunteer.name);
+                showVolunteerDetails(volunteer);
+              });
+            }
+            
+            // Handle image loading errors more robustly
+            const img = card.querySelector('.volunteer-avatar');
+            const fallback = img.nextElementSibling;
+            
+            // Check if image fails to load or if src is invalid
+            if (!volunteer.avatar || volunteer.avatar === '' || volunteer.avatar === 'undefined') {
+              img.style.display = 'none';
+              fallback.style.display = 'flex';
+            } else {
+              img.onload = function() {
+                img.style.display = 'block';
+                fallback.style.display = 'none';
+              };
+              img.onerror = function() {
+                img.style.display = 'none';
+                fallback.style.display = 'flex';
+              };
+            }
+          }, 100);
+          
+          container.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error displaying volunteer spotlight:', error);
+      }
+    }    // Enhanced showVolunteerDetails function
+    function showVolunteerDetails(volunteer) {
+      console.log('showVolunteerDetails called with:', volunteer);
+      
+      // Check if volunteer data is complete
+      if (!volunteer || !volunteer.stats) {
+        console.error('Incomplete volunteer data:', volunteer);
+        return;
+      }
+      
+      // Set color-specific classes
+      let bgColorClass = '';
+      let textColorClass = '';
+      let buttonColorClass = '';
+      let buttonHoverClass = '';
+      let borderColorClass = '';
+      let bgLightColorClass = '';
+      
+      if (volunteer.color === 'green') {
+        bgColorClass = 'bg-green-100';
+        textColorClass = 'text-green-600';
+        buttonColorClass = 'bg-green-500';
+        buttonHoverClass = 'hover:bg-green-600';
+        borderColorClass = 'border-green-400';
+        bgLightColorClass = 'bg-green-50';
+      } else if (volunteer.color === 'blue') {
+        bgColorClass = 'bg-blue-100';
+        textColorClass = 'text-blue-600';
+        buttonColorClass = 'bg-blue-500';
+        buttonHoverClass = 'hover:bg-blue-600';
+        borderColorClass = 'border-blue-400';
+        bgLightColorClass = 'bg-blue-50';
+      } else if (volunteer.color === 'purple') {
+        bgColorClass = 'bg-purple-100';
+        textColorClass = 'text-purple-600';
+        buttonColorClass = 'bg-purple-500';
+        buttonHoverClass = 'hover:bg-purple-600';
+        borderColorClass = 'border-purple-400';
+        bgLightColorClass = 'bg-purple-50';
+      } else {
+        bgColorClass = 'bg-gray-100';
+        textColorClass = 'text-gray-600';
+        buttonColorClass = 'bg-gray-500';
+        buttonHoverClass = 'hover:bg-gray-600';
+        borderColorClass = 'border-gray-400';
+        bgLightColorClass = 'bg-gray-50';
+      }
+      
+      // Safely get stats with fallbacks
+      const impactStat = volunteer.stats.impact || 'N/A';
+      const hoursStat = volunteer.stats.hours || 'N/A';
+      const reachStat = volunteer.stats.reach || 'N/A';
+      
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+      modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95">
+          <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center space-x-4">
+              <!-- Profile Picture -->
+              <div class="w-20 h-20 rounded-full ${bgColorClass} flex items-center justify-center text-3xl font-bold ${textColorClass} overflow-hidden">
+                <img src="${volunteer.avatar || ''}" alt="${volunteer.name}" class="w-full h-full object-cover rounded-full volunteer-avatar" 
+                     style="display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span class="w-full h-full flex items-center justify-center" style="display: none;">${volunteer.fallbackAvatar || volunteer.name.charAt(0).toUpperCase()}</span>
+              </div>
+              <div>
+                <h3 class="text-3xl font-bold text-gray-800">${volunteer.name}</h3>
+                <p class="text-lg text-gray-600">${volunteer.role}</p>
+                <p class="text-sm text-gray-500">📍 ${volunteer.location}</p>
+              </div>
+            </div>
+            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+          </div>
+          
+          <!-- Full Story -->
+          <blockquote class="text-lg text-gray-700 italic mb-6 p-4 border-l-4 ${borderColorClass} ${bgLightColorClass} rounded-r-lg">
+            "${volunteer.story}"
+          </blockquote>
+          
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold ${textColorClass}">${impactStat.split(' ')[0] || 'N/A'}</div>
+              <div class="text-sm text-gray-600">${impactStat.split(' ').slice(1).join(' ') || 'Impact'}</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold ${textColorClass}">${hoursStat.split(' ')[0] || 'N/A'}</div>
+              <div class="text-sm text-gray-600">${hoursStat.split(' ').slice(1).join(' ') || 'Hours'}</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold ${textColorClass}">${reachStat.split(' ')[0] || 'N/A'}</div>
+              <div class="text-sm text-gray-600">${reachStat.split(' ').slice(1).join(' ') || 'Reach'}</div>
+            </div>
+          </div>
+          
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 mb-6">
+            ${(volunteer.tags || []).map(tag => {
+              let tagBgClass = '';
+              let tagTextClass = '';
+              if (volunteer.color === 'green') {
+                tagBgClass = 'bg-green-100';
+                tagTextClass = 'text-green-700';
+              } else if (volunteer.color === 'blue') {
+                tagBgClass = 'bg-blue-100';
+                tagTextClass = 'text-blue-700';
+              } else if (volunteer.color === 'purple') {
+                tagBgClass = 'bg-purple-100';
+                tagTextClass = 'text-purple-700';
+              } else {
+                tagBgClass = 'bg-gray-100';
+                tagTextClass = 'text-gray-700';
+              }
+              return `<span class="px-3 py-1 ${tagBgClass} ${tagTextClass} rounded-full text-sm font-medium">${tag}</span>`;
+            }).join('')}
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex gap-4">
+            <a href="teamspace_new.html" class="flex-1 ${buttonColorClass} ${buttonHoverClass} text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+              🤝 Connect & Collaborate
+            </a>
+            <a href="impactlog_new.html" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold text-center transition-colors">
+              📖 Start Your Journey
+            </a>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Handle image loading for modal
+      const modalImg = modal.querySelector('.volunteer-avatar');
+      const modalFallback = modalImg.nextElementSibling;
+      
+      if (!volunteer.avatar || volunteer.avatar === '' || volunteer.avatar === 'undefined') {
+        modalImg.style.display = 'none';
+        modalFallback.style.display = 'flex';
+      } else {
+        modalImg.onload = function() {
+          modalImg.style.display = 'block';
+          modalFallback.style.display = 'none';
+        };
+        modalImg.onerror = function() {
+          modalImg.style.display = 'none';
+          modalFallback.style.display = 'flex';
+        };
+      }
+      
+      // Animate in
+      setTimeout(() => {
+        modal.querySelector('.bg-white').classList.remove('scale-95');
+        modal.querySelector('.bg-white').classList.add('scale-100');
+      }, 10);
+      
+      // Close modal when clicking outside
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      });
+    }
+
+    // Initialize page with enhanced Firebase integration and PWA
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('🚀 IMPACT Platform loading...');
+      showFirebaseStatus('Starting IMPACT Platform...', 'info');
+      
+      // Initialize PWA Manager
+      if (typeof PWAManager !== 'undefined') {
+        window.pwaManager = new PWAManager();
+        console.log('📱 PWA features initialized');
+      }
+
+      // Wait a bit for Firebase to initialize
+      setTimeout(async () => {
+        try {
+          // Check Firebase status
+          if (window.impactDataLayer && window.impactDataLayer.isFirebaseReady) {
+            showFirebaseStatus('🔥 Firebase connected! Real-time sync active', 'success');
+          } else {
+            showFirebaseStatus('📱 Running in offline mode', 'warning');
+          }
+          
+          // Initialize data and displays
+          await initializeSpotlightData();
+          await updateDashboardStats();
+          await displayVolunteerSpotlight();
+          
+          // Set up real-time listeners if Firebase is available
+          if (window.impactDataLayer && window.impactDataLayer.isFirebaseReady) {
+            // Subscribe to real-time updates
+            window.impactDataLayer.subscribeToVolunteerUpdates((data) => {
+              console.log('🔄 Real-time volunteer data update received');
+              displayVolunteerSpotlight();
+              showFirebaseStatus('Data synced from cloud', 'success', 2000);
+            });
+            
+            console.log('✅ Real-time subscriptions active');
+          }
+          
+          console.log('✅ IMPACT Platform fully loaded and ready!');
+          
+          // Hide status after everything is loaded
+          setTimeout(() => {
+            const statusDiv = document.getElementById('firebaseStatus');
+            if (statusDiv) statusDiv.classList.add('translate-x-full');
+          }, 4000);
+          
+        } catch (error) {
+          console.error('❌ Error during initialization:', error);
+          showFirebaseStatus('Error loading platform', 'error');
+        }
+      }, 1000);
+
+      // Add click debugging
+      document.addEventListener('click', function(e) {
+        console.log('Click detected on:', e.target.tagName, e.target.href || e.target.textContent);
+      });
+      
+      console.log('🌱 Basic functionality initialized, waiting for Firebase...');
+    });
+
+    // Spotlight functionality (legacy - kept for compatibility)
+    function initializeSpotlight() {
+      // This function is kept for backward compatibility
+      // New spotlight functionality is handled by displayVolunteerSpotlight()
+    }
+
+    // Authentication Integration
+    let currentUser = null;
+    let currentProfile = null;
+
+    // Initialize authentication
+    function initializeAuth() {
+      console.log('🔐 Initializing authentication...');
+      
+      if (!window.authManager) {
+        console.log('⏳ Waiting for auth manager...');
+        setTimeout(initializeAuth, 500);
+        return;
+      }
+
+      // Listen for auth state changes
+      window.authManager.onAuthStateChange((authState) => {
+        currentUser = authState.user;
+        currentProfile = authState.profile;
+        updateAuthUI();
+      });
+
+      // Setup sign out handler
+      document.getElementById('signOutBtn').addEventListener('click', async () => {
+        await window.authManager.signOut();
+        showNotification('Signed out successfully', 'success');
+      });
+
+      console.log('✅ Authentication initialized');
+    }
+
+    // Update authentication UI
+    function updateAuthUI() {
+      const guestState = document.getElementById('guestState');
+      const authenticatedState = document.getElementById('authenticatedState');
+      const userAvatar = document.getElementById('userAvatar');
+      const userDisplayName = document.getElementById('userDisplayName');
+
+      if (!currentUser || currentUser.isGuest) {
+        // Show guest state
+        guestState.style.display = 'flex';
+        authenticatedState.style.display = 'none';
+      } else {
+        // Show authenticated state
+        guestState.style.display = 'none';
+        authenticatedState.style.display = 'flex';
+        
+        // Update user info
+        if (currentProfile) {
+          userDisplayName.textContent = currentProfile.personalInfo.displayName;
+          
+          if (currentProfile.personalInfo.photoURL) {
+            userAvatar.innerHTML = `<img src="${currentProfile.personalInfo.photoURL}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+          } else {
+            userAvatar.textContent = currentProfile.personalInfo.displayName.charAt(0).toUpperCase();
+          }
+        }
+      }
+    }
+
+    // Show authentication modal
+    function showAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
+    }
+
+    // Hide authentication modal
+    function hideAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+    }
+
+    // Authentication handlers
+    async function signInWithGoogle() {
+      try {
+        await window.authManager.signInWithGoogle();
+        hideAuthModal();
+        showNotification('Signed in with Google successfully!', 'success');
+      } catch (error) {
+        showNotification('Sign in failed: ' + error.message, 'error');
+      }
+    }
+
+    async function signInWithGitHub() {
+      try {
+        await window.authManager.signInWithGitHub();
+        hideAuthModal();
+        showNotification('Signed in with GitHub successfully!', 'success');
+      } catch (error) {
+        showNotification('Sign in failed: ' + error.message, 'error');
+      }
+    }
+
+    async function signInWithEmail() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!email || !password) {
+        showNotification('Please enter both email and password', 'warning');
+        return;
+      }
+      
+      try {
+        await window.authManager.signInWithEmail(email, password);
+        hideAuthModal();
+        showNotification('Signed in successfully!', 'success');
+      } catch (error) {
+        showNotification('Sign in failed: ' + error.message, 'error');
+      }
+    }
+
+    async function signUpWithEmail() {
+      const name = document.getElementById('signUpName').value;
+      const email = document.getElementById('signUpEmail').value;
+      const password = document.getElementById('signUpPassword').value;
+      
+      if (!name || !email || !password) {
+        showNotification('Please fill in all fields', 'warning');
+        return;
+      }
+      
+      try {
+        await window.authManager.signUpWithEmail(email, password, name);
+        hideAuthModal();
+        showNotification('Account created successfully! Welcome to IMPACT!', 'success');
+      } catch (error) {
+        console.error('Sign up error:', error);
+        
+        let errorMessage = 'Failed to create account. ';
+        if (error.message.includes('email-already-in-use')) {
+          errorMessage += 'This email is already registered.';
+        } else if (error.message.includes('weak-password')) {
+          errorMessage += 'Password should be at least 6 characters.';
+        } else if (error.message.includes('invalid-email')) {
+          errorMessage += 'Please enter a valid email address.';
+        } else if (error.message.includes('Firebase not properly configured')) {
+          errorMessage = 'Creating demo account for testing...';
+          showNotification(errorMessage, 'warning');
+          
+          // Wait a moment and check if demo account was created
+          setTimeout(() => {
+            if (window.authManager.currentUser) {
+              hideAuthModal();
+              showNotification('Demo account created! You can now explore all features.', 'success');
+            }
+          }, 1000);
+          return;
+        } else {
+          errorMessage += error.message;
+        }
+        
+        showNotification(errorMessage, 'error');
+      }
+    }
+
+    function showSignUpForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signUpForm').style.display = 'block';
+    }
+
+    function showLoginForm() {
+      document.getElementById('signUpForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white max-w-sm transform transition-all duration-300 translate-x-full`;
+      
+      switch (type) {
+        case 'success':
+          notification.classList.add('bg-green-500');
+          break;
+        case 'error':
+          notification.classList.add('bg-red-500');
+          break;
+        case 'warning':
+          notification.classList.add('bg-yellow-500');
+          break;
+        default:
+          notification.classList.add('bg-blue-500');
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // Initialize authentication when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize mobile menu
+      initializeMobileMenu();
+      
+      // Initialize authentication after a delay
+      setTimeout(initializeAuth, 1000);
+    });
+
+    // Mobile menu functionality
+    function initializeMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+          
+          // Toggle menu icon
+          const icon = mobileMenuBtn.querySelector('svg');
+          if (mobileMenu.classList.contains('hidden')) {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          } else {
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+          }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+            const icon = mobileMenuBtn.querySelector('svg');
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+          }
+        });
+      }
+    }
+  </script>
+
+  <!-- Authentication Modal -->
+  <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" style="display: none;">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to IMPACT</h2>
+        <p class="text-gray-600">Sign in to unlock your full volunteer potential</p>
+      </div>
+
+      <!-- Social Login Buttons -->
+      <div class="space-y-3 mb-6">
+        <button onclick="signInWithGoogle()" class="w-full flex items-center justify-center gap-3 px-6 py-3 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all">
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#ea4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </button>
+        
+        <button onclick="signInWithGitHub()" class="w-full flex items-center justify-center gap-3 px-6 py-3 border-2 border-gray-200 rounded-lg hover:border-gray-800 hover:bg-gray-50 transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Continue with GitHub
+        </button>
+      </div>
+
+      <!-- Email Login Form -->
+      <div class="border-t pt-6">
+        <div id="loginForm">
+          <h3 class="text-lg font-semibold mb-4">Or sign in with email</h3>
+          <div class="space-y-4">
+            <input type="email" id="loginEmail" placeholder="Email address" class="w-full border border-gray-300 rounded-lg p-3">
+            <input type="password" id="loginPassword" placeholder="Password" class="w-full border border-gray-300 rounded-lg p-3">
+            <button onclick="signInWithEmail()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold">
+              Sign In
+            </button>
+          </div>
+          <p class="text-center mt-4 text-sm text-gray-600">
+            Don't have an account? 
+            <button onclick="showSignUpForm()" class="text-green-600 hover:text-green-700 font-semibold">Sign up</button>
+          </p>
+        </div>
+
+        <div id="signUpForm" style="display: none;">
+          <h3 class="text-lg font-semibold mb-4">Create your account</h3>
+          <div class="space-y-4">
+            <input type="text" id="signUpName" placeholder="Full name" class="w-full border border-gray-300 rounded-lg p-3">
+            <input type="email" id="signUpEmail" placeholder="Email address" class="w-full border border-gray-300 rounded-lg p-3">
+            <input type="password" id="signUpPassword" placeholder="Password" class="w-full border border-gray-300 rounded-lg p-3">
+            <button onclick="signUpWithEmail()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold">
+              Create Account
+            </button>
+          </div>
+          <p class="text-center mt-4 text-sm text-gray-600">
+            Already have an account? 
+            <button onclick="showLoginForm()" class="text-green-600 hover:text-green-700 font-semibold">Sign in</button>
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mt-6">
+        <button onclick="hideAuthModal()" class="text-gray-500 hover:text-gray-700">Continue as guest</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

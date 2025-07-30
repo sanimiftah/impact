@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDG Impact Tracking - IMPACT Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="animations.css">
+  <style>
+    .sdg-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .sdg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .progress-bar {
+      transition: width 0.8s ease-in-out;
+    }
+    .pulse-sdg {
+      animation: pulse-sdg 2s infinite;
+    }
+    @keyframes pulse-sdg {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .gradient-sdg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sdg-impact-animation {
+      animation: sdg-impact 1s ease-out;
+    }
+    @keyframes sdg-impact {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md p-4 sticky top-0 z-40 backdrop-blur-sm bg-white/90">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition-colors">
+        🌱 <span>IMPACT</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="dashboard_enhanced.html" class="text-gray-600 hover:text-blue-600 transition-colors">📊 Dashboard</a>
+        <a href="social-features.html" class="text-gray-600 hover:text-pink-600 transition-colors">🌐 Social Hub</a>
+        <a href="ai-matching.html" class="text-gray-600 hover:text-purple-600 transition-colors">🤖 AI Matching</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative bg-gradient-to-r from-blue-50 to-purple-50 text-center py-16 px-6 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20"></div>
+    <div class="relative z-10 max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-bold gradient-sdg mb-6">🎯 SDG Impact Tracking</h1>
+      <p class="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
+        Align your volunteer efforts with the UN's 17 Sustainable Development Goals. Track global impact, measure progress, and contribute to building a better world by 2030.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="scrollToSection('global-progress')" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg transition-all hover:scale-105">
+          🌍 View Global Progress
+        </button>
+        <button onclick="scrollToSection('my-impact')" class="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg transition-all hover:scale-105">
+          📈 My Impact Dashboard
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global SDG Progress Overview -->
+  <section id="global-progress" class="py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">🌍 Global SDG Progress</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Track worldwide progress on the UN's 17 Sustainable Development Goals through IMPACT platform contributions</p>
+      </div>
+
+      <!-- Global Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-l-4 border-blue-400">
+          <div class="text-3xl font-bold text-blue-600" id="total-projects">2,847</div>
+          <div class="text-sm text-gray-600">Active Projects</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-l-4 border-green-400">
+          <div class="text-3xl font-bold text-green-600" id="total-volunteers">15,392</div>
+          <div class="text-sm text-gray-600">Global Volunteers</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-l-4 border-purple-400">
+          <div class="text-3xl font-bold text-purple-600" id="total-impact-hours">487,291</div>
+          <div class="text-sm text-gray-600">Impact Hours</div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center border-l-4 border-yellow-400">
+          <div class="text-3xl font-bold text-yellow-600" id="countries-active">89</div>
+          <div class="text-sm text-gray-600">Countries Active</div>
+        </div>
+      </div>
+
+      <!-- SDG Goals Grid -->
+      <div id="sdg-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- SDG cards will be dynamically inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Personal Impact Dashboard -->
+  <section id="my-impact" class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-100">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">📈 Your SDG Impact Dashboard</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Track your personal contributions to the Sustainable Development Goals</p>
+      </div>
+
+      <!-- Personal Stats -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <!-- Impact Summary -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            🎯 <span>Your Impact Summary</span>
+          </h3>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">SDGs Contributed To:</span>
+              <span class="font-bold text-blue-600" id="user-sdgs-count">8 / 17</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Total Projects:</span>
+              <span class="font-bold text-green-600" id="user-projects-count">12</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">Volunteer Hours:</span>
+              <span class="font-bold text-purple-600" id="user-hours-count">89</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">People Impacted:</span>
+              <span class="font-bold text-yellow-600" id="user-impact-count">247</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SDG Completion Chart -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            📊 <span>SDG Completion Progress</span>
+          </h3>
+          <div class="space-y-3" id="user-sdg-progress">
+            <!-- Progress bars will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Contributions -->
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          ⏰ <span>Recent SDG Contributions</span>
+        </h3>
+        <div id="recent-contributions" class="space-y-4">
+          <!-- Recent contribution items will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SDG Action Center -->
+  <section id="action-center" class="py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">🚀 SDG Action Center</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Find opportunities to contribute to specific Sustainable Development Goals</p>
+      </div>
+
+      <!-- Action Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-l-4 border-red-400">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-red-700">🚫 End Poverty</h3>
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <span class="text-2xl">1️⃣</span>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">Join initiatives to eliminate poverty in all its forms everywhere</p>
+          <div class="flex justify-between text-sm text-gray-500 mb-4">
+            <span>127 active projects</span>
+            <span class="text-red-500 font-semibold">High Priority</span>
+          </div>
+          <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg font-semibold transition-all">
+            Find Opportunities
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-l-4 border-green-400">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-green-700">🌱 Climate Action</h3>
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+              <span class="text-2xl">1️⃣3️⃣</span>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">Take urgent action to combat climate change and its impacts</p>
+          <div class="flex justify-between text-sm text-gray-500 mb-4">
+            <span>89 active projects</span>
+            <span class="text-green-500 font-semibold">Growing</span>
+          </div>
+          <button class="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold transition-all">
+            Join Movement
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-l-4 border-blue-400">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-blue-700">📚 Quality Education</h3>
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <span class="text-2xl">4️⃣</span>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">Ensure inclusive and equitable quality education for all</p>
+          <div class="flex justify-between text-sm text-gray-500 mb-4">
+            <span>156 active projects</span>
+            <span class="text-blue-500 font-semibold">Popular</span>
+          </div>
+          <button class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold transition-all">
+            Start Teaching
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Leaderboard -->
+  <section id="leaderboard" class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-100">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">🏆 Global SDG Impact Leaders</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Celebrating the top contributors to Sustainable Development Goals worldwide</p>
+      </div>
+
+      <!-- Leaderboard Tabs -->
+      <div class="flex justify-center mb-8">
+        <div class="flex bg-white rounded-lg shadow-md p-1">
+          <button class="leaderboard-tab active-tab px-6 py-2 rounded-md font-semibold transition-all" data-tab="countries">
+            🌍 Countries
+          </button>
+          <button class="leaderboard-tab px-6 py-2 rounded-md font-semibold transition-all text-gray-600" data-tab="volunteers">
+            👥 Volunteers
+          </button>
+          <button class="leaderboard-tab px-6 py-2 rounded-md font-semibold transition-all text-gray-600" data-tab="organizations">
+            🏢 Organizations
+          </button>
+        </div>
+      </div>
+
+      <!-- Leaderboard Content -->
+      <div id="leaderboard-content" class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Leaderboard items will be inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-r from-blue-100 to-purple-100 text-center py-8 text-sm text-gray-700 mt-16">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="flex items-center space-x-2">
+          <span class="text-2xl">🎯</span>
+          <span class="font-semibold">&copy; 2025 IMPACT Platform - SDG Tracking</span>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="font-medium gradient-sdg">Building a sustainable future together</p>
+          <p class="text-xs mt-1">Aligned with UN Sustainable Development Goals 2030</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="impact-data-layer.js"></script>
+  <script src="sdg-engine.js"></script>
+  <script>
+    // Global variables
+    let currentUser = null;
+    let sdgData = [];
+
+    // SDG Data - UN Sustainable Development Goals
+    const SDG_GOALS = [
+      {
+        id: 1,
+        title: "No Poverty",
+        description: "End poverty in all its forms everywhere",
+        icon: "🚫",
+        color: "#E5243B",
+        progress: 34,
+        projects: 127,
+        volunteers: 1234,
+        target: "Eliminate extreme poverty by 2030"
+      },
+      {
+        id: 2,
+        title: "Zero Hunger",
+        description: "End hunger, achieve food security and improved nutrition",
+        icon: "🍽️",
+        color: "#DDA63A",
+        progress: 42,
+        projects: 89,
+        volunteers: 987,
+        target: "End all forms of malnutrition by 2030"
+      },
+      {
+        id: 3,
+        title: "Good Health",
+        description: "Ensure healthy lives and promote well-being for all",
+        icon: "⚕️",
+        color: "#4C9F38",
+        progress: 58,
+        projects: 156,
+        volunteers: 2103,
+        target: "Universal health coverage for all"
+      },
+      {
+        id: 4,
+        title: "Quality Education",
+        description: "Ensure inclusive and equitable quality education",
+        icon: "📚",
+        color: "#C5192D",
+        progress: 67,
+        projects: 234,
+        volunteers: 3456,
+        target: "Free primary and secondary education"
+      },
+      {
+        id: 5,
+        title: "Gender Equality",
+        description: "Achieve gender equality and empower all women and girls",
+        icon: "⚖️",
+        color: "#FF3A21",
+        progress: 51,
+        projects: 98,
+        volunteers: 1567,
+        target: "End discrimination against women everywhere"
+      },
+      {
+        id: 6,
+        title: "Clean Water",
+        description: "Ensure availability and sustainable management of water",
+        icon: "💧",
+        color: "#26BDE2",
+        progress: 45,
+        projects: 76,
+        volunteers: 876,
+        target: "Universal access to safe drinking water"
+      },
+      {
+        id: 7,
+        title: "Clean Energy",
+        description: "Ensure access to affordable, reliable, sustainable energy",
+        icon: "⚡",
+        color: "#FCC30B",
+        progress: 39,
+        projects: 54,
+        volunteers: 654,
+        target: "Universal access to modern energy"
+      },
+      {
+        id: 8,
+        title: "Economic Growth",
+        description: "Promote sustained economic growth and decent work",
+        icon: "📈",
+        color: "#A21942",
+        progress: 52,
+        projects: 143,
+        volunteers: 1876,
+        target: "Full employment and decent work for all"
+      },
+      {
+        id: 9,
+        title: "Innovation",
+        description: "Build resilient infrastructure and foster innovation",
+        icon: "🏗️",
+        color: "#FD6925",
+        progress: 48,
+        projects: 87,
+        volunteers: 1234,
+        target: "Sustainable and resilient infrastructure"
+      },
+      {
+        id: 10,
+        title: "Reduced Inequalities",
+        description: "Reduce inequality within and among countries",
+        icon: "⚖️",
+        color: "#DD1367",
+        progress: 36,
+        projects: 92,
+        volunteers: 1098,
+        target: "Reduce income inequality by 2030"
+      },
+      {
+        id: 11,
+        title: "Sustainable Cities",
+        description: "Make cities and human settlements sustainable",
+        icon: "🏙️",
+        color: "#FD9D24",
+        progress: 44,
+        projects: 134,
+        volunteers: 1765,
+        target: "Safe, inclusive, and sustainable cities"
+      },
+      {
+        id: 12,
+        title: "Responsible Consumption",
+        description: "Ensure sustainable consumption and production patterns",
+        icon: "♻️",
+        color: "#BF8B2E",
+        progress: 41,
+        projects: 67,
+        volunteers: 876,
+        target: "Sustainable use of natural resources"
+      },
+      {
+        id: 13,
+        title: "Climate Action",
+        description: "Take urgent action to combat climate change",
+        icon: "🌱",
+        color: "#3F7E44",
+        progress: 29,
+        projects: 189,
+        volunteers: 2987,
+        target: "Limit global temperature increase"
+      },
+      {
+        id: 14,
+        title: "Life Below Water",
+        description: "Conserve and sustainably use oceans and marine resources",
+        icon: "🐠",
+        color: "#0A97D9",
+        progress: 33,
+        projects: 78,
+        volunteers: 987,
+        target: "Reduce marine pollution by 2030"
+      },
+      {
+        id: 15,
+        title: "Life on Land",
+        description: "Protect and restore terrestrial ecosystems",
+        icon: "🌳",
+        color: "#56C02B",
+        progress: 37,
+        projects: 112,
+        volunteers: 1456,
+        target: "Halt deforestation by 2030"
+      },
+      {
+        id: 16,
+        title: "Peace & Justice",
+        description: "Promote peaceful and inclusive societies",
+        icon: "⚖️",
+        color: "#00689D",
+        progress: 40,
+        projects: 89,
+        volunteers: 1234,
+        target: "Reduce violence and promote justice"
+      },
+      {
+        id: 17,
+        title: "Partnerships",
+        description: "Strengthen global partnerships for sustainable development",
+        icon: "🤝",
+        color: "#19486A",
+        progress: 55,
+        projects: 167,
+        volunteers: 2345,
+        target: "Enhanced global cooperation"
+      }
+    ];
+
+    // Initialize SDG tracking page
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🎯 SDG Tracking System loading...');
+      
+      // Initialize components
+      initializeSDGGrid();
+      initializePersonalDashboard();
+      initializeLeaderboard();
+      updateGlobalStats();
+      
+      // Add event listeners
+      setupEventListeners();
+      
+      console.log('✅ SDG Tracking System ready!');
+    });
+
+    // Initialize SDG goals grid
+    function initializeSDGGrid() {
+      const grid = document.getElementById('sdg-grid');
+      
+      SDG_GOALS.forEach((goal, index) => {
+        const card = document.createElement('div');
+        card.className = 'sdg-card bg-white rounded-xl shadow-lg p-6 border-l-4 opacity-0';
+        card.style.borderLeftColor = goal.color;
+        card.style.animationDelay = `${index * 100}ms`;
+        
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-800" style="color: ${goal.color}">${goal.icon} SDG ${goal.id}</h3>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: ${goal.color}20;">
+              <span class="text-lg">${goal.icon}</span>
+            </div>
+          </div>
+          
+          <h4 class="font-semibold text-gray-800 mb-2">${goal.title}</h4>
+          <p class="text-sm text-gray-600 mb-4">${goal.description}</p>
+          
+          <!-- Progress Bar -->
+          <div class="mb-4">
+            <div class="flex justify-between text-xs text-gray-500 mb-1">
+              <span>Global Progress</span>
+              <span>${goal.progress}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="progress-bar h-2 rounded-full" style="background-color: ${goal.color}; width: 0%;"></div>
+            </div>
+          </div>
+          
+          <!-- Stats -->
+          <div class="flex justify-between text-xs text-gray-500 mb-4">
+            <span>${goal.projects} projects</span>
+            <span>${goal.volunteers.toLocaleString()} volunteers</span>
+          </div>
+          
+          <!-- Action Button -->
+          <button class="w-full py-2 px-4 rounded-lg font-semibold text-white transition-all hover:scale-105" 
+                  style="background-color: ${goal.color};" 
+                  onclick="exploreSDG(${goal.id})">
+            Contribute Now
+          </button>
+        `;
+        
+        grid.appendChild(card);
+        
+        // Animate card entrance
+        setTimeout(() => {
+          card.classList.remove('opacity-0');
+          card.classList.add('opacity-100', 'sdg-impact-animation');
+          
+          // Animate progress bar
+          setTimeout(() => {
+            const progressBar = card.querySelector('.progress-bar');
+            progressBar.style.width = `${goal.progress}%`;
+          }, 300);
+        }, index * 100);
+      });
+    }
+
+    // Initialize personal dashboard
+    function initializePersonalDashboard() {
+      // Update user progress bars
+      const progressContainer = document.getElementById('user-sdg-progress');
+      const userContributions = [
+        { id: 1, progress: 75, hours: 12 },
+        { id: 3, progress: 60, hours: 8 },
+        { id: 4, progress: 90, hours: 23 },
+        { id: 8, progress: 45, hours: 7 },
+        { id: 13, progress: 80, hours: 15 },
+        { id: 16, progress: 35, hours: 5 },
+        { id: 17, progress: 65, hours: 11 }
+      ];
+
+      userContributions.forEach(contrib => {
+        const goal = SDG_GOALS.find(g => g.id === contrib.id);
+        const progressItem = document.createElement('div');
+        progressItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+        
+        progressItem.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-lg">${goal.icon}</span>
+            <div>
+              <div class="font-semibold text-sm text-gray-800">SDG ${goal.id}: ${goal.title}</div>
+              <div class="text-xs text-gray-500">${contrib.hours} volunteer hours</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-20 bg-gray-200 rounded-full h-2">
+              <div class="h-2 rounded-full progress-bar" style="background-color: ${goal.color}; width: 0%;"></div>
+            </div>
+            <span class="text-sm font-bold" style="color: ${goal.color};">${contrib.progress}%</span>
+          </div>
+        `;
+        
+        progressContainer.appendChild(progressItem);
+        
+        // Animate progress bar
+        setTimeout(() => {
+          const bar = progressItem.querySelector('.progress-bar');
+          bar.style.width = `${contrib.progress}%`;
+        }, 500);
+      });
+
+      // Initialize recent contributions
+      initializeRecentContributions();
+    }
+
+    // Initialize recent contributions
+    function initializeRecentContributions() {
+      const container = document.getElementById('recent-contributions');
+      const recentActivities = [
+        {
+          sdg: 4,
+          activity: "Completed coding workshop for underprivileged youth",
+          impact: "15 students learned basic programming",
+          date: "2 days ago",
+          hours: 6
+        },
+        {
+          sdg: 13,
+          activity: "Participated in community tree planting event",
+          impact: "50 trees planted in local park",
+          date: "1 week ago",
+          hours: 4
+        },
+        {
+          sdg: 1,
+          activity: "Organized food distribution drive",
+          impact: "200 meals provided to families",
+          date: "2 weeks ago",
+          hours: 8
+        },
+        {
+          sdg: 17,
+          activity: "Mentored 3 new volunteers in platform usage",
+          impact: "Expanded volunteer network",
+          date: "3 weeks ago",
+          hours: 3
+        }
+      ];
+
+      recentActivities.forEach(activity => {
+        const goal = SDG_GOALS.find(g => g.id === activity.sdg);
+        const item = document.createElement('div');
+        item.className = 'flex items-start gap-4 p-4 bg-gray-50 rounded-lg border-l-4';
+        item.style.borderLeftColor = goal.color;
+        
+        item.innerHTML = `
+          <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: ${goal.color}20;">
+            <span class="text-lg">${goal.icon}</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-semibold text-gray-800">SDG ${goal.id}: ${goal.title}</span>
+              <span class="text-xs bg-gray-200 px-2 py-1 rounded-full">${activity.hours}h</span>
+            </div>
+            <p class="text-sm text-gray-700 mb-1">${activity.activity}</p>
+            <p class="text-xs text-gray-500 mb-2">Impact: ${activity.impact}</p>
+            <span class="text-xs text-gray-400">${activity.date}</span>
+          </div>
+        `;
+        
+        container.appendChild(item);
+      });
+    }
+
+    // Initialize leaderboard
+    function initializeLeaderboard() {
+      const tabs = document.querySelectorAll('.leaderboard-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Update active tab
+          tabs.forEach(t => {
+            t.classList.remove('active-tab', 'bg-blue-500', 'text-white');
+            t.classList.add('text-gray-600');
+          });
+          tab.classList.add('active-tab', 'bg-blue-500', 'text-white');
+          tab.classList.remove('text-gray-600');
+          
+          // Load content for selected tab
+          loadLeaderboardContent(tab.dataset.tab);
+        });
+      });
+
+      // Load initial content
+      loadLeaderboardContent('countries');
+    }
+
+    // Load leaderboard content
+    function loadLeaderboardContent(type) {
+      const container = document.getElementById('leaderboard-content');
+      
+      let data = [];
+      if (type === 'countries') {
+        data = [
+          { name: "Malaysia", flag: "🇲🇾", projects: 234, volunteers: 2987, hours: 15432 },
+          { name: "Indonesia", flag: "🇮🇩", projects: 189, volunteers: 2456, hours: 12876 },
+          { name: "Philippines", flag: "🇵🇭", projects: 167, volunteers: 2134, hours: 11234 },
+          { name: "Singapore", flag: "🇸🇬", projects: 145, volunteers: 1876, hours: 9876 },
+          { name: "Thailand", flag: "🇹🇭", projects: 123, volunteers: 1654, hours: 8765 }
+        ];
+      } else if (type === 'volunteers') {
+        data = [
+          { name: "Sani Miftah", avatar: "🌱", projects: 12, hours: 89, impact: "Global Platform" },
+          { name: "Maya Chen", avatar: "💻", projects: 8, hours: 76, impact: "Education Focus" },
+          { name: "Rahul Sharma", avatar: "🌊", projects: 15, hours: 134, impact: "Climate Action" },
+          { name: "Luna Santos", avatar: "💚", projects: 6, hours: 67, impact: "Mental Health" },
+          { name: "Alex Kim", avatar: "🎯", projects: 9, hours: 78, impact: "Tech Innovation" }
+        ];
+      } else {
+        data = [
+          { name: "Cognizant Technology Solutions", logo: "🏢", projects: 45, volunteers: 234, impact: "Corporate Volunteering" },
+          { name: "Green Earth Foundation", logo: "🌍", projects: 67, volunteers: 189, impact: "Environmental Action" },
+          { name: "Education for All", logo: "📚", projects: 34, volunteers: 156, impact: "Learning Access" },
+          { name: "Health Bridge International", logo: "⚕️", projects: 23, volunteers: 98, impact: "Healthcare Access" },
+          { name: "Code for Good", logo: "💻", projects: 56, volunteers: 178, impact: "Digital Literacy" }
+        ];
+      }
+
+      container.innerHTML = data.map((item, index) => {
+        const rank = index + 1;
+        const medalEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥉' : rank === 3 ? '🥉' : `#${rank}`;
+        
+        if (type === 'countries') {
+          return `
+            <div class="flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="text-xl font-bold ${rank <= 3 ? 'text-yellow-500' : 'text-gray-500'}">${medalEmoji}</span>
+                <span class="text-2xl">${item.flag}</span>
+                <div>
+                  <div class="font-semibold text-gray-800">${item.name}</div>
+                  <div class="text-sm text-gray-500">${item.projects} projects • ${item.volunteers.toLocaleString()} volunteers</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-blue-600">${item.hours.toLocaleString()}</div>
+                <div class="text-sm text-gray-500">Total Hours</div>
+              </div>
+            </div>
+          `;
+        } else if (type === 'volunteers') {
+          return `
+            <div class="flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="text-xl font-bold ${rank <= 3 ? 'text-yellow-500' : 'text-gray-500'}">${medalEmoji}</span>
+                <span class="text-2xl">${item.avatar}</span>
+                <div>
+                  <div class="font-semibold text-gray-800">${item.name}</div>
+                  <div class="text-sm text-gray-500">${item.projects} projects • ${item.impact}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-green-600">${item.hours}</div>
+                <div class="text-sm text-gray-500">Hours</div>
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="flex items-center justify-between p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <div class="flex items-center gap-4">
+                <span class="text-xl font-bold ${rank <= 3 ? 'text-yellow-500' : 'text-gray-500'}">${medalEmoji}</span>
+                <span class="text-2xl">${item.logo}</span>
+                <div>
+                  <div class="font-semibold text-gray-800">${item.name}</div>
+                  <div class="text-sm text-gray-500">${item.projects} projects • ${item.impact}</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-purple-600">${item.volunteers}</div>
+                <div class="text-sm text-gray-500">Volunteers</div>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    // Update global statistics
+    function updateGlobalStats() {
+      // Animate counter updates
+      animateCounter('total-projects', 2847);
+      animateCounter('total-volunteers', 15392);
+      animateCounter('total-impact-hours', 487291);
+      animateCounter('countries-active', 89);
+    }
+
+    // Animate counter
+    function animateCounter(elementId, targetValue) {
+      const element = document.getElementById(elementId);
+      const duration = 2000;
+      const increment = targetValue / (duration / 16);
+      let current = 0;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= targetValue) {
+          current = targetValue;
+          clearInterval(timer);
+        }
+        element.textContent = Math.floor(current).toLocaleString();
+      }, 16);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Smooth scrolling
+      window.scrollToSection = function(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      };
+    }
+
+    // Explore specific SDG
+    function exploreSDG(sdgId) {
+      const goal = SDG_GOALS.find(g => g.id === sdgId);
+      
+      // Create modal for SDG details
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+      modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95">
+          <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl" style="background-color: ${goal.color}20;">
+                ${goal.icon}
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold text-gray-800">SDG ${goal.id}: ${goal.title}</h3>
+                <p class="text-gray-600">${goal.description}</p>
+              </div>
+            </div>
+            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+          </div>
+          
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-3">2030 Target</h4>
+            <p class="text-gray-700 bg-gray-50 p-4 rounded-lg">${goal.target}</p>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold" style="color: ${goal.color};">${goal.progress}%</div>
+              <div class="text-sm text-gray-600">Global Progress</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold" style="color: ${goal.color};">${goal.projects}</div>
+              <div class="text-sm text-gray-600">Active Projects</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold" style="color: ${goal.color};">${goal.volunteers.toLocaleString()}</div>
+              <div class="text-sm text-gray-600">Volunteers</div>
+            </div>
+          </div>
+          
+          <div class="flex gap-4">
+            <a href="seedboard.html" class="flex-1 py-3 px-6 rounded-lg font-semibold text-white text-center transition-colors" style="background-color: ${goal.color};">
+              🌱 Start Project
+            </a>
+            <a href="volunteer.html" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold text-center transition-colors">
+              🤝 Join Existing
+            </a>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Animate in
+      setTimeout(() => {
+        modal.querySelector('.bg-white').classList.remove('scale-95');
+        modal.querySelector('.bg-white').classList.add('scale-100');
+      }, 10);
+      
+      // Close modal when clicking outside
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.remove();
+        }
+      });
+    }
+
+    console.log('🎯 SDG Tracking system initialized successfully!');
+  </script>
+</body>
+</html>

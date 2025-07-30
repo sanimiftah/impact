@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="output.css" rel="stylesheet">
+  <title>Impact – Planting Seeds of Change</title>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800 leading-relaxed">
+
+  <!-- Accessibility Toggle -->
+  <div class="flex justify-end p-4">
+    <button id="contrastToggle" aria-label="Toggle high contrast mode" class="text-xl">🌓</button>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow-md p-4">
+    <ul class="flex flex-wrap gap-6 justify-center text-sm font-medium text-gray-700">
+      <li><a href="#seedboard" class="flex items-center gap-2">🌱 Seedboard</a></li>
+      <li><a href="#opportunity" class="flex items-center gap-2">🔍 Opportunity Hub</a></li>
+      <li><a href="#skillmatch" class="flex items-center gap-2">🧠 SkillMatch</a></li>
+      <li><a href="#teamspace" class="flex items-center gap-2">🤝 TeamSpace</a></li>
+      <li><a href="#eventkit" class="flex items-center gap-2">🎒 EventKit</a></li>
+      <li><a href="#impactlog" class="flex items-center gap-2">📖 ImpactLog</a></li>
+      <li><a href="#opencall" class="flex items-center gap-2">📣 OpenCall</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="bg-green-50 text-center py-10 px-6">
+    <h1 class="text-3xl font-bold text-green-700">Planting Seeds of Change</h1>
+    <p class="text-lg text-gray-700 mt-4 max-w-3xl mx-auto">
+      Impact is where ideas grow into action. Whether you're mentoring youth, restoring communities, or sharing your skills for good — every contribution plants a seed of change. Discover opportunities, connect with purpose, and help shape a future rooted in care, collaboration, and community.
+    </p>
+  </header>
+
+  <!-- Dashboard Cards -->
+  <section id="dashboard" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+    <div class="bg-white rounded-lg shadow-md p-4" id="seedboard">
+      <h2 class="text-xl font-semibold text-green-700">🌱 Seedboard</h2>
+      <p class="text-sm text-gray-600">Submit and explore ideas for positive change.</p>
+      <button class="mt-2 bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">Explore</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="opportunity">
+      <h2 class="text-xl font-semibold text-blue-700">🔍 Opportunity Hub</h2>
+      <p class="text-sm text-gray-600">Discover events and initiatives across APAC.</p>
+      <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">Join</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="skillmatch">
+      <h2 class="text-xl font-semibold text-yellow-700">🧠 SkillMatch</h2>
+      <p class="text-sm text-gray-600">Connect your skills with meaningful causes.</p>
+      <button class="mt-2 bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">Match</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="teamspace">
+      <h2 class="text-xl font-semibold text-purple-700">🤝 TeamSpace</h2>
+      <p class="text-sm text-gray-600">Collaborate with others who share your vision.</p>
+      <button class="mt-2 bg-purple-500 hover:bg-purple-600 text-white py-1 px-3 rounded">Build</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="eventkit">
+      <h2 class="text-xl font-semibold text-sky-700">🎒 EventKit</h2>
+      <p class="text-sm text-gray-600">Plan and manage impactful events.</p>
+      <button class="mt-2 bg-sky-500 hover:bg-sky-600 text-white py-1 px-3 rounded">Organize</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="impactlog">
+      <h2 class="text-xl font-semibold text-gray-700">📖 ImpactLog</h2>
+      <p class="text-sm text-gray-600">Reflect on your contributions and growth.</p>
+      <button class="mt-2 bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded">Log</button>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-4" id="opencall">
+      <h2 class="text-xl font-semibold text-red-700">📣 OpenCall</h2>
+      <p class="text-sm text-gray-600">Respond to calls for volunteers and ideas.</p>
+      <button class="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">Submit Idea</button>
+    </div>
+  </section>
+
+  <!-- Volunteer Spotlight Carousel -->
+  <section id="spotlight" class="bg-white py-10 px-6">
+    <h2 class="text-2xl font-bold text-green-700 text-center mb-6">🌟 Volunteer Spotlight</h2>
+    <div class="flex gap-6 overflow-x-auto">
+      <div class="min-w-[250px] bg-green-50 rounded-lg shadow-md p-4">
+        <img src="images/volunteer1.jpg" alt="Volunteer story photo" class="rounded mb-2" />
+        <blockquote class="italic text-gray-700">“Helping rebuild my community gave me purpose.”</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Filters -->
+  <section id="filters" class="max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-md my-10">
+    <h2 class="text-xl font-semibold text-green-700 mb-4">🎯 Quick Filters</h2>
+    <form class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label for="location" class="block font-medium text-gray-700">Location:</label>
+        <select id="location" class="w-full border border-gray-300 rounded p-2">
+          <option>Malaysia</option>
+          <option>Indonesia</option>
+          <option>Philippines</option>
+        </select>
+      </div>
+      <div>
+        <label for="theme" class="block font-medium text-gray-700">Theme:</label>
+        <select id="theme" class="w-full border border-gray-300 rounded p-2">
+          <option>Education</option>
+          <option>Climate</option>
+          <option>Mental Health</option>
+        </select>
+      </div>
+      <div>
+        <label for="availability" class="block font-medium text-gray-700">Availability:</label>
+        <select id="availability" class="w-full border border-gray-300 rounded p-2">
+          <option>Weekends</option>
+          <option>Weekdays</option>
+          <option>Flexible</option>
+        </select>
+      </div>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-green-100 text-center py-6 text-sm text-gray-700">
+    &copy; 2025 Impact Platform. Rooted in care, collaboration, and community.
+  </footer>
+</body>
+</html>

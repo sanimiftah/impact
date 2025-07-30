@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="output.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>IMPACT - Test Page</title>
+  <style>
+    /* Ensure all links are clickable */
+    a, button {
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      position: relative;
+      z-index: 100;
+    }
+    
+    /* Modern font styling */
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      color: #374151;
+    }
+    
+    .hero-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+    }
+    
+    /* Debug overlay */
+    .debug-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      background: rgba(255, 0, 0, 0.1);
+      display: none;
+    }
+    
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      min-width: 3.5rem;
+      height: 3.5rem;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border-radius: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      padding: 0.75rem;
+      overflow: hidden;
+      gap: 0.5rem;
+    }
+    
+    .fab:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+      color: white;
+      padding: 0.75rem 1.5rem;
+    }
+    
+    .fab-icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .fab-text {
+      font-size: 0.875rem;
+      font-weight: 600;
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+      display: inline-block;
+    }
+    
+    .fab:hover .fab-icon {
+      transform: rotate(90deg);
+    }
+    
+    .fab:hover .fab-text {
+      opacity: 1;
+      max-width: 4rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+
+  <div class="debug-overlay" id="debugOverlay"></div>
+
+  <!-- Simple Navigation -->
+  <nav class="bg-white shadow-md p-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <img src="clover-modern.svg" alt="IMPACT Logo" class="h-8 w-8">
+        <span class="logo-text text-lg">IMPACT</span>
+      </div>
+      
+      <!-- Navigation Links -->
+      <ul class="hidden md:flex gap-6">
+        <li><a href="seedboard.html" class="text-green-600 hover:underline">🌱 Seedboard</a></li>
+        <li><a href="dashboard_enhanced.html" class="text-blue-600 hover:underline">🔍 Dashboard</a></li>
+        <li><a href="skillmatch.html" class="text-yellow-600 hover:underline">🧠 SkillMatch</a></li>
+        <li><a href="teamspace_new.html" class="text-purple-600 hover:underline">🤝 TeamSpace</a></li>
+        <li><a href="impactlog_new.html" class="text-gray-600 hover:underline">📖 ImpactLog</a></li>
+        <li><a href="opencall_new.html" class="text-red-600 hover:underline">📣 OpenCall</a></li>
+      </ul>
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden bg-gray-100 p-2 rounded">
+        ☰
+      </button>
+    </div>
+    
+    <!-- Mobile Navigation Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+      <ul class="flex flex-col py-2">
+        <li><a href="seedboard.html" class="block px-4 py-2 text-green-600 hover:bg-gray-50">🌱 Seedboard</a></li>
+        <li><a href="dashboard_enhanced.html" class="block px-4 py-2 text-blue-600 hover:bg-gray-50">🔍 Dashboard</a></li>
+        <li><a href="skillmatch.html" class="block px-4 py-2 text-yellow-600 hover:bg-gray-50">🧠 SkillMatch</a></li>
+        <li><a href="teamspace_new.html" class="block px-4 py-2 text-purple-600 hover:bg-gray-50">🤝 TeamSpace</a></li>
+        <li><a href="impactlog_new.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-50">📖 ImpactLog</a></li>
+        <li><a href="opencall_new.html" class="block px-4 py-2 text-red-600 hover:bg-gray-50">📣 OpenCall</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="text-center py-16 px-6">
+    <h1 class="hero-title text-4xl mb-6">IMPACT Platform</h1>
+    <p class="text-lg mb-8">Test your navigation links with modern typography</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="seedboard.html" class="bg-green-500 text-white px-6 py-3 rounded text-center">
+        🌱 Start Journey
+      </a>
+      <button onclick="alert('Button works!')" class="bg-blue-500 text-white px-6 py-3 rounded">
+        🔍 Test Button
+      </button>
+    </div>
+  </header>
+
+  <!-- Simple Cards -->
+  <section class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">🌱 Seedboard</h2>
+      <a href="seedboard.html" class="bg-green-500 text-white px-4 py-2 rounded block text-center">
+        Go to Seedboard
+      </a>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">📊 Dashboard</h2>
+      <a href="dashboard_enhanced.html" class="bg-blue-500 text-white px-4 py-2 rounded block text-center">
+        Go to Dashboard
+      </a>
+    </div>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">🧠 SkillMatch</h2>
+      <a href="skillmatch.html" class="bg-yellow-500 text-white px-4 py-2 rounded block text-center">
+        Go to SkillMatch
+      </a>
+    </div>
+  </section>
+
+  <!-- Floating Action Button -->
+  <a href="seedboard.html" class="fab" title="Start Your Journey">
+    <span class="fab-icon">+</span>
+    <span class="fab-text">Start</span>
+  </a>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Test page loaded');
+      
+      // Test clicks
+      document.addEventListener('click', function(e) {
+        console.log('Click on:', e.target.tagName, e.target.className, e.target.href || e.target.onclick);
+      });
+      
+      // Check for overlays
+      const allElements = document.querySelectorAll('*');
+      let overlayCount = 0;
+      allElements.forEach(el => {
+        const style = window.getComputedStyle(el);
+        if (style.position === 'fixed' && style.zIndex > 1000) {
+          console.log('High z-index element found:', el, style.zIndex);
+          overlayCount++;
+        }
+      });
+      
+      console.log(`Found ${overlayCount} potential overlay elements`);
+      
+      // Mobile menu toggle
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+      
+      // Toggle debug overlay
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'd' && e.ctrlKey) {
+          const overlay = document.getElementById('debugOverlay');
+          overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
