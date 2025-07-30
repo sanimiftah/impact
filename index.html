@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPACT - Planting Seeds of Change</title>
+    <meta name="description" content="IMPACT is a comprehensive digital platform designed to unify and amplify social impact efforts across the Asia-Pacific region.">
+    
+    <!-- Immediate redirect for better UX -->
+    <script>
+        // Immediate redirect without delay for better user experience
+        window.location.replace('./public/');
+    </script>
+    
+    <!-- Multiple fallback redirect methods -->
+    <meta http-equiv="refresh" content="0; url=./public/">
+    <link rel="canonical" href="./public/">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="./public/output.css" as="style">
+    
+    <!-- Favicon and PWA -->
+    <link rel="icon" href="./public/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="./public/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    
+    <!-- Enhanced styling for loading state -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            padding: 2rem;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            opacity: 0;
+            animation: spin 1s linear infinite, fadeInUp 0.8s ease-out 0.6s forwards;
+        }
+        
+        .redirect-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 0.8s forwards;
+        }
+        
+        .redirect-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .fallback-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out 1s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🌱</div>
+        <h1 class="title">IMPACT Platform</h1>
+        <p class="subtitle">Planting Seeds of Change</p>
+        <div class="spinner"></div>
+        <p>Launching your social impact journey...</p>
+        
+        <!-- Manual redirect button -->
+        <a href="./public/" class="redirect-btn">🚀 Enter Platform</a>
+        
+        <!-- Fallback information -->
+        <p class="fallback-text">
+            <small>If automatic redirect doesn't work, click the button above</small>
+        </p>
+        
+        <!-- NoScript fallback -->
+        <noscript>
+            <style>
+                .spinner { display: none; }
+                .redirect-btn { opacity: 1; animation: none; }
+            </style>
+            <p><strong>JavaScript is disabled. Please click the button above to continue.</strong></p>
+        </noscript>
+    </div>
+    
+    <!-- Enhanced redirect script with multiple fallbacks -->
+    <script>
+        // Multiple redirect attempts for maximum compatibility
+        (function() {
+            // Try immediate redirect
+            try {
+                window.location.replace('./public/');
+            } catch(e) {
+                console.log('Replace redirect failed, trying href');
+                try {
+                    window.location.href = './public/';
+                } catch(e2) {
+                    console.log('Href redirect failed, showing manual button');
+                }
+            }
+            
+            // Fallback timeout
+            setTimeout(function() {
+                if (window.location.pathname === '/' || window.location.pathname.endsWith('/index.html')) {
+                    window.location.href = './public/';
+                }
+            }, 100);
+        })();
+    </script>
+</body>
+</html>
